@@ -38,10 +38,10 @@ namespace XRoad.GlobalConfiguration
 
         public async Task<byte[]> GetWsdlAsync(Uri securityServerUri, SubSystemIdentifier subSystemId, ServiceIdentifier targetService)
         {
-            byte[] wsdlFileBytes = null;
-
+            byte[] wsdlFileBytes = {};
+            
             var client = SoapClient.Prepare()
-                .WithHandler(new DelegatingSoapHandler()
+                .WithHandler(new DelegatingSoapHandler
                 {
                     OnHttpResponseAsyncAction = async (soapClient, httpContext, cancellationToken) =>
                     {
@@ -64,17 +64,17 @@ namespace XRoad.GlobalConfiguration
                     }
                 });
 
-            var body = SoapEnvelope.Prepare().Body<GetWsdlRequest>(new GetWsdlRequest()
+            var body = SoapEnvelope.Prepare().Body(new GetWsdlRequest
             {
                 ServiceCode = targetService.ServiceCode,
                 ServiceVersion = targetService.ServiceVersion
-            }).WithHeaders(new List<SoapHeader>()
+            }).WithHeaders(new List<SoapHeader>
             {
                 IdHeader.Random,
                 UserIdHeader,
                 ProtocolVersionHeader.Version40,
                 (XRoadClient)subSystemId,
-                new XRoadService()
+                new XRoadService
                 {
                     Instance = targetService.Instance,
                     MemberClass = targetService.MemberClass,
@@ -86,14 +86,15 @@ namespace XRoad.GlobalConfiguration
             });
 
             var result = await client.SendAsync(securityServerUri.ToString(), String.Empty, body);
-
+            result.ThrowIfFaulted();
+            
             return wsdlFileBytes;
         }
 
         public async Task<IList<ServiceIdentifier>> GetServicesAsync(Uri securityServerUri, SubSystemIdentifier client, SubSystemIdentifier source)
         {
             var soapEnvelope = SoapEnvelope.Prepare()
-                .Body<ListMethodsRequest>(new ListMethodsRequest())
+                .Body(new ListMethodsRequest())
                 .WithHeaders(
                 new List<SoapHeader>()
                 {

@@ -20,6 +20,7 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
 
         public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedList)
         {
+            ValidateList(updatedList);
 
             var databaseServicesList = _dbContext.MemberServices
                    .Include(service => service.Member)
@@ -108,10 +109,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             {
                 return expression && serviceIdentifier.ServiceVersion == null;
             }
-            else
-            {
-                return expression && memberService.ServiceVersion.Equals(serviceIdentifier.ServiceVersion);
-            }
+
+            return expression && memberService.ServiceVersion.Equals(serviceIdentifier.ServiceVersion);
         }
     }
 }

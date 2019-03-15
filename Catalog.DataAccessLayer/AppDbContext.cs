@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Catalog.DataAccessLayer.Catalog.Entity;
 using Catalog.DataAccessLayer.XRoad.Entity;
 using Catalog.DataAccessLayer.XRoad.Entity.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +12,11 @@ namespace Catalog.DataAccessLayer
         public DbSet<SubSystem> SubSystems { get; set; }
         public DbSet<MemberService> MemberServices { get; set; }
         public DbSet<SubSystemService> SubSystemServices { get; set; }
+        public DbSet<MemberInfo> MemberInfoRecords { get; set; }
+        public DbSet<MemberRole> MemberRoles { get; set; }
+        public DbSet<MemberStatus> MemberStatuses { get; set; }
+        public DbSet<MemberType> MemberTypes { get; set; }
+        public DbSet<MemberInfoRoleReference> MemberInfoRoleReferences { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions)
             : base(dbContextOptions) { }

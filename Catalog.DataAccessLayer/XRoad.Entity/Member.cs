@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Catalog.DataAccessLayer.Catalog.Entity;
 
 namespace Catalog.DataAccessLayer.XRoad.Entity
 {
@@ -15,6 +16,7 @@ namespace Catalog.DataAccessLayer.XRoad.Entity
         public string MemberCode { get; set; }
         public string Name { get; set; }
 
+        public MemberInfo MemberInfo { get; set; }
         public List<SubSystem> SubSystems { get; set; }
         public List<SecurityServer> SecurityServers { get; set; }
         public List<MemberService> Services { get; set; }

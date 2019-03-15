@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -8,6 +8,10 @@
     <Reference Include="SimpleSOAPClient">
       <HintPath>C:\Users\Beksultan Galiev\.nuget\packages\simplesoapclient\2.1.0\lib\netstandard2.0\SimpleSOAPClient.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SimpleSOAPClient" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

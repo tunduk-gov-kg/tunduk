@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Catalog.DataAccessLayer.Catalog.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -43,6 +43,11 @@ namespace Catalog.DataAccessLayer.XRoad.Entity.Configuration
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(entity => entity.MemberInfo)
+                .WithOne(info => info.Member)
+                .HasForeignKey<MemberInfo>(entity => entity.MemberInfoId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -21,20 +21,20 @@ namespace XRoad.GlobalConfiguration.UnitTests
         {
             var manager = new ServiceMetadataManager();
             var result = await manager.GetWsdlAsync(new Uri("http://10.55.0.4"),
-                new SubSystemIdentifier()
+                new SubSystemIdentifier
                 {
                     Instance = "central-server",
                     MemberClass = "GOV",
                     MemberCode = "70000001",
                     SubSystemCode = "monitoring-system"
-                }, new ServiceIdentifier()
+                }, new ServiceIdentifier
                 {
                     Instance = "central-server",
                     MemberClass = "GOV",
                     MemberCode = "70000005",
                     SubSystemCode = "zags-service",
                     ServiceCode = "testZagsCatalog",
-                    ServiceVersion = "v1"
+                    ServiceVersion = "v2"
                 });
 
             var resultWsdl = Encoding.UTF8.GetString(result);
