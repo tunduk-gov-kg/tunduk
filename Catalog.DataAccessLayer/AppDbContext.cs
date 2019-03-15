@@ -1,4 +1,5 @@
 ﻿using Catalog.DataAccessLayer.Catalog.Entity;
+using Catalog.DataAccessLayer.Catalog.Entity.Configuration;
 using Catalog.DataAccessLayer.XRoad.Entity;
 using Catalog.DataAccessLayer.XRoad.Entity.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,11 @@ namespace Catalog.DataAccessLayer
             modelBuilder.ApplyConfiguration(new SecurityServerConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberInfoRoleReferenceConfiguration());
         }
 
     }

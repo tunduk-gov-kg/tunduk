@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Catalog.DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190313054351_NameForMember")]
-    partial class NameForMember
+    [Migration("20190315080339_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,101 @@ namespace Catalog.DataAccessLayer.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberInfo", b =>
+                {
+                    b.Property<long>("MemberInfoId");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("MemberStatusId");
+
+                    b.Property<long?>("MemberTypeId");
+
+                    b.Property<DateTime?>("ModificationDateTime");
+
+                    b.Property<string>("Site")
+                        .HasMaxLength(100);
+
+                    b.HasKey("MemberInfoId");
+
+                    b.HasIndex("MemberStatusId");
+
+                    b.HasIndex("MemberTypeId");
+
+                    b.ToTable("MemberInfoRecords");
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberInfoRoleReference", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("MemberInfoId");
+
+                    b.Property<long>("MemberRoleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberRoleId");
+
+                    b.HasIndex("MemberInfoId", "MemberRoleId")
+                        .IsUnique();
+
+                    b.ToTable("MemberInfoRoleReferences");
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("MemberRoles");
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberStatus", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("MemberStatuses");
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("MemberTypes");
+                });
 
             modelBuilder.Entity("Catalog.DataAccessLayer.XRoad.Entity.Member", b =>
                 {
@@ -45,6 +140,8 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.Property<string>("MemberCode")
                         .IsRequired()
                         .HasMaxLength(20);
+
+                    b.Property<DateTime?>("ModificationDateTime");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -143,6 +240,8 @@ namespace Catalog.DataAccessLayer.Migrations
 
                     b.Property<long>("MemberId");
 
+                    b.Property<DateTime?>("ModificationDateTime");
+
                     b.Property<string>("SubSystemCode")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -189,6 +288,37 @@ namespace Catalog.DataAccessLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("SubSystemServices");
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberInfo", b =>
+                {
+                    b.HasOne("Catalog.DataAccessLayer.XRoad.Entity.Member", "Member")
+                        .WithOne("MemberInfo")
+                        .HasForeignKey("Catalog.DataAccessLayer.Catalog.Entity.MemberInfo", "MemberInfoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberStatus", "MemberStatus")
+                        .WithMany("MemberInfoRecords")
+                        .HasForeignKey("MemberStatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberType", "MemberType")
+                        .WithMany("MemberInfoRecords")
+                        .HasForeignKey("MemberTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberInfoRoleReference", b =>
+                {
+                    b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberInfo", "MemberInfo")
+                        .WithMany("MemberRoleReferences")
+                        .HasForeignKey("MemberInfoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberRole", "MemberRole")
+                        .WithMany("MemberInfoReferences")
+                        .HasForeignKey("MemberRoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Catalog.DataAccessLayer.XRoad.Entity.MemberService", b =>

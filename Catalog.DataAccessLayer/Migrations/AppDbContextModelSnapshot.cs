@@ -23,7 +23,8 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     b.Property<long>("MemberInfoId");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<long?>("MemberStatusId");
 
@@ -31,7 +32,8 @@ namespace Catalog.DataAccessLayer.Migrations
 
                     b.Property<DateTime?>("ModificationDateTime");
 
-                    b.Property<string>("Site");
+                    b.Property<string>("Site")
+                        .HasMaxLength(100);
 
                     b.HasKey("MemberInfoId");
 
@@ -53,9 +55,10 @@ namespace Catalog.DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberInfoId");
-
                     b.HasIndex("MemberRoleId");
+
+                    b.HasIndex("MemberInfoId", "MemberRoleId")
+                        .IsUnique();
 
                     b.ToTable("MemberInfoRoleReferences");
                 });
@@ -65,9 +68,14 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("MemberRoles");
                 });
@@ -77,9 +85,14 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("MemberStatuses");
                 });
@@ -89,9 +102,14 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("MemberTypes");
                 });
@@ -275,15 +293,17 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.HasOne("Catalog.DataAccessLayer.XRoad.Entity.Member", "Member")
                         .WithOne("MemberInfo")
                         .HasForeignKey("Catalog.DataAccessLayer.Catalog.Entity.MemberInfo", "MemberInfoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberStatus", "MemberStatus")
                         .WithMany("MemberInfoRecords")
-                        .HasForeignKey("MemberStatusId");
+                        .HasForeignKey("MemberStatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Catalog.DataAccessLayer.Catalog.Entity.MemberType", "MemberType")
                         .WithMany("MemberInfoRecords")
-                        .HasForeignKey("MemberTypeId");
+                        .HasForeignKey("MemberTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Catalog.DataAccessLayer.Catalog.Entity.MemberInfoRoleReference", b =>

@@ -1,5 +1,4 @@
-﻿using System;
-using XRoad.Domain.Header;
+﻿using XRoad.Domain.Header;
 
 namespace XRoad.Domain
 {
@@ -7,10 +6,10 @@ namespace XRoad.Domain
     {
         public string ServiceCode { get; set; }
         public string ServiceVersion { get; set; }
-        
+
         public static implicit operator ServiceIdentifier(XRoadService xRoadService)
         {
-            return new ServiceIdentifier()
+            return new ServiceIdentifier
             {
                 Instance = xRoadService.Instance,
                 MemberClass = xRoadService.MemberClass,

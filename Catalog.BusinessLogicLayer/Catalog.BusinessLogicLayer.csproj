@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -7,6 +7,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Catalog.DataAccessLayer\Catalog.DataAccessLayer.csproj" />
     <ProjectReference Include="..\XRoad.GlobalConfiguration\XRoad.GlobalConfiguration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
