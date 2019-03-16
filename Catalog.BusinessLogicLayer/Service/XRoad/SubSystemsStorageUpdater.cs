@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,8 +26,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         public async Task UpdateLocalDatabaseAsync(IImmutableList<SubSystemIdentifier> subSystemsList)
         {
             var databaseSubSystemsList = _dbContext.SubSystems
-                  .Include(subSystem => subSystem.Member)
-                  .ToImmutableList();
+                .Include(subSystem => subSystem.Member)
+                .ToImmutableList();
 
             CreateCompletelyNewSubSystems(subSystemsList, databaseSubSystemsList);
             RemoveNonExistingMembers(subSystemsList, databaseSubSystemsList);
@@ -43,21 +42,25 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         {
             foreach (var subSystemIdentifier in newSubSystemsList)
             {
-                var storedInDatabase = databaseSubSystemsList.Any(databaseSubSystem => Equals(databaseSubSystem, subSystemIdentifier));
-                if (!storedInDatabase)
-                {
-                    var isContextMember = new Predicate<Member>(member =>
-                        member.Instance.Equals(subSystemIdentifier.Instance)
-                        && member.MemberClass.Equals(subSystemIdentifier.MemberClass)
-                        && member.MemberCode.Equals(subSystemIdentifier.MemberCode));
+                var storedInDatabase =
+                    databaseSubSystemsList.Any(databaseSubSystem => Equals(databaseSubSystem, subSystemIdentifier));
+                if (storedInDatabase) continue;
 
-                    var completelyNewSubSystem = new SubSystem()
-                    {
-                        Member = _dbContext.Members.First(member => isContextMember(member)),
-                        SubSystemCode = subSystemIdentifier.SubSystemCode
-                    };
-                    _dbContext.SubSystems.Add(completelyNewSubSystem);
-                }
+                var isContextMember = new Predicate<Member>(member =>
+                    member.Instance.Equals(subSystemIdentifier.Instance)
+                    && member.MemberClass.Equals(subSystemIdentifier.MemberClass)
+                    && member.MemberCode.Equals(subSystemIdentifier.MemberCode));
+
+                var contextMember = _dbContext.Members.FirstOrDefault(member => isContextMember(member));
+
+                if (contextMember == null) continue;
+
+                var completelyNewSubSystem = new SubSystem
+                {
+                    Member = contextMember,
+                    SubSystemCode = subSystemIdentifier.SubSystemCode
+                };
+                _dbContext.SubSystems.Add(completelyNewSubSystem);
             }
         }
 

@@ -32,6 +32,10 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             await _appDbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl)
+        {
+        }
+
         private void RestorePreviouslyDeletedServices(ImmutableList<SubSystemService> databaseServicesList,
             IImmutableList<ServiceIdentifier> updatedServicesList)
         {
@@ -64,7 +68,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         {
             foreach (var incomingService in updatedServicesList)
             {
-                var storedInDatabase = databaseServicesList.Any(databaseService => Equals(databaseService, incomingService));
+                var storedInDatabase =
+                    databaseServicesList.Any(databaseService => Equals(databaseService, incomingService));
                 if (storedInDatabase) continue;
 
                 var isContextSubSystem = new Predicate<SubSystem>(subSystem =>
@@ -73,14 +78,21 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
                     && subSystem.Member.MemberClass.Equals(incomingService.MemberClass)
                     && subSystem.Member.MemberCode.Equals(incomingService.MemberCode));
 
-                var completelyNewService = new SubSystemService()
+                var contextSubSystem = _appDbContext.SubSystems
+                    .Include(subSystem => isContextSubSystem(subSystem))
+                    .ToList()
+                    .FirstOrDefault();
+
+                if (contextSubSystem == null)
+                {
+                    continue;
+                }
+
+                var completelyNewService = new SubSystemService
                 {
                     ServiceCode = incomingService.ServiceCode,
                     ServiceVersion = incomingService.ServiceVersion,
-                    SubSystem = _appDbContext.SubSystems
-                        .Include(subSystem => subSystem.Member)
-                        .ToList()
-                        .First(subSystem => isContextSubSystem(subSystem))
+                    SubSystem = contextSubSystem
                 };
                 _appDbContext.SubSystemServices.Add(completelyNewService);
             }

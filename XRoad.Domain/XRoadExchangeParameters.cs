@@ -6,6 +6,5 @@ namespace XRoad.Domain
     {
         public Uri SecurityServerUri { get; set; }
         public SubSystemIdentifier ClientSubSystem { get; set; }
-        public ServiceIdentifier TargetService { get; set; }
     }
 }

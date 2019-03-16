@@ -23,8 +23,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             ValidateList(updatedList);
 
             var databaseServicesList = _dbContext.MemberServices
-                   .Include(service => service.Member)
-                   .ToImmutableList();
+                .Include(service => service.Member)
+                .ToImmutableList();
 
             CreateCompletelyNewServices(updatedList, databaseServicesList);
             RemoveNonExistingServices(updatedList, databaseServicesList);
@@ -74,22 +74,26 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         {
             foreach (var incomingService in updatedList)
             {
-                var isContextMember = new Predicate<Member>(member =>
-                     member.Instance.Equals(incomingService.Instance)
-                     && member.MemberClass.Equals(incomingService.MemberClass)
-                     && member.MemberCode.Equals(incomingService.MemberCode));
-
                 var storedInDatabase = databaseServicesList.Any(service => Equals(service, incomingService));
-                if (!storedInDatabase)
+
+                if (storedInDatabase) continue;
+
+                var isContextMember = new Predicate<Member>(member =>
+                    member.Instance.Equals(incomingService.Instance)
+                    && member.MemberClass.Equals(incomingService.MemberClass)
+                    && member.MemberCode.Equals(incomingService.MemberCode));
+
+                var contextMember = _dbContext.Members.FirstOrDefault(member => isContextMember(member));
+
+                if (contextMember == null) continue;
+
+                var completelyNewService = new MemberService()
                 {
-                    var completelyNewService = new MemberService()
-                    {
-                        Member = _dbContext.Members.First(member => isContextMember(member)),
-                        ServiceCode = incomingService.ServiceCode,
-                        ServiceVersion = incomingService.ServiceVersion
-                    };
-                    _dbContext.MemberServices.Add(completelyNewService);
-                }
+                    Member = contextMember,
+                    ServiceCode = incomingService.ServiceCode,
+                    ServiceVersion = incomingService.ServiceVersion
+                };
+                _dbContext.MemberServices.Add(completelyNewService);
             }
         }
 
@@ -101,9 +105,9 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         private bool Equals(MemberService memberService, ServiceIdentifier serviceIdentifier)
         {
             bool expression = memberService.ServiceCode.Equals(serviceIdentifier.ServiceCode)
-                && memberService.Member.Instance.Equals(serviceIdentifier.Instance)
-                && memberService.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
-                && memberService.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
+                              && memberService.Member.Instance.Equals(serviceIdentifier.Instance)
+                              && memberService.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
+                              && memberService.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
 
             if (memberService.ServiceVersion == null)
             {

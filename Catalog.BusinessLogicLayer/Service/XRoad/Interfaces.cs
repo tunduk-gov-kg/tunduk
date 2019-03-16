@@ -16,5 +16,6 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         Task<ImmutableList<SecurityServerData>> GetSecurityServersListAsync();
         Task<ImmutableList<SubSystemIdentifier>> GetSubSystemsListAsync();
         Task<ImmutableList<ServiceIdentifier>> GetServicesListAsync();
+        Task<string> GetWsdlAsync(ServiceIdentifier targetService);
     }
 }

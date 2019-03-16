@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
@@ -13,12 +14,16 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
     {
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
+        private readonly IExceptionHandler _exceptionHandler;
+
 
         public XRoadManager(IServiceMetadataManager serviceMetadataManager
-            , XRoadExchangeParameters xRoadExchangeParameters)
+            , XRoadExchangeParameters xRoadExchangeParameters
+            , IExceptionHandler exceptionHandler = null)
         {
             _serviceMetadataManager = serviceMetadataManager;
             _xRoadExchangeParameters = xRoadExchangeParameters;
+            _exceptionHandler = exceptionHandler;
         }
 
         public async Task<ImmutableList<MemberData>> GetMembersListAsync()
@@ -87,8 +92,33 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
 
         public async Task<ImmutableList<ServiceIdentifier>> GetServicesListAsync()
         {
-            var sharedParams =
-                await _serviceMetadataManager.GetServicesAsync(_xRoadExchangeParameters.SecurityServerUri,)
+            var subSystemIdentifiers = await GetSubSystemsListAsync();
+            var servicesList = new List<ServiceIdentifier>();
+            
+            foreach (var subSystemIdentifier in subSystemIdentifiers)
+            {
+                try
+                {
+                    var serviceIdentifiers = await _serviceMetadataManager.GetServicesAsync(
+                        _xRoadExchangeParameters.SecurityServerUri,
+                        _xRoadExchangeParameters.ClientSubSystem, subSystemIdentifier);
+
+                    servicesList.AddRange(serviceIdentifiers);
+                }
+                catch (Exception exception)
+                {
+                    _exceptionHandler?.Handle(exception);
+                }
+            }
+
+            return ImmutableList.CreateRange(servicesList);
+        }
+
+        public async Task<string> GetWsdlAsync(ServiceIdentifier targetService)
+        {
+            var wsdlBytes = await _serviceMetadataManager.GetWsdlAsync(_xRoadExchangeParameters.SecurityServerUri,
+                _xRoadExchangeParameters.ClientSubSystem, targetService);
+            return Encoding.UTF8.GetString(wsdlBytes);
         }
 
         private Member FindMember(SharedParams sharedParams, string id)

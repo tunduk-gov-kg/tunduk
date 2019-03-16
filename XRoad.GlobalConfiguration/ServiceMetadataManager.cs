@@ -20,7 +20,8 @@ namespace XRoad.GlobalConfiguration
 {
     public class ServiceMetadataManager : IServiceMetadataManager
     {
-        private static readonly UserIdHeader UserIdHeader = new UserIdHeader() { Value = ".NetCore_ServiceMetadataManager" };
+        private static readonly UserIdHeader UserIdHeader = new UserIdHeader()
+            {Value = ".NetCore_ServiceMetadataManager"};
 
         public async Task<SharedParams> GetSharedParamsAsync(Uri securityServerUri)
         {
@@ -36,10 +37,11 @@ namespace XRoad.GlobalConfiguration
             }
         }
 
-        public async Task<byte[]> GetWsdlAsync(Uri securityServerUri, SubSystemIdentifier subSystemId, ServiceIdentifier targetService)
+        public async Task<byte[]> GetWsdlAsync(Uri securityServerUri, SubSystemIdentifier subSystemId,
+            ServiceIdentifier targetService)
         {
-            byte[] wsdlFileBytes = {};
-            
+            byte[] wsdlFileBytes = { };
+
             var client = SoapClient.Prepare()
                 .WithHandler(new DelegatingSoapHandler
                 {
@@ -47,7 +49,8 @@ namespace XRoad.GlobalConfiguration
                     {
                         if (httpContext.Response.Content.IsMimeMultipartContent())
                         {
-                            var streamProvider = await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
+                            var streamProvider =
+                                await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
                             var contentCursor = streamProvider.Contents.GetEnumerator();
 
                             Debug.Assert(contentCursor.MoveNext());
@@ -73,12 +76,12 @@ namespace XRoad.GlobalConfiguration
                 IdHeader.Random,
                 UserIdHeader,
                 ProtocolVersionHeader.Version40,
-                (XRoadClient)subSystemId,
+                (XRoadClient) subSystemId,
                 new XRoadService
                 {
                     Instance = targetService.Instance,
                     MemberClass = targetService.MemberClass,
-                    MemberCode =targetService.MemberCode,
+                    MemberCode = targetService.MemberCode,
                     SubSystemCode = targetService.SubSystemCode,
                     ServiceCode = "getWsdl",
                     ServiceVersion = "v1"
@@ -91,28 +94,31 @@ namespace XRoad.GlobalConfiguration
             return wsdlFileBytes;
         }
 
-        public async Task<IList<ServiceIdentifier>> GetServicesAsync(Uri securityServerUri, SubSystemIdentifier client, SubSystemIdentifier source)
+        public async Task<IList<ServiceIdentifier>> GetServicesAsync(Uri securityServerUri, SubSystemIdentifier client,
+            SubSystemIdentifier source)
         {
             var soapEnvelope = SoapEnvelope.Prepare()
                 .Body(new ListMethodsRequest())
                 .WithHeaders(
-                new List<SoapHeader>()
-                {
-                    IdHeader.Random,
-                    UserIdHeader,
-                    ProtocolVersionHeader.Version40,
-                    (XRoadClient) client,
-                    new XRoadService()
+                    new List<SoapHeader>
                     {
-                        Instance = source.Instance,
-                        MemberClass = source.MemberClass,
-                        MemberCode = source.MemberCode,
-                        SubSystemCode = source.SubSystemCode,
-                        ServiceCode = "listMethods"
-                    }
-                });
-            var envelope = await SoapClient.Prepare().SendAsync(securityServerUri.ToString(), String.Empty, soapEnvelope);
-            return envelope.Body<ListMethodsResponse>().Services.Select(o => (ServiceIdentifier)o).ToList();
+                        IdHeader.Random,
+                        UserIdHeader,
+                        ProtocolVersionHeader.Version40,
+                        (XRoadClient) client,
+                        new XRoadService()
+                        {
+                            Instance = source.Instance,
+                            MemberClass = source.MemberClass,
+                            MemberCode = source.MemberCode,
+                            SubSystemCode = source.SubSystemCode,
+                            ServiceCode = "listMethods"
+                        }
+                    });
+            var envelope = await SoapClient.Prepare()
+                .SendAsync(securityServerUri.ToString(), String.Empty, soapEnvelope);
+            envelope.ThrowIfFaulted();
+            return envelope.Body<ListMethodsResponse>().Services.Select(o => (ServiceIdentifier) o).ToList();
         }
 
 
@@ -140,7 +146,7 @@ namespace XRoad.GlobalConfiguration
             using (Stream sharedParamsStream = zipEntry.Open())
             {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(SharedParams));
-                return (SharedParams)xmlSerializer.Deserialize(sharedParamsStream);
+                return (SharedParams) xmlSerializer.Deserialize(sharedParamsStream);
             }
         }
     }

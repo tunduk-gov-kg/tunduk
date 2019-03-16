@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,9 +50,16 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
                     && member.MemberClass.Equals(incomingServerData.SecurityServerIdentifier.MemberClass)
                     && member.MemberCode.Equals(incomingServerData.SecurityServerIdentifier.MemberCode));
 
+                var contextMember = _dbContext.Members.FirstOrDefault(member => findContextMember(member));
+
+                if (contextMember == null)
+                {
+                    continue;
+                }
+                
                 var completelyNewSecurityServer = new SecurityServer()
                 {
-                    Member = _dbContext.Members.First(member => findContextMember(member)),
+                    Member = contextMember,
                     Address = incomingServerData.Address,
                     SecurityServerCode = incomingServerData.SecurityServerIdentifier.SecurityServerCode
                 };
