@@ -9,7 +9,7 @@ namespace Catalog.BusinessLogicLayer
 
         static MockExceptionHandler()
         {
-            
+
         }
 
         public void Handle(Exception exception)
