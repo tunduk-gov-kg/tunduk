@@ -5,15 +5,16 @@ namespace Catalog.BusinessLogicLayer
 {
     public class MockExceptionHandler : IExceptionHandler
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static MockExceptionHandler()
         {
+            
         }
 
         public void Handle(Exception exception)
         {
-            _logger.Error(exception);
+            Logger.Error(exception);
         }
     }
 }

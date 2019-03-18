@@ -20,7 +20,7 @@ namespace XRoad.GlobalConfiguration
 {
     public class ServiceMetadataManager : IServiceMetadataManager
     {
-        private static readonly UserIdHeader UserIdHeader = new UserIdHeader()
+        private static readonly UserIdHeader UserIdHeader = new UserIdHeader
             {Value = ".NetCore_ServiceMetadataManager"};
 
         public async Task<SharedParams> GetSharedParamsAsync(Uri securityServerUri)
@@ -90,7 +90,7 @@ namespace XRoad.GlobalConfiguration
 
             var result = await client.SendAsync(securityServerUri.ToString(), String.Empty, body);
             result.ThrowIfFaulted();
-            
+
             return wsdlFileBytes;
         }
 
@@ -106,7 +106,7 @@ namespace XRoad.GlobalConfiguration
                         UserIdHeader,
                         ProtocolVersionHeader.Version40,
                         (XRoadClient) client,
-                        new XRoadService()
+                        new XRoadService
                         {
                             Instance = source.Instance,
                             MemberClass = source.MemberClass,

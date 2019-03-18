@@ -18,7 +18,6 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 new SubSystemServicesStorageUpdater(DbContextProvider.RequireDbContext()),
                 new MemberServicesStorageUpdater(DbContextProvider.RequireDbContext())
             );
-
             await defaultUpdateManager.RunBatchUpdateTask();
         }
     }

@@ -34,6 +34,20 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
 
         public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl)
         {
+            var targetService = _appDbContext.SubSystemServices
+                .Include(service => service.SubSystem)
+                .ThenInclude(system => system.Member)
+                .First(service =>
+                    service.ServiceCode == serviceIdentifier.ServiceCode
+                    && service.ServiceVersion == serviceIdentifier.ServiceVersion
+                    && service.SubSystem.SubSystemCode == serviceIdentifier.SubSystemCode
+                    && service.SubSystem.Member.MemberCode == serviceIdentifier.MemberCode
+                    && service.SubSystem.Member.MemberClass == serviceIdentifier.MemberClass
+                    && service.SubSystem.Member.Instance == serviceIdentifier.Instance);
+            targetService.Wsdl = wsdl;
+            targetService.ModificationDateTime = DateTime.Now;
+            _appDbContext.SubSystemServices.Update(targetService);
+            await _appDbContext.SaveChangesAsync();
         }
 
         private void RestorePreviouslyDeletedServices(ImmutableList<SubSystemService> databaseServicesList,
@@ -79,9 +93,9 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
                     && subSystem.Member.MemberCode.Equals(incomingService.MemberCode));
 
                 var contextSubSystem = _appDbContext.SubSystems
-                    .Include(subSystem => isContextSubSystem(subSystem))
+                    .Include(system => system.Member)
                     .ToList()
-                    .FirstOrDefault();
+                    .FirstOrDefault(subSystem => isContextSubSystem(subSystem));
 
                 if (contextSubSystem == null)
                 {
@@ -115,10 +129,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             {
                 return expression && serviceIdentifier.ServiceVersion == null;
             }
-            else
-            {
-                return expression && service.ServiceVersion.Equals(serviceIdentifier.ServiceVersion);
-            }
+
+            return expression && service.ServiceVersion.Equals(serviceIdentifier.ServiceVersion);
         }
     }
 }

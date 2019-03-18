@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Catalog.DataAccessLayer;
 using Catalog.DataAccessLayer.XRoad.Entity;
+using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service.XRoad
@@ -35,15 +34,17 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             await _dbContext.SaveChangesAsync();
         }
 
-        private void CreateCompletelyNewMembers(IImmutableList<MemberData> newMembersList, ImmutableList<Member> databaseMembersList)
+        private void CreateCompletelyNewMembers(IImmutableList<MemberData> newMembersList,
+            ImmutableList<Member> databaseMembersList)
         {
             foreach (var incomingListMember in newMembersList)
             {
-                bool storedInDatabase = databaseMembersList.Any(databaseMember => Equals(databaseMember, incomingListMember.MemberIdentifier));
+                bool storedInDatabase = databaseMembersList.Any(databaseMember =>
+                    Equals(databaseMember, incomingListMember.MemberIdentifier));
 
                 if (!storedInDatabase)
                 {
-                    var completelyNewMember = new Member()
+                    var completelyNewMember = new Member
                     {
                         Instance = incomingListMember.MemberIdentifier.Instance,
                         MemberClass = incomingListMember.MemberIdentifier.MemberClass,
@@ -55,11 +56,13 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             }
         }
 
-        private void RemoveNonExistingMembers(IImmutableList<MemberData> newMembersList, ImmutableList<Member> databaseMembersList)
+        private void RemoveNonExistingMembers(IImmutableList<MemberData> newMembersList,
+            ImmutableList<Member> databaseMembersList)
         {
             foreach (var databaseMember in databaseMembersList)
             {
-                bool storedInNewList = newMembersList.Any(incomingListMember => Equals(incomingListMember.MemberIdentifier, databaseMember));
+                bool storedInNewList = newMembersList.Any(incomingListMember =>
+                    Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (storedInNewList) continue;
                 databaseMember.IsDeleted = true;
                 databaseMember.ModificationDateTime = DateTime.Now;
@@ -67,12 +70,14 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             }
         }
 
-        private void RestorePreviouslyRemovedMembers(IImmutableList<MemberData> newMembersList, ImmutableList<Member> databaseMembersList)
+        private void RestorePreviouslyRemovedMembers(IImmutableList<MemberData> newMembersList,
+            ImmutableList<Member> databaseMembersList)
         {
             foreach (var databaseMember in databaseMembersList)
             {
                 var shouldBeRestored = databaseMember.IsDeleted &&
-                    newMembersList.Any(incomingListMember => Equals(incomingListMember.MemberIdentifier, databaseMember));
+                                       newMembersList.Any(incomingListMember =>
+                                           Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
                 databaseMember.IsDeleted = false;
                 databaseMember.ModificationDateTime = DateTime.Now;
@@ -87,11 +92,22 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
                    && member.MemberCode.Equals(another.MemberCode);
         }
 
-        private bool Equals(MemberIdentifier memberIdentifier, Member member)
+
+        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl)
         {
-            return memberIdentifier.Instance.Equals(member.Instance)
-                   && memberIdentifier.MemberClass.Equals(member.MemberClass)
-                   && memberIdentifier.MemberCode.Equals(member.MemberCode);
+            var targetService = _dbContext.MemberServices
+                .Include(system => system.Member)
+                .First(service =>
+                    service.ServiceCode == serviceIdentifier.ServiceCode
+                    && service.ServiceVersion == serviceIdentifier.ServiceVersion
+                    && service.Member.MemberCode == serviceIdentifier.MemberCode
+                    && service.Member.MemberClass == serviceIdentifier.MemberClass
+                    && service.Member.Instance == serviceIdentifier.Instance);
+
+            targetService.Wsdl = wsdl;
+            targetService.ModificationDateTime = DateTime.Now;
+            _dbContext.MemberServices.Update(targetService);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
