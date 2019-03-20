@@ -1,12 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Catalog.Entity.Configuration
-{
-    public class MemberInfoConfiguration : IEntityTypeConfiguration<MemberInfo>
-    {
-        public void Configure(EntityTypeBuilder<MemberInfo> builder)
-        {
+namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
+    public class MemberInfoConfiguration : IEntityTypeConfiguration<MemberInfo> {
+        public void Configure(EntityTypeBuilder<MemberInfo> builder) {
             builder.HasKey(entity => entity.MemberInfoId);
 
             builder.Property(entity => entity.Site).IsRequired(false).HasMaxLength(100);

@@ -6,26 +6,23 @@ using Catalog.BusinessLogicLayer.Service.XRoad;
 using NLog;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service
-{
-    public class DefaultUpdateManager : IUpdateManager
-    {
-        private readonly IXRoadManager _xRoadManager;
+namespace Catalog.BusinessLogicLayer.Service {
+    public class DefaultUpdateManager : IUpdateManager {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly MemberServicesStorageUpdater _memberServicesStorage;
 
         private readonly MembersStorageUpdater _membersStorage;
-        private readonly SubSystemsStorageUpdater _subSystemsStorage;
-        private readonly MemberServicesStorageUpdater _memberServicesStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
         private readonly SubSystemServicesStorageUpdater _subSystemServicesStorage;
+        private readonly SubSystemsStorageUpdater _subSystemsStorage;
+        private readonly IXRoadManager _xRoadManager;
 
         public DefaultUpdateManager(IXRoadManager xRoadManager
             , MembersStorageUpdater membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
             , SubSystemServicesStorageUpdater subSystemServicesStorage
-            , MemberServicesStorageUpdater memberServicesStorage)
-        {
+            , MemberServicesStorageUpdater memberServicesStorage) {
             _xRoadManager = xRoadManager;
             _membersStorage = membersStorage;
             _serversStorageUpdater = serversStorageUpdater;
@@ -35,8 +32,7 @@ namespace Catalog.BusinessLogicLayer.Service
         }
 
 
-        public async Task RunBatchUpdateTask()
-        {
+        public async Task RunBatchUpdateTask() {
             var memberDataRecords = await _xRoadManager.GetMembersListAsync();
             await _membersStorage.UpdateLocalDatabaseAsync(memberDataRecords);
 
@@ -60,32 +56,22 @@ namespace Catalog.BusinessLogicLayer.Service
             await UpdateServicesWsdl(servicesList);
         }
 
-        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList)
-        {
-            foreach (var serviceIdentifier in subSystemServicesList)
-            {
-                try
-                {
-                    await RunWsdlUpdateTask(serviceIdentifier);
-                }
-                catch (Exception exception)
-                {
-                    _logger.Error(exception);
-                }
-            }
-        }
-
-        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService)
-        {
+        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService) {
             var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
             if (string.IsNullOrEmpty(targetService.SubSystemCode))
-            {
                 await _membersStorage.UpdateWsdlAsync(targetService, wsdl);
-            }
             else
-            {
                 await _subSystemServicesStorage.UpdateWsdlAsync(targetService, wsdl);
-            }
+        }
+
+        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList) {
+            foreach (var serviceIdentifier in subSystemServicesList)
+                try {
+                    await RunWsdlUpdateTask(serviceIdentifier);
+                }
+                catch (Exception exception) {
+                    _logger.Error(exception);
+                }
         }
     }
 }

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Catalog.DataAccessLayer.XRoad.Entity;
 
-namespace Catalog.DataAccessLayer.Catalog.Entity
-{
-    public class MemberInfo
-    {
+namespace Catalog.DataAccessLayer.Domain.Entity {
+    public class MemberInfo {
         public long MemberInfoId { get; set; }
         public Member Member { get; set; }
 

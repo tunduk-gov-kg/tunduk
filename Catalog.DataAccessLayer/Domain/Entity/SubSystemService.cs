@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Catalog.DataAccessLayer.XRoad.Entity
-{
-    public class SubSystemService
-    {
+namespace Catalog.DataAccessLayer.Domain.Entity {
+    public class SubSystemService {
         public long Id { get; set; }
         public DateTime CreationDateTime { get; set; }
         public DateTime? ModificationDateTime { get; set; }

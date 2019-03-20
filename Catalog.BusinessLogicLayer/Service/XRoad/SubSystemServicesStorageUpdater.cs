@@ -3,23 +3,19 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.XRoad.Entity;
+using Catalog.DataAccessLayer.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service.XRoad
-{
-    public class SubSystemServicesStorageUpdater : IXRoadStorageUpdater<ServiceIdentifier>
-    {
+namespace Catalog.BusinessLogicLayer.Service.XRoad {
+    public class SubSystemServicesStorageUpdater : IXRoadStorageUpdater<ServiceIdentifier> {
         private readonly AppDbContext _appDbContext;
 
-        public SubSystemServicesStorageUpdater(AppDbContext appDbContext)
-        {
+        public SubSystemServicesStorageUpdater(AppDbContext appDbContext) {
             _appDbContext = appDbContext;
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList)
-        {
+        public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList) {
             var databaseServicesList = _appDbContext.SubSystemServices
                 .Include(service => service.SubSystem)
                 .ThenInclude(subSystem => subSystem.Member)
@@ -32,8 +28,11 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl)
-        {
+        public void Dispose() {
+            _appDbContext.Dispose();
+        }
+
+        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl) {
             var targetService = _appDbContext.SubSystemServices
                 .Include(service => service.SubSystem)
                 .ThenInclude(system => system.Member)
@@ -51,12 +50,10 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         }
 
         private void RestorePreviouslyDeletedServices(ImmutableList<SubSystemService> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
-        {
-            foreach (var databaseService in databaseServicesList)
-            {
+            IImmutableList<ServiceIdentifier> updatedServicesList) {
+            foreach (var databaseService in databaseServicesList) {
                 if (!databaseService.IsDeleted) continue;
-                bool storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
+                var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
                 if (!storedInUpdatedList) continue;
                 databaseService.IsDeleted = false;
                 databaseService.ModificationDateTime = DateTime.Now;
@@ -65,11 +62,9 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         }
 
         private void RemoveNonExistingServices(ImmutableList<SubSystemService> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
-        {
-            foreach (var databaseService in databaseServicesList)
-            {
-                bool storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
+            IImmutableList<ServiceIdentifier> updatedServicesList) {
+            foreach (var databaseService in databaseServicesList) {
+                var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
                 if (storedInUpdatedList) continue;
                 databaseService.IsDeleted = true;
                 databaseService.ModificationDateTime = DateTime.Now;
@@ -78,10 +73,8 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
         }
 
         private void CreateCompletelyNewService(ImmutableList<SubSystemService> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
-        {
-            foreach (var incomingService in updatedServicesList)
-            {
+            IImmutableList<ServiceIdentifier> updatedServicesList) {
+            foreach (var incomingService in updatedServicesList) {
                 var storedInDatabase =
                     databaseServicesList.Any(databaseService => Equals(databaseService, incomingService));
                 if (storedInDatabase) continue;
@@ -97,13 +90,9 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
                     .ToList()
                     .FirstOrDefault(subSystem => isContextSubSystem(subSystem));
 
-                if (contextSubSystem == null)
-                {
-                    continue;
-                }
+                if (contextSubSystem == null) continue;
 
-                var completelyNewService = new SubSystemService
-                {
+                var completelyNewService = new SubSystemService {
                     ServiceCode = incomingService.ServiceCode,
                     ServiceVersion = incomingService.ServiceVersion,
                     SubSystem = contextSubSystem
@@ -112,23 +101,14 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad
             }
         }
 
-        public void Dispose()
-        {
-            _appDbContext.Dispose();
-        }
+        private bool Equals(SubSystemService service, ServiceIdentifier serviceIdentifier) {
+            var expression = service.ServiceCode.Equals(serviceIdentifier.ServiceCode)
+                && service.SubSystem.SubSystemCode.Equals(serviceIdentifier.SubSystemCode)
+                && service.SubSystem.Member.Instance.Equals(serviceIdentifier.Instance)
+                && service.SubSystem.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
+                && service.SubSystem.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
 
-        private bool Equals(SubSystemService service, ServiceIdentifier serviceIdentifier)
-        {
-            bool expression = service.ServiceCode.Equals(serviceIdentifier.ServiceCode)
-                              && service.SubSystem.SubSystemCode.Equals(serviceIdentifier.SubSystemCode)
-                              && service.SubSystem.Member.Instance.Equals(serviceIdentifier.Instance)
-                              && service.SubSystem.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
-                              && service.SubSystem.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
-
-            if (service.ServiceVersion == null)
-            {
-                return expression && serviceIdentifier.ServiceVersion == null;
-            }
+            if (service.ServiceVersion == null) return expression && serviceIdentifier.ServiceVersion == null;
 
             return expression && service.ServiceVersion.Equals(serviceIdentifier.ServiceVersion);
         }

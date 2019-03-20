@@ -3,13 +3,10 @@ using Catalog.BusinessLogicLayer.Service;
 using Catalog.BusinessLogicLayer.Service.XRoad;
 using Xunit;
 
-namespace Catalog.BusinessLogicLayer.UnitTests
-{
-    public class UpdateManagerUnitTests
-    {
+namespace Catalog.BusinessLogicLayer.UnitTests {
+    public class UpdateManagerUnitTests {
         [Fact]
-        public async Task RunBatchUpdateTask__When__()
-        {
+        public async Task RunBatchUpdateTask__When__() {
             var defaultUpdateManager = new DefaultUpdateManager(
                 XRoadManagerProvider.RequireXRoadManager(),
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),

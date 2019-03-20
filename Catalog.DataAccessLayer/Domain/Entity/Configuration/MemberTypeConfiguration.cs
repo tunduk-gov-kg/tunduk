@@ -1,20 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Catalog.Entity.Configuration
-{
-    public class MemberStatusConfiguration : IEntityTypeConfiguration<MemberStatus>
-    {
-        public void Configure(EntityTypeBuilder<MemberStatus> builder)
-        {
+namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
+    public class MemberTypeConfiguration : IEntityTypeConfiguration<MemberType> {
+        public void Configure(EntityTypeBuilder<MemberType> builder) {
             builder.HasKey(entity => entity.Id);
             builder.HasIndex(entity => entity.Name).IsUnique();
 
             builder.Property(entity => entity.Name).IsRequired().HasMaxLength(200);
 
             builder.HasMany(entity => entity.MemberInfoRecords)
-                .WithOne(record => record.MemberStatus)
-                .HasForeignKey(record => record.MemberStatusId)
+                .WithOne(record => record.MemberType)
+                .HasForeignKey(record => record.MemberTypeId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
         }

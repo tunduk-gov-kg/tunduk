@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Catalog.DataAccessLayer.Catalog.Entity;
 
-namespace Catalog.DataAccessLayer.XRoad.Entity
-{
-    public class Member
-    {
+namespace Catalog.DataAccessLayer.Domain.Entity {
+    public class Member {
         public long Id { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreationDateTime { get; set; }

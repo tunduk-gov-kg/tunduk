@@ -1,12 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Catalog.Entity.Configuration
-{
-    public class MemberRoleConfiguration : IEntityTypeConfiguration<MemberRole>
-    {
-        public void Configure(EntityTypeBuilder<MemberRole> builder)
-        {
+namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
+    public class MemberRoleConfiguration : IEntityTypeConfiguration<MemberRole> {
+        public void Configure(EntityTypeBuilder<MemberRole> builder) {
             builder.HasKey(entity => entity.Id);
             builder.HasIndex(entity => entity.Name).IsUnique();
 

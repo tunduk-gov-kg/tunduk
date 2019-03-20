@@ -1,19 +1,14 @@
 using System;
 using NLog;
 
-namespace Catalog.BusinessLogicLayer
-{
-    public class MockExceptionHandler : IExceptionHandler
-    {
+namespace Catalog.BusinessLogicLayer {
+    public class MockExceptionHandler : IExceptionHandler {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static MockExceptionHandler()
-        {
-
+        static MockExceptionHandler() {
         }
 
-        public void Handle(Exception exception)
-        {
+        public void Handle(Exception exception) {
             Logger.Error(exception);
         }
     }

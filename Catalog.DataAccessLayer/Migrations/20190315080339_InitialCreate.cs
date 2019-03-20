@@ -2,29 +2,21 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Catalog.DataAccessLayer.Migrations
-{
-    public partial class InitialCreate : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace Catalog.DataAccessLayer.Migrations {
+    public partial class InitialCreate : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
-                name: "MemberRoles",
-                columns: table => new
-                {
+                "MemberRoles",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 100, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberRoles", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MemberRoles", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
+                "Members",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
@@ -35,41 +27,29 @@ namespace Catalog.DataAccessLayer.Migrations
                     MemberCode = table.Column<string>(maxLength: 20, nullable: false),
                     Name = table.Column<string>(maxLength: 1000, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Members", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "MemberStatuses",
-                columns: table => new
-                {
+                "MemberStatuses",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 200, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberStatuses", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MemberStatuses", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "MemberTypes",
-                columns: table => new
-                {
+                "MemberTypes",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 200, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberTypes", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MemberTypes", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "MemberServices",
-                columns: table => new
-                {
+                "MemberServices",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreationDateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
@@ -77,24 +57,22 @@ namespace Catalog.DataAccessLayer.Migrations
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     ServiceCode = table.Column<string>(maxLength: 100, nullable: false),
                     ServiceVersion = table.Column<string>(maxLength: 100, nullable: true),
-                    Wsdl = table.Column<string>(type: "text", nullable: true),
+                    Wsdl = table.Column<string>("text", nullable: true),
                     MemberId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_MemberServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberServices_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_MemberServices_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SecurityServers",
-                columns: table => new
-                {
+                "SecurityServers",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreationDateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
@@ -104,21 +82,19 @@ namespace Catalog.DataAccessLayer.Migrations
                     Address = table.Column<string>(maxLength: 500, nullable: false),
                     MemberId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_SecurityServers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SecurityServers_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_SecurityServers_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubSystems",
-                columns: table => new
-                {
+                "SubSystems",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreationDateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
@@ -127,55 +103,51 @@ namespace Catalog.DataAccessLayer.Migrations
                     SubSystemCode = table.Column<string>(maxLength: 100, nullable: false),
                     MemberId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_SubSystems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubSystems_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_SubSystems_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MemberInfoRecords",
-                columns: table => new
-                {
+                "MemberInfoRecords",
+                table => new {
                     MemberInfoId = table.Column<long>(nullable: false),
                     ModificationDateTime = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>("text", nullable: true),
                     Site = table.Column<string>(maxLength: 100, nullable: true),
                     MemberStatusId = table.Column<long>(nullable: true),
                     MemberTypeId = table.Column<long>(nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_MemberInfoRecords", x => x.MemberInfoId);
                     table.ForeignKey(
-                        name: "FK_MemberInfoRecords_Members_MemberInfoId",
-                        column: x => x.MemberInfoId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_MemberInfoRecords_Members_MemberInfoId",
+                        x => x.MemberInfoId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MemberInfoRecords_MemberStatuses_MemberStatusId",
-                        column: x => x.MemberStatusId,
-                        principalTable: "MemberStatuses",
-                        principalColumn: "Id",
+                        "FK_MemberInfoRecords_MemberStatuses_MemberStatusId",
+                        x => x.MemberStatusId,
+                        "MemberStatuses",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MemberInfoRecords_MemberTypes_MemberTypeId",
-                        column: x => x.MemberTypeId,
-                        principalTable: "MemberTypes",
-                        principalColumn: "Id",
+                        "FK_MemberInfoRecords_MemberTypes_MemberTypeId",
+                        x => x.MemberTypeId,
+                        "MemberTypes",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubSystemServices",
-                columns: table => new
-                {
+                "SubSystemServices",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreationDateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
@@ -183,147 +155,143 @@ namespace Catalog.DataAccessLayer.Migrations
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     ServiceCode = table.Column<string>(maxLength: 100, nullable: false),
                     ServiceVersion = table.Column<string>(maxLength: 100, nullable: true),
-                    Wsdl = table.Column<string>(type: "text", nullable: true),
+                    Wsdl = table.Column<string>("text", nullable: true),
                     SubSystemId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_SubSystemServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubSystemServices_SubSystems_SubSystemId",
-                        column: x => x.SubSystemId,
-                        principalTable: "SubSystems",
-                        principalColumn: "Id",
+                        "FK_SubSystemServices_SubSystems_SubSystemId",
+                        x => x.SubSystemId,
+                        "SubSystems",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MemberInfoRoleReferences",
-                columns: table => new
-                {
+                "MemberInfoRoleReferences",
+                table => new {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     MemberInfoId = table.Column<long>(nullable: false),
                     MemberRoleId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_MemberInfoRoleReferences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberInfoRoleReferences_MemberInfoRecords_MemberInfoId",
-                        column: x => x.MemberInfoId,
-                        principalTable: "MemberInfoRecords",
-                        principalColumn: "MemberInfoId",
+                        "FK_MemberInfoRoleReferences_MemberInfoRecords_MemberInfoId",
+                        x => x.MemberInfoId,
+                        "MemberInfoRecords",
+                        "MemberInfoId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MemberInfoRoleReferences_MemberRoles_MemberRoleId",
-                        column: x => x.MemberRoleId,
-                        principalTable: "MemberRoles",
-                        principalColumn: "Id",
+                        "FK_MemberInfoRoleReferences_MemberRoles_MemberRoleId",
+                        x => x.MemberRoleId,
+                        "MemberRoles",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberInfoRecords_MemberStatusId",
-                table: "MemberInfoRecords",
-                column: "MemberStatusId");
+                "IX_MemberInfoRecords_MemberStatusId",
+                "MemberInfoRecords",
+                "MemberStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberInfoRecords_MemberTypeId",
-                table: "MemberInfoRecords",
-                column: "MemberTypeId");
+                "IX_MemberInfoRecords_MemberTypeId",
+                "MemberInfoRecords",
+                "MemberTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberInfoRoleReferences_MemberRoleId",
-                table: "MemberInfoRoleReferences",
-                column: "MemberRoleId");
+                "IX_MemberInfoRoleReferences_MemberRoleId",
+                "MemberInfoRoleReferences",
+                "MemberRoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberInfoRoleReferences_MemberInfoId_MemberRoleId",
-                table: "MemberInfoRoleReferences",
-                columns: new[] { "MemberInfoId", "MemberRoleId" },
+                "IX_MemberInfoRoleReferences_MemberInfoId_MemberRoleId",
+                "MemberInfoRoleReferences",
+                new[] {"MemberInfoId", "MemberRoleId"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberRoles_Name",
-                table: "MemberRoles",
-                column: "Name",
+                "IX_MemberRoles_Name",
+                "MemberRoles",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_Instance_MemberClass_MemberCode",
-                table: "Members",
-                columns: new[] { "Instance", "MemberClass", "MemberCode" },
+                "IX_Members_Instance_MemberClass_MemberCode",
+                "Members",
+                new[] {"Instance", "MemberClass", "MemberCode"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberServices_MemberId_ServiceCode_ServiceVersion",
-                table: "MemberServices",
-                columns: new[] { "MemberId", "ServiceCode", "ServiceVersion" },
+                "IX_MemberServices_MemberId_ServiceCode_ServiceVersion",
+                "MemberServices",
+                new[] {"MemberId", "ServiceCode", "ServiceVersion"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberStatuses_Name",
-                table: "MemberStatuses",
-                column: "Name",
+                "IX_MemberStatuses_Name",
+                "MemberStatuses",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberTypes_Name",
-                table: "MemberTypes",
-                column: "Name",
+                "IX_MemberTypes_Name",
+                "MemberTypes",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SecurityServers_MemberId_SecurityServerCode",
-                table: "SecurityServers",
-                columns: new[] { "MemberId", "SecurityServerCode" },
+                "IX_SecurityServers_MemberId_SecurityServerCode",
+                "SecurityServers",
+                new[] {"MemberId", "SecurityServerCode"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubSystems_MemberId_SubSystemCode",
-                table: "SubSystems",
-                columns: new[] { "MemberId", "SubSystemCode" },
+                "IX_SubSystems_MemberId_SubSystemCode",
+                "SubSystems",
+                new[] {"MemberId", "SubSystemCode"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubSystemServices_SubSystemId_ServiceCode_ServiceVersion",
-                table: "SubSystemServices",
-                columns: new[] { "SubSystemId", "ServiceCode", "ServiceVersion" },
+                "IX_SubSystemServices_SubSystemId_ServiceCode_ServiceVersion",
+                "SubSystemServices",
+                new[] {"SubSystemId", "ServiceCode", "ServiceVersion"},
                 unique: true);
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
-                name: "MemberInfoRoleReferences");
+                "MemberInfoRoleReferences");
 
             migrationBuilder.DropTable(
-                name: "MemberServices");
+                "MemberServices");
 
             migrationBuilder.DropTable(
-                name: "SecurityServers");
+                "SecurityServers");
 
             migrationBuilder.DropTable(
-                name: "SubSystemServices");
+                "SubSystemServices");
 
             migrationBuilder.DropTable(
-                name: "MemberInfoRecords");
+                "MemberInfoRecords");
 
             migrationBuilder.DropTable(
-                name: "MemberRoles");
+                "MemberRoles");
 
             migrationBuilder.DropTable(
-                name: "SubSystems");
+                "SubSystems");
 
             migrationBuilder.DropTable(
-                name: "MemberStatuses");
+                "MemberStatuses");
 
             migrationBuilder.DropTable(
-                name: "MemberTypes");
+                "MemberTypes");
 
             migrationBuilder.DropTable(
-                name: "Members");
+                "Members");
         }
     }
 }

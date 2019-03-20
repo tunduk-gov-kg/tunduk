@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using SimpleSOAPClient.Models;
 
-namespace XRoad.Domain.Header
-{
+namespace XRoad.Domain.Header {
     [XmlRoot(ElementName = "service", Namespace = "http://x-road.eu/xsd/xroad.xsd")]
-    public class XRoadService : SoapHeader
-    {
+    public class XRoadService : SoapHeader {
         [XmlAttribute(AttributeName = "objectType", Namespace = "http://x-road.eu/xsd/identifiers")]
-        public ObjectType ObjectType
-        {
+        public ObjectType ObjectType {
             get => ObjectType.Service;
             set { }
         }
@@ -34,13 +28,10 @@ namespace XRoad.Domain.Header
         [XmlElement(ElementName = "serviceVersion", IsNullable = true, Namespace = "http://x-road.eu/xsd/identifiers")]
         public string ServiceVersion { get; set; }
 
-        [XmlIgnore]
-        public bool SubSystemCodeSpecified => SubSystemCode != null;
+        [XmlIgnore] public bool SubSystemCodeSpecified => SubSystemCode != null;
 
-        public static implicit operator XRoadService(ServiceIdentifier service)
-        {
-            return new XRoadService()
-            {
+        public static implicit operator XRoadService(ServiceIdentifier service) {
+            return new XRoadService {
                 Instance = service.Instance,
                 MemberClass = service.MemberClass,
                 MemberCode = service.MemberCode,

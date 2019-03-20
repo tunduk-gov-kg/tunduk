@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
-namespace Catalog.DataAccessLayer.Catalog.Entity
-{
-    public class MemberRole
-    {
+namespace Catalog.DataAccessLayer.Domain.Entity {
+    public class MemberRole {
         public long Id { get; set; }
         public string Name { get; set; }
 
