@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catalog.BusinessLogicLayer.Service.Interfaces;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 using XRoad.GlobalConfiguration.Metadata;

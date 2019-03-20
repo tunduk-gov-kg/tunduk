@@ -2,12 +2,13 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.BusinessLogicLayer.Service.XRoad;
 using NLog;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
-    public class DefaultUpdateManager : IUpdateManager {
+    public class UpdaterManager : IUpdateManager {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly MemberServicesStorageUpdater _memberServicesStorage;
 
@@ -17,7 +18,7 @@ namespace Catalog.BusinessLogicLayer.Service {
         private readonly SubSystemsStorageUpdater _subSystemsStorage;
         private readonly IXRoadManager _xRoadManager;
 
-        public DefaultUpdateManager(IXRoadManager xRoadManager
+        public UpdaterManager(IXRoadManager xRoadManager
             , MembersStorageUpdater membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage

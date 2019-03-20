@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using Catalog.BusinessLogicLayer.Service;
 using Catalog.BusinessLogicLayer.Service.XRoad;
 using Catalog.DataAccessLayer;
 using XRoad.Domain;

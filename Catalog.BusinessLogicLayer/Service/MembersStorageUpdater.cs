@@ -2,12 +2,13 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
 using Catalog.DataAccessLayer.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service.XRoad {
+namespace Catalog.BusinessLogicLayer.Service {
     public class MembersStorageUpdater : IXRoadStorageUpdater<MemberData> {
         private readonly AppDbContext _dbContext;
 

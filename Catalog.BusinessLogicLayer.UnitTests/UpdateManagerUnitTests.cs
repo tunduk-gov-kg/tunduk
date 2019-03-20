@@ -7,7 +7,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
     public class UpdateManagerUnitTests {
         [Fact]
         public async Task RunBatchUpdateTask__When__() {
-            var defaultUpdateManager = new DefaultUpdateManager(
+            var defaultUpdateManager = new UpdaterManager(
                 XRoadManagerProvider.RequireXRoadManager(),
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),

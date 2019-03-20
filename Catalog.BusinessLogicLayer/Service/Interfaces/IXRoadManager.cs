@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service.XRoad {
+namespace Catalog.BusinessLogicLayer.Service.Interfaces {
     public interface IXRoadManager {
         Task<ImmutableList<MemberData>> GetMembersListAsync();
         Task<ImmutableList<SecurityServerData>> GetSecurityServersListAsync();
