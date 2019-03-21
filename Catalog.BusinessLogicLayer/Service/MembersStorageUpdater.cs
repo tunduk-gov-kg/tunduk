@@ -55,7 +55,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                     Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (storedInNewList) continue;
                 databaseMember.IsDeleted = true;
-                databaseMember.ModificationDateTime = DateTime.Now;
+                databaseMember.ModifiedAt = DateTime.Now;
                 _dbContext.Members.Update(databaseMember);
             }
         }
@@ -68,7 +68,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                         Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
                 databaseMember.IsDeleted = false;
-                databaseMember.ModificationDateTime = DateTime.Now;
+                databaseMember.ModifiedAt = DateTime.Now;
                 _dbContext.Members.Update(databaseMember);
             }
         }

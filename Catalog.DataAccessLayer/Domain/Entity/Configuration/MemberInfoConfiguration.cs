@@ -8,7 +8,7 @@ namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
 
             builder.Property(entity => entity.Site).IsRequired(false).HasMaxLength(100);
             builder.Property(entity => entity.Description).HasColumnType("text").IsRequired(false);
-            builder.Property(entity => entity.ModificationDateTime).IsRequired(false);
+            builder.Property(entity => entity.ModifiedAt).IsRequired(false);
 
             builder.HasOne(entity => entity.MemberType)
                 .WithMany(memberType => memberType.MemberInfoRecords)

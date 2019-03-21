@@ -1,6 +1,5 @@
 namespace Catalog.DataAccessLayer.Domain.Entity {
     public class MemberInfoRoleReference {
-        public long Id { get; set; }
         public MemberInfo MemberInfo { get; set; }
         public MemberRole MemberRole { get; set; }
 

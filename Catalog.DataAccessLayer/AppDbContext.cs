@@ -1,9 +1,12 @@
-﻿using Catalog.DataAccessLayer.Domain.Entity;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Catalog.DataAccessLayer.Domain.Entity;
 using Catalog.DataAccessLayer.Domain.Entity.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.DataAccessLayer {
-    public class AppDbContext : DbContext {
+    public class AppDbContext : IdentityDbContext {
         public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions)
             : base(dbContextOptions) {
         }
@@ -22,15 +25,31 @@ namespace Catalog.DataAccessLayer {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberInfoRoleReferenceConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MemberServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SecurityServerConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new MemberInfoConfiguration());
-            modelBuilder.ApplyConfiguration(new MemberRoleConfiguration());
-            modelBuilder.ApplyConfiguration(new MemberStatusConfiguration());
-            modelBuilder.ApplyConfiguration(new MemberTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new MemberInfoRoleReferenceConfiguration());
+        }
+
+        public override int SaveChanges() {
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess) {
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken()) {
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken()) {
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }
 }

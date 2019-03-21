@@ -67,7 +67,6 @@ namespace Catalog.BusinessLogicLayer.Service {
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (storedInNewList) continue;
                 storedInDatabaseServer.IsDeleted = true;
-                storedInDatabaseServer.ModificationDateTime = DateTime.Now;
                 _dbContext.SecurityServers.Update(storedInDatabaseServer);
             }
         }
@@ -79,7 +78,6 @@ namespace Catalog.BusinessLogicLayer.Service {
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (!storedInNewList || !storedInDatabaseServer.IsDeleted) continue;
                 storedInDatabaseServer.IsDeleted = false;
-                storedInDatabaseServer.ModificationDateTime = DateTime.Now;
                 _dbContext.SecurityServers.Update(storedInDatabaseServer);
             }
         }
@@ -91,7 +89,6 @@ namespace Catalog.BusinessLogicLayer.Service {
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (newServerData == null) continue;
                 storedInDatabaseServer.Address = newServerData.Address;
-                storedInDatabaseServer.ModificationDateTime = DateTime.Now;
                 _dbContext.SecurityServers.Update(storedInDatabaseServer);
             }
         }

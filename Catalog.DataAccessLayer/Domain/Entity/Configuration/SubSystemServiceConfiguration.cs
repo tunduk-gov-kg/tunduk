@@ -18,12 +18,9 @@ namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
             builder.Property(entity => entity.Wsdl).IsRequired(false)
                 .HasColumnType("text");
 
-            builder.Property(entity => entity.ModificationDateTime).IsRequired(false)
-                .ValueGeneratedOnUpdate();
+            builder.Property(entity => entity.ModifiedAt).IsRequired(false);
 
-            builder.Property(entity => entity.CreationDateTime).IsRequired()
-                .HasDefaultValueSql("now()")
-                .ValueGeneratedOnAdd();
+            builder.Property(entity => entity.CreatedAt).IsRequired();
 
             builder.HasOne(entity => entity.SubSystem)
                 .WithMany(subSystem => subSystem.Services)

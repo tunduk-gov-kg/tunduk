@@ -14,7 +14,7 @@ namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
             builder.Property(entity => entity.SubSystemCode).IsRequired().HasMaxLength(100);
             builder.Property(entity => entity.IsDeleted).IsRequired().HasDefaultValue(false);
 
-            builder.Property(entity => entity.CreationDateTime).IsRequired()
+            builder.Property(entity => entity.CreatedAt).IsRequired()
                 .HasDefaultValueSql("now()");
 
             builder.HasMany(entity => entity.Services)

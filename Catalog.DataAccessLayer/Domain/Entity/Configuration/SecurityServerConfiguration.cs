@@ -15,10 +15,10 @@ namespace Catalog.DataAccessLayer.Domain.Entity.Configuration {
             builder.Property(entity => entity.Address).IsRequired().HasMaxLength(500);
             builder.Property(entity => entity.IsDeleted).IsRequired().HasDefaultValue(false);
 
-            builder.Property(entity => entity.CreationDateTime).IsRequired()
+            builder.Property(entity => entity.CreatedAt).IsRequired()
                 .HasDefaultValueSql("now()");
 
-            builder.Property(entity => entity.ModificationDateTime).IsRequired(false)
+            builder.Property(entity => entity.ModifiedAt).IsRequired(false)
                 .ValueGeneratedOnUpdate();
 
             builder.HasOne(server => server.Member)
