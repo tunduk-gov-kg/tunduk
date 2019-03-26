@@ -4,16 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Domain.Entity;
+using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class SecurityServersStorageUpdater : IXRoadStorageUpdater<SecurityServerData> {
-        private readonly AppDbContext _dbContext;
+        private readonly CatalogDbContext _dbContext;
 
-        public SecurityServersStorageUpdater(AppDbContext appDbContext) {
-            _dbContext = appDbContext;
+        public SecurityServersStorageUpdater(CatalogDbContext catalogDbContext) {
+            _dbContext = catalogDbContext;
         }
 
         public void Dispose() {

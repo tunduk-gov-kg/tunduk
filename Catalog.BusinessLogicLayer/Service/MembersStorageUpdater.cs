@@ -4,15 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Domain.Entity;
-using Microsoft.EntityFrameworkCore;
+using Catalog.Domain.Entity;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class MembersStorageUpdater : IXRoadStorageUpdater<MemberData> {
-        private readonly AppDbContext _dbContext;
+        private readonly CatalogDbContext _dbContext;
 
-        public MembersStorageUpdater(AppDbContext dbContext) {
+        public MembersStorageUpdater(CatalogDbContext dbContext) {
             _dbContext = dbContext;
         }
 
@@ -54,9 +53,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                 var storedInNewList = newMembersList.Any(incomingListMember =>
                     Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (storedInNewList) continue;
-                databaseMember.IsDeleted = true;
-                databaseMember.ModifiedAt = DateTime.Now;
-                _dbContext.Members.Update(databaseMember);
+                _dbContext.Members.Remove(databaseMember);
             }
         }
 
@@ -67,8 +64,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                     newMembersList.Any(incomingListMember =>
                         Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
-                databaseMember.IsDeleted = false;
-                databaseMember.ModifiedAt = DateTime.Now;
+                databaseMember.IsDeleted = true;
                 _dbContext.Members.Update(databaseMember);
             }
         }
@@ -77,23 +73,6 @@ namespace Catalog.BusinessLogicLayer.Service {
             return member.Instance.Equals(another.Instance)
                 && member.MemberClass.Equals(another.MemberClass)
                 && member.MemberCode.Equals(another.MemberCode);
-        }
-
-
-        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl) {
-            var targetService = _dbContext.MemberServices
-                .Include(system => system.Member)
-                .First(service =>
-                    service.ServiceCode == serviceIdentifier.ServiceCode
-                    && service.ServiceVersion == serviceIdentifier.ServiceVersion
-                    && service.Member.MemberCode == serviceIdentifier.MemberCode
-                    && service.Member.MemberClass == serviceIdentifier.MemberClass
-                    && service.Member.Instance == serviceIdentifier.Instance);
-
-            targetService.Wsdl = wsdl;
-            targetService.ModificationDateTime = DateTime.Now;
-            _dbContext.MemberServices.Update(targetService);
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

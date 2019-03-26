@@ -4,15 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Domain.Entity;
+using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class SubSystemsStorageUpdater : IXRoadStorageUpdater<SubSystemIdentifier> {
-        private readonly AppDbContext _dbContext;
+        private readonly CatalogDbContext _dbContext;
 
-        public SubSystemsStorageUpdater(AppDbContext dbContext) {
+        public SubSystemsStorageUpdater(CatalogDbContext dbContext) {
             _dbContext = dbContext;
         }
 
@@ -62,8 +62,6 @@ namespace Catalog.BusinessLogicLayer.Service {
             foreach (var databaseSubSystem in databaseSubSystemsList) {
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
                 if (storedInSubSystemsList) continue;
-                databaseSubSystem.IsDeleted = true;
-                databaseSubSystem.ModificationDateTime = DateTime.Now;
                 _dbContext.SubSystems.Update(databaseSubSystem);
             }
         }
@@ -75,7 +73,6 @@ namespace Catalog.BusinessLogicLayer.Service {
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
                 if (!storedInSubSystemsList) continue;
                 databaseSubSystem.IsDeleted = false;
-                databaseSubSystem.ModificationDateTime = DateTime.Now;
                 _dbContext.SubSystems.Update(databaseSubSystem);
             }
         }

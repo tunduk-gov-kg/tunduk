@@ -3,18 +3,16 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
-using Catalog.BusinessLogicLayer.Service.XRoad;
 using NLog;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class UpdaterManager : IUpdateManager {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly MemberServicesStorageUpdater _memberServicesStorage;
 
         private readonly MembersStorageUpdater _membersStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
-        private readonly SubSystemServicesStorageUpdater _subSystemServicesStorage;
+        private readonly ServicesStorageUpdater _servicesStorage;
         private readonly SubSystemsStorageUpdater _subSystemsStorage;
         private readonly IXRoadManager _xRoadManager;
 
@@ -22,14 +20,12 @@ namespace Catalog.BusinessLogicLayer.Service {
             , MembersStorageUpdater membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
-            , SubSystemServicesStorageUpdater subSystemServicesStorage
-            , MemberServicesStorageUpdater memberServicesStorage) {
+            , ServicesStorageUpdater servicesStorage) {
             _xRoadManager = xRoadManager;
             _membersStorage = membersStorage;
             _serversStorageUpdater = serversStorageUpdater;
             _subSystemsStorage = subSystemsStorage;
-            _subSystemServicesStorage = subSystemServicesStorage;
-            _memberServicesStorage = memberServicesStorage;
+            _servicesStorage = servicesStorage;
         }
 
 
@@ -49,20 +45,14 @@ namespace Catalog.BusinessLogicLayer.Service {
                 new Predicate<ServiceIdentifier>(identifier => !string.IsNullOrEmpty(identifier.SubSystemCode));
 
             var subSystemServicesList = servicesList.Where(service => containsSubSystemCode(service)).ToImmutableList();
-            await _subSystemServicesStorage.UpdateLocalDatabaseAsync(subSystemServicesList);
-
-            var memberServicesList = servicesList.Where(service => !containsSubSystemCode(service)).ToImmutableList();
-            await _memberServicesStorage.UpdateLocalDatabaseAsync(memberServicesList);
+            await _servicesStorage.UpdateLocalDatabaseAsync(subSystemServicesList);
 
             await UpdateServicesWsdl(servicesList);
         }
 
         public async Task RunWsdlUpdateTask(ServiceIdentifier targetService) {
             var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
-            if (string.IsNullOrEmpty(targetService.SubSystemCode))
-                await _membersStorage.UpdateWsdlAsync(targetService, wsdl);
-            else
-                await _subSystemServicesStorage.UpdateWsdlAsync(targetService, wsdl);
+            await _servicesStorage.UpdateWsdlAsync(targetService, wsdl);
         }
 
         private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList) {
