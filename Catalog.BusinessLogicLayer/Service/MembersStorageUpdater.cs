@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
 using Catalog.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
@@ -20,7 +20,7 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         public async Task UpdateLocalDatabaseAsync(IImmutableList<MemberData> newMembersList) {
-            var databaseMembersList = _dbContext.Members.ToImmutableList();
+            var databaseMembersList = _dbContext.Members.IgnoreQueryFilters().ToImmutableList();
 
             RestorePreviouslyRemovedMembers(newMembersList, databaseMembersList);
             RemoveNonExistingMembers(newMembersList, databaseMembersList);
@@ -64,7 +64,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                     newMembersList.Any(incomingListMember =>
                         Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
-                databaseMember.IsDeleted = true;
+                databaseMember.IsDeleted = false;
                 _dbContext.Members.Update(databaseMember);
             }
         }

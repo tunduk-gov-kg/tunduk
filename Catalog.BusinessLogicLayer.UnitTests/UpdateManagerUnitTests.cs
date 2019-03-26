@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service;
-using Catalog.BusinessLogicLayer.Service.XRoad;
 using Xunit;
 
 namespace Catalog.BusinessLogicLayer.UnitTests {
@@ -12,9 +11,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SubSystemsStorageUpdater(DbContextProvider.RequireDbContext()),
-                new SubSystemServicesStorageUpdater(DbContextProvider.RequireDbContext()),
-                new MemberServicesStorageUpdater(DbContextProvider.RequireDbContext())
-            );
+                new ServicesStorageUpdater(DbContextProvider.RequireDbContext()));
             await defaultUpdateManager.RunBatchUpdateTask();
         }
     }

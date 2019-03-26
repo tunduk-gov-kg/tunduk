@@ -9,7 +9,7 @@ using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 using XRoad.GlobalConfiguration.Metadata;
 
-namespace Catalog.BusinessLogicLayer.Service.XRoad {
+namespace Catalog.BusinessLogicLayer.Service {
     public class XRoadManager : IXRoadManager {
         private readonly IExceptionHandler _exceptionHandler;
         private readonly IServiceMetadataManager _serviceMetadataManager;
@@ -80,7 +80,7 @@ namespace Catalog.BusinessLogicLayer.Service.XRoad {
 
         public async Task<ImmutableList<ServiceIdentifier>> GetServicesListAsync() {
             var subSystemIdentifiers = await GetSubSystemsListAsync();
-            var servicesList = new List<ServiceIdentifier>();
+            var servicesList         = new List<ServiceIdentifier>();
 
             foreach (var subSystemIdentifier in subSystemIdentifiers)
                 try {

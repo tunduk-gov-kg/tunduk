@@ -18,6 +18,7 @@ namespace Catalog.BusinessLogicLayer.Service {
 
         public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList) {
             var databaseServicesList = _catalogDbContext.Services
+                .IgnoreQueryFilters()
                 .Include(service => service.SubSystem)
                 .ThenInclude(subSystem => subSystem.Member)
                 .ToImmutableList();
@@ -55,6 +56,7 @@ namespace Catalog.BusinessLogicLayer.Service {
                 if (!databaseService.IsDeleted) continue;
                 var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
                 if (!storedInUpdatedList) continue;
+                databaseService.IsDeleted = false;
                 _catalogDbContext.Services.Update(databaseService);
             }
         }
@@ -63,8 +65,9 @@ namespace Catalog.BusinessLogicLayer.Service {
             IImmutableList<ServiceIdentifier> updatedServicesList) {
             foreach (var databaseService in databaseServicesList) {
                 var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
-                if (storedInUpdatedList) continue;
-                _catalogDbContext.Services.Update(databaseService);
+                if (!storedInUpdatedList) {
+                    _catalogDbContext.Services.Remove(databaseService);
+                }
             }
         }
 

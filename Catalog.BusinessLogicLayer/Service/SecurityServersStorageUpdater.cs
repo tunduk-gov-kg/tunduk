@@ -22,6 +22,7 @@ namespace Catalog.BusinessLogicLayer.Service {
 
         public async Task UpdateLocalDatabaseAsync(IImmutableList<SecurityServerData> incomingServersList) {
             var databaseServersList = _dbContext.SecurityServers
+                .IgnoreQueryFilters()
                 .Include(server => server.Member)
                 .ToImmutableList();
 
@@ -65,9 +66,9 @@ namespace Catalog.BusinessLogicLayer.Service {
             foreach (var storedInDatabaseServer in databaseServersList) {
                 var storedInNewList = incomingServersList.Any(server =>
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
-                if (storedInNewList) continue;
-                storedInDatabaseServer.IsDeleted = true;
-                _dbContext.SecurityServers.Update(storedInDatabaseServer);
+                if (!storedInNewList) {
+                    _dbContext.SecurityServers.Remove(storedInDatabaseServer);
+                }
             }
         }
 

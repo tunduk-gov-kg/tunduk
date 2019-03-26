@@ -1,5 +1,5 @@
 using System;
-using Catalog.BusinessLogicLayer.Service.XRoad;
+using Catalog.BusinessLogicLayer.Service;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 

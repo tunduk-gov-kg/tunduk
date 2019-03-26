@@ -1,7 +1,5 @@
 using System.Collections.Immutable;
 using Catalog.BusinessLogicLayer.Service;
-using Catalog.BusinessLogicLayer.Service.XRoad;
-using Catalog.DataAccessLayer;
 using XRoad.Domain;
 using Xunit;
 
@@ -9,7 +7,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
     public class MembersStorageUpdaterUnitTests {
         [Fact]
         public async void UpdateLocalDatabaseAsync_When__() {
-            var appDbContext = new AppDbContextFactory().CreateDbContext(new string[] { });
+            var appDbContext = DbContextProvider.RequireDbContext();
 
             var storage = new MembersStorageUpdater(appDbContext);
             using (storage) {

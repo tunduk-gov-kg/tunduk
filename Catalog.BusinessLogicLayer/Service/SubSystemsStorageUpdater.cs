@@ -22,6 +22,7 @@ namespace Catalog.BusinessLogicLayer.Service {
 
         public async Task UpdateLocalDatabaseAsync(IImmutableList<SubSystemIdentifier> subSystemsList) {
             var databaseSubSystemsList = _dbContext.SubSystems
+                .IgnoreQueryFilters()
                 .Include(subSystem => subSystem.Member)
                 .ToImmutableList();
 
@@ -61,8 +62,9 @@ namespace Catalog.BusinessLogicLayer.Service {
             ImmutableList<SubSystem> databaseSubSystemsList) {
             foreach (var databaseSubSystem in databaseSubSystemsList) {
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
-                if (storedInSubSystemsList) continue;
-                _dbContext.SubSystems.Update(databaseSubSystem);
+                if (!storedInSubSystemsList) {
+                    _dbContext.SubSystems.Remove(databaseSubSystem);
+                }
             }
         }
 
