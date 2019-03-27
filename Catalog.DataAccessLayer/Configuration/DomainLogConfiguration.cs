@@ -12,13 +12,13 @@ namespace Catalog.DataAccessLayer.Configuration {
 
             builder.Property(entity => entity.LogLevel)
                 .HasConversion(entity => entity.Name,
-                    dbValue => LogLevel.FromName(dbValue,false))
+                    dbValue => LogLevel.FromName(dbValue, false))
                 .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(entity => entity.Message)
                 .HasColumnType("text");
-            
+
             builder.Property(entity => entity.Description)
                 .HasColumnType("text");
         }

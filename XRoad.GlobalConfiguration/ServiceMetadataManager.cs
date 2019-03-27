@@ -22,7 +22,7 @@ namespace XRoad.GlobalConfiguration {
             {Value = ".NetCore_ServiceMetadataManager"};
 
         public async Task<SharedParams> GetSharedParamsAsync(Uri securityServerUri) {
-            var httpClient = new HttpClient();
+            var httpClient          = new HttpClient();
             var verificationConfUri = new Uri(securityServerUri, "verificationconf");
             using (var httpStream = await httpClient.GetStreamAsync(verificationConfUri)) {
                 using (var zipArchive = new ZipArchive(httpStream)) {
@@ -109,7 +109,7 @@ namespace XRoad.GlobalConfiguration {
 
         private async Task<string> GetInstanceIdentifierAsync(ZipArchive zipArchive) {
             const string zipEntryName = "verificationconf/instance-identifier";
-            var zipEntry = zipArchive.GetEntry(zipEntryName);
+            var          zipEntry     = zipArchive.GetEntry(zipEntryName);
 
             Debug.Assert(zipEntry != null, nameof(zipEntry) + " != null");
 
@@ -121,7 +121,7 @@ namespace XRoad.GlobalConfiguration {
 
         private SharedParams GetSharedParams(string instanceIdentifier, ZipArchive zipArchive) {
             var zipEntryName = $"verificationconf/{instanceIdentifier}/shared-params.xml";
-            var zipEntry = zipArchive.GetEntry(zipEntryName);
+            var zipEntry     = zipArchive.GetEntry(zipEntryName);
 
             Debug.Assert(zipEntry != null, nameof(zipEntry) + " != null");
 

@@ -10,13 +10,13 @@ namespace Catalog.DataAccessLayer.Configuration {
             builder.ConfigureUserTrackableEntity();
             builder.ConfigureSoftDeleteProperties();
 
-            builder.Property(identifier => identifier.Instance) .IsRequired().HasMaxLength(20);
-            builder.Property(identifier => identifier.MemberClass) .IsRequired().HasMaxLength(20);
-            builder.Property(identifier => identifier.MemberCode) .IsRequired().HasMaxLength(20);
-            
+            builder.Property(identifier => identifier.Instance).IsRequired().HasMaxLength(20);
+            builder.Property(identifier => identifier.MemberClass).IsRequired().HasMaxLength(20);
+            builder.Property(identifier => identifier.MemberCode).IsRequired().HasMaxLength(20);
+
             builder.HasIndex(identifier => new {
-                identifier.Instance, 
-                identifier.MemberClass, 
+                identifier.Instance,
+                identifier.MemberClass,
                 identifier.MemberCode
             }).IsUnique();
 

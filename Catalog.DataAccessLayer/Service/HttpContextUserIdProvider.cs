@@ -10,8 +10,9 @@ namespace Catalog.DataAccessLayer.Service {
         }
 
         public string GetCurrentUserId() {
-            var identityName        = _httpContextAccessor.HttpContext.User.Identity.Name;
-            var authenticatedUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var identityName = _httpContextAccessor.HttpContext.User?.Identity.Name;
+            var authenticatedUserId =
+                _httpContextAccessor.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return identityName ?? authenticatedUserId;
         }
     }

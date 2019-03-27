@@ -9,12 +9,12 @@ using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class UpdaterManager : IUpdateManager {
+        private readonly IDomainLogger _logger;
         private readonly MembersStorageUpdater _membersStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
         private readonly ServicesStorageUpdater _servicesStorage;
         private readonly SubSystemsStorageUpdater _subSystemsStorage;
         private readonly IXRoadManager _xRoadManager;
-        private readonly IDomainLogger _logger;
 
         public UpdaterManager(IXRoadManager xRoadManager
             , MembersStorageUpdater membersStorage
@@ -64,9 +64,8 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList) {
-            foreach (var serviceIdentifier in subSystemServicesList.AsParallel()) {
+            foreach (var serviceIdentifier in subSystemServicesList.AsParallel())
                 await RunWsdlUpdateTask(serviceIdentifier);
-            }
         }
     }
 }

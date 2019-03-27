@@ -12,18 +12,19 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace Catalog.DataAccessLayer {
     public class CatalogDbContext : IdentityDbContext<CatalogUser> {
         private readonly string _currentUserId;
-        public DbSet<Member> Members { get; set; }
-        public DbSet<MemberRoleReference> MemberRoleReferences { get; set; }
-        public DbSet<SecurityServer> SecurityServers { get; set; }
-        public DbSet<Domain.Entity.Service> Services { get; set; }
-        public DbSet<SubSystem> SubSystems { get; set; }
-        public DbSet<DomainLog> DomainLogs { get; set; }
 
         public CatalogDbContext(DbContextOptions<CatalogDbContext> dbContextOptions,
             IUserIdProvider<string> userIdProvider)
             : base(dbContextOptions) {
             _currentUserId = userIdProvider.GetCurrentUserId();
         }
+
+        public DbSet<Member> Members { get; set; }
+        public DbSet<MemberRoleReference> MemberRoleReferences { get; set; }
+        public DbSet<SecurityServer> SecurityServers { get; set; }
+        public DbSet<Domain.Entity.Service> Services { get; set; }
+        public DbSet<SubSystem> SubSystems { get; set; }
+        public DbSet<DomainLog> DomainLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -58,11 +59,11 @@ namespace Catalog.DataAccessLayer {
         }
 
         private void ProcessEntitiesBeforeCommit() {
-            foreach (var entityEntry in ChangeTracker.Entries<ISoftDelete>()) 
+            foreach (var entityEntry in ChangeTracker.Entries<ISoftDelete>())
                 ProcessSoftDeleteEntity(entityEntry);
-            foreach (var entityEntry in ChangeTracker.Entries<BaseEntity>()) 
+            foreach (var entityEntry in ChangeTracker.Entries<BaseEntity>())
                 ProcessBaseEntity(entityEntry);
-            foreach (var entityEntry in ChangeTracker.Entries<UserTrackableEntity>()) 
+            foreach (var entityEntry in ChangeTracker.Entries<UserTrackableEntity>())
                 ProcessUserTrackableEntity(entityEntry);
         }
 
@@ -84,12 +85,9 @@ namespace Catalog.DataAccessLayer {
         }
 
         private void ProcessBaseEntity(EntityEntry<BaseEntity> entity) {
-            if (entity.State == EntityState.Added) {
+            if (entity.State == EntityState.Added)
                 entity.CurrentValues["CreatedAt"] = DateTime.Now;
-            }
-            else if (entity.State == EntityState.Modified) {
-                entity.CurrentValues["ModifiedAt"] = DateTime.Now;
-            }
+            else if (entity.State == EntityState.Modified) entity.CurrentValues["ModifiedAt"] = DateTime.Now;
         }
     }
 }

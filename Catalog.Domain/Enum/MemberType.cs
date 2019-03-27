@@ -1,7 +1,6 @@
 using Ardalis.SmartEnum;
 
 namespace Catalog.Domain.Enum {
-    
     public class MemberType : SmartEnum<MemberType> {
         public static MemberType StateAuthority = new MemberType("Государственный орган", 1);
         public static MemberType LocalAuthority = new MemberType("Органы местного самоуправления", 2);

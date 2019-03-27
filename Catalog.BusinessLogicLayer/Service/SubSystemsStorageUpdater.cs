@@ -62,9 +62,7 @@ namespace Catalog.BusinessLogicLayer.Service {
             ImmutableList<SubSystem> databaseSubSystemsList) {
             foreach (var databaseSubSystem in databaseSubSystemsList) {
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
-                if (!storedInSubSystemsList) {
-                    _dbContext.SubSystems.Remove(databaseSubSystem);
-                }
+                if (!storedInSubSystemsList) _dbContext.SubSystems.Remove(databaseSubSystem);
             }
         }
 

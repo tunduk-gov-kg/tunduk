@@ -28,7 +28,7 @@ namespace XRoad.GlobalConfiguration.UnitTests {
         [Fact]
         public async Task GetSharedParamsAsync_When__Async() {
             var manager = new ServiceMetadataManager();
-            var result = await manager.GetSharedParamsAsync(new Uri("http://10.55.0.4"));
+            var result  = await manager.GetSharedParamsAsync(new Uri("http://10.55.0.4"));
 
             Assert.Equal("central-server", result.InstanceIdentifier);
         }

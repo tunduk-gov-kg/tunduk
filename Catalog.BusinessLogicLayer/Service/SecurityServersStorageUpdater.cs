@@ -66,9 +66,7 @@ namespace Catalog.BusinessLogicLayer.Service {
             foreach (var storedInDatabaseServer in databaseServersList) {
                 var storedInNewList = incomingServersList.Any(server =>
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
-                if (!storedInNewList) {
-                    _dbContext.SecurityServers.Remove(storedInDatabaseServer);
-                }
+                if (!storedInNewList) _dbContext.SecurityServers.Remove(storedInDatabaseServer);
             }
         }
 

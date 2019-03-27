@@ -13,9 +13,9 @@ using XRoad.GlobalConfiguration.Metadata;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class XRoadManager : IXRoadManager {
+        private readonly IDomainLogger _logger;
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
-        private readonly IDomainLogger _logger;
 
         public XRoadManager(IServiceMetadataManager serviceMetadataManager
             , XRoadExchangeParameters xRoadExchangeParameters

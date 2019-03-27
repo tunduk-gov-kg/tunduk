@@ -65,9 +65,7 @@ namespace Catalog.BusinessLogicLayer.Service {
             IImmutableList<ServiceIdentifier> updatedServicesList) {
             foreach (var databaseService in databaseServicesList) {
                 var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
-                if (!storedInUpdatedList) {
-                    _catalogDbContext.Services.Remove(databaseService);
-                }
+                if (!storedInUpdatedList) _catalogDbContext.Services.Remove(databaseService);
             }
         }
 
