@@ -14,7 +14,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
                     SubSystemCode = "monitoring-system"
                 },
                 SecurityServerUri = new Uri("http://10.55.0.4")
-            }, new MockExceptionHandler());
+            }, new DomainLogger(DbContextProvider.RequireDbContext()));
         }
     }
 }

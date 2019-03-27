@@ -5,23 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
+using Catalog.Domain.Enum;
+using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 using XRoad.GlobalConfiguration.Metadata;
 
 namespace Catalog.BusinessLogicLayer.Service {
     public class XRoadManager : IXRoadManager {
-        private readonly IExceptionHandler _exceptionHandler;
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
-
+        private readonly IDomainLogger _logger;
 
         public XRoadManager(IServiceMetadataManager serviceMetadataManager
             , XRoadExchangeParameters xRoadExchangeParameters
-            , IExceptionHandler exceptionHandler = null) {
+            , IDomainLogger logger
+        ) {
             _serviceMetadataManager = serviceMetadataManager;
             _xRoadExchangeParameters = xRoadExchangeParameters;
-            _exceptionHandler = exceptionHandler;
+            _logger = logger;
         }
 
         public async Task<ImmutableList<MemberData>> GetMembersListAsync() {
@@ -90,8 +92,8 @@ namespace Catalog.BusinessLogicLayer.Service {
 
                     servicesList.AddRange(serviceIdentifiers);
                 }
-                catch (Exception exception) {
-                    _exceptionHandler?.Handle(exception);
+                catch (FaultException exception) {
+                    _logger.Log(LogLevel.Error, exception.Code, exception.String);
                 }
 
             return ImmutableList.CreateRange(servicesList);

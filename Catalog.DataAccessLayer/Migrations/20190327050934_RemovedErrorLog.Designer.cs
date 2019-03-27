@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Catalog.DataAccessLayer.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20190325113525_Initial")]
-    partial class Initial
+    [Migration("20190327050934_RemovedErrorLog")]
+    partial class RemovedErrorLog
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,7 +40,9 @@ namespace Catalog.DataAccessLayer.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -71,6 +73,32 @@ namespace Catalog.DataAccessLayer.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Catalog.Domain.Entity.DomainLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LogLevel")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("Message")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LogLevel");
+
+                    b.ToTable("DomainLogs");
                 });
 
             modelBuilder.Entity("Catalog.Domain.Entity.Member", b =>

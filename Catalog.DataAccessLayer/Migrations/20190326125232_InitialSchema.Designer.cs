@@ -3,15 +3,17 @@ using System;
 using Catalog.DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Catalog.DataAccessLayer.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    partial class CatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190326125232_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,30 +75,30 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Catalog.Domain.Entity.DomainLog", b =>
+            modelBuilder.Entity("Catalog.Domain.Entity.ErrorLog", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LogLevel")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Message")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ModifiedAt");
 
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("LogLevel");
+                    b.HasIndex("Code");
 
-                    b.ToTable("DomainLogs");
+                    b.ToTable("ErrorLogs");
                 });
 
             modelBuilder.Entity("Catalog.Domain.Entity.Member", b =>

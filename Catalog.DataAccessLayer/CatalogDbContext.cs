@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Catalog.DataAccessLayer.Configuration;
 using Catalog.DataAccessLayer.Service;
 using Catalog.Domain;
@@ -15,6 +17,7 @@ namespace Catalog.DataAccessLayer {
         public DbSet<SecurityServer> SecurityServers { get; set; }
         public DbSet<Domain.Entity.Service> Services { get; set; }
         public DbSet<SubSystem> SubSystems { get; set; }
+        public DbSet<DomainLog> DomainLogs { get; set; }
 
         public CatalogDbContext(DbContextOptions<CatalogDbContext> dbContextOptions,
             IUserIdProvider<string> userIdProvider)
@@ -30,19 +33,37 @@ namespace Catalog.DataAccessLayer {
             modelBuilder.ApplyConfiguration(new SecurityServerConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemConfiguration());
+            modelBuilder.ApplyConfiguration(new DomainLogConfiguration());
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess) {
+            ProcessEntitiesBeforeCommit();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = new CancellationToken()) {
+            ProcessEntitiesBeforeCommit();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public override int SaveChanges() {
+            ProcessEntitiesBeforeCommit();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken()) {
+            ProcessEntitiesBeforeCommit();
+            return base.SaveChangesAsync(cancellationToken);
         }
 
         private void ProcessEntitiesBeforeCommit() {
-            var entityEntries = ChangeTracker.Entries();
-            foreach (var entityEntry in entityEntries) {
-                var entityType = entityEntry.Entity.GetType();
-                if (entityType.IsInstanceOfType(typeof(ISoftDelete)))
-                    ProcessSoftDeleteEntity((EntityEntry<ISoftDelete>) entityEntry);
-                if (entityType.IsInstanceOfType(typeof(UserTrackableEntity)))
-                    ProcessUserTrackableEntity((EntityEntry<UserTrackableEntity>) entityEntry);
-                else if (entityType.IsInstanceOfType(typeof(BaseEntity)))
-                    ProcessBaseEntity((EntityEntry<BaseEntity>) entityEntry);
-            }
+            foreach (var entityEntry in ChangeTracker.Entries<ISoftDelete>()) 
+                ProcessSoftDeleteEntity(entityEntry);
+            foreach (var entityEntry in ChangeTracker.Entries<BaseEntity>()) 
+                ProcessBaseEntity(entityEntry);
+            foreach (var entityEntry in ChangeTracker.Entries<UserTrackableEntity>()) 
+                ProcessUserTrackableEntity(entityEntry);
         }
 
         private void ProcessUserTrackableEntity(EntityEntry<UserTrackableEntity> entityEntry) {

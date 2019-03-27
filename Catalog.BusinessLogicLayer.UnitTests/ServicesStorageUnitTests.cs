@@ -15,10 +15,10 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
                     new ServiceIdentifier {
                         Instance = "KG",
                         MemberClass = "GOV",
-                        MemberCode = "1000",
+                        MemberCode = "2000",
                         SubSystemCode = "MICROSOFT_OFFICE",
-                        ServiceCode = "RegisterPerson",
-                        ServiceVersion = "v2"
+                        ServiceCode = "UpdatePerson",
+                        ServiceVersion = "v1"
                     }
                 }));
         }

@@ -13,7 +13,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
                 new SubSystemIdentifier {
                     Instance = "KG",
                     MemberClass = "GOV",
-                    MemberCode = "1000",
+                    MemberCode = "2000",
                     SubSystemCode = "MICROSOFT_OFFICE"
                 }
             }));
