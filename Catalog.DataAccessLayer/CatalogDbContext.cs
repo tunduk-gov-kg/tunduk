@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.DataAccessLayer.Configuration;
 using Catalog.DataAccessLayer.Service;
 using Catalog.Domain;
 using Catalog.Domain.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -28,6 +30,11 @@ namespace Catalog.DataAccessLayer {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole> {
+                new IdentityRole("Administrator"),
+                new IdentityRole("CatalogUser")
+            });
+
             modelBuilder.ApplyConfiguration(new CatalogUserConfiguration());
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
             modelBuilder.ApplyConfiguration(new MemberRoleReferenceConfiguration());

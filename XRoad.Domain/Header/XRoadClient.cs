@@ -1,12 +1,15 @@
-﻿using System.Xml.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
 using SimpleSOAPClient.Models;
 
 namespace XRoad.Domain.Header {
     [XmlRoot(ElementName = "client", Namespace = "http://x-road.eu/xsd/xroad.xsd")]
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class XRoadClient : SoapHeader {
         [XmlAttribute(AttributeName = "objectType", Namespace = "http://x-road.eu/xsd/identifiers")]
         public ObjectType ObjectType {
             get => null == SubSystemCode ? ObjectType.Member : ObjectType.SubSystem;
+            // ReSharper disable once ValueParameterNotUsed
             set { }
         }
 

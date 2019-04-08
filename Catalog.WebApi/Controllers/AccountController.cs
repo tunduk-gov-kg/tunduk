@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Catalog.Domain.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +44,7 @@ namespace Catalog.WebApi.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<object> Register([FromBody] RegisterData model) {
             var user = new CatalogUser {
                 UserName = model.UserName,

@@ -7,6 +7,7 @@ namespace XRoad.Domain.Header {
         [XmlAttribute(AttributeName = "objectType", Namespace = "http://x-road.eu/xsd/identifiers")]
         public ObjectType ObjectType {
             get => ObjectType.Service;
+            // ReSharper disable once ValueParameterNotUsed
             set { }
         }
 
@@ -29,6 +30,8 @@ namespace XRoad.Domain.Header {
         public string ServiceVersion { get; set; }
 
         [XmlIgnore] public bool SubSystemCodeSpecified => SubSystemCode != null;
+
+        [XmlIgnore] public bool ServiceVersionSpecified => ServiceVersion != null;
 
         public static implicit operator XRoadService(ServiceIdentifier service) {
             return new XRoadService {
