@@ -3,10 +3,13 @@ using Catalog.BusinessLogicLayer.Service;
 using XRoad.Domain;
 using Xunit;
 
-namespace Catalog.BusinessLogicLayer.UnitTests {
-    public class UpdateManagerUnitTests {
+namespace Catalog.BusinessLogicLayer.UnitTests
+{
+    public class UpdateManagerUnitTests
+    {
         [Fact]
-        public async Task RunBatchUpdateTask__When__() {
+        public async Task RunBatchUpdateTask__When__()
+        {
             var defaultUpdateManager = new UpdaterManager(
                 XRoadManagerProvider.RequireXRoadManager(),
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
@@ -18,7 +21,8 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
         }
 
         [Fact]
-        public async Task RunWsdlUpdateTaskAsync__When__() {
+        public async Task RunWsdlUpdateTaskAsync__When__()
+        {
             var defaultUpdateManager = new UpdaterManager(
                 XRoadManagerProvider.RequireXRoadManager(),
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
@@ -28,7 +32,8 @@ namespace Catalog.BusinessLogicLayer.UnitTests {
                 new DomainLogger(DbContextProvider.RequireDbContext()));
 
             await defaultUpdateManager.RunWsdlUpdateTask(
-                new ServiceIdentifier {
+                new ServiceIdentifier
+                {
                     Instance = "central-server",
                     MemberClass = "GOV",
                     MemberCode = "70000003",

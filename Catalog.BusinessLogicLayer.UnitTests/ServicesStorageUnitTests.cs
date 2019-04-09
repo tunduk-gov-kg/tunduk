@@ -4,15 +4,20 @@ using Catalog.BusinessLogicLayer.Service;
 using XRoad.Domain;
 using Xunit;
 
-namespace Catalog.BusinessLogicLayer.UnitTests {
-    public class ServicesStorageUnitTests {
+namespace Catalog.BusinessLogicLayer.UnitTests
+{
+    public class ServicesStorageUnitTests
+    {
         [Fact]
-        public async Task UpdateLocalDatabaseAsync_When__() {
+        public async Task UpdateLocalDatabaseAsync_When__()
+        {
             var dbContext      = DbContextProvider.RequireDbContext();
             var storageUpdater = new ServicesStorageUpdater(dbContext);
             await storageUpdater.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(
-                new[] {
-                    new ServiceIdentifier {
+                new[]
+                {
+                    new ServiceIdentifier
+                    {
                         Instance = "KG",
                         MemberClass = "GOV",
                         MemberCode = "2000",

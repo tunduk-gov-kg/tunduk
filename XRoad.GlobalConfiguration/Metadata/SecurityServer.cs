@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace XRoad.GlobalConfiguration.Metadata {
+namespace XRoad.GlobalConfiguration.Metadata
+{
     [Serializable]
     [XmlRoot("securityServer", Namespace = "")]
-    public class SecurityServer {
+    public class SecurityServer
+    {
         [XmlElement("owner", Namespace = "")] public string Owner { get; set; }
 
         [XmlElement("serverCode", Namespace = "")]

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Catalog.Domain.Enum;
 
-namespace Catalog.Domain.Entity {
-    public class Member : UserTrackableEntity, ISoftDelete {
+namespace Catalog.Domain.Entity
+{
+    public class Member : UserTrackableEntity, ISoftDelete
+    {
         public string Instance { get; set; }
         public string MemberClass { get; set; }
         public string MemberCode { get; set; }

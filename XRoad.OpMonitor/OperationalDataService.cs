@@ -11,20 +11,26 @@ using XRoad.Domain.Header;
 using XRoad.OpMonitor.Domain;
 using XRoad.OpMonitor.Domain.SOAP;
 
-namespace XRoad.OpMonitor {
-    public class OperationalDataService : IOperationalDataService {
+namespace XRoad.OpMonitor
+{
+    public class OperationalDataService : IOperationalDataService
+    {
         private static readonly UserIdHeader UserIdHeader = new UserIdHeader
             {Value = ".NetCore_ServiceMetadataManager"};
-        
+
         public async Task<OperationalData> GetOperationalDataAsync(XRoadExchangeParameters xRoadExchangeParameters,
             SecurityServerIdentifier securityServerIdentifier,
-            SearchCriteria searchCriteria) {
+            SearchCriteria searchCriteria)
+        {
             byte[] attachmentBytes = { };
 
             var client = SoapClient.Prepare()
-                .WithHandler(new DelegatingSoapHandler {
-                    OnHttpResponseAsyncAction = async (soapClient, httpContext, cancellationToken) => {
-                        if (httpContext.Response.Content.IsMimeMultipartContent()) {
+                .WithHandler(new DelegatingSoapHandler
+                {
+                    OnHttpResponseAsyncAction = async (soapClient, httpContext, cancellationToken) =>
+                    {
+                        if (httpContext.Response.Content.IsMimeMultipartContent())
+                        {
                             var streamProvider =
                                 await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
                             var contentCursor = streamProvider.Contents.GetEnumerator();
@@ -43,14 +49,17 @@ namespace XRoad.OpMonitor {
                     }
                 });
 
-            var body = SoapEnvelope.Prepare().Body(new GetSecurityServerOperationalData {
+            var body = SoapEnvelope.Prepare().Body(new GetSecurityServerOperationalData
+            {
                 SearchCriteria = searchCriteria
-            }).WithHeaders(new List<SoapHeader> {
+            }).WithHeaders(new List<SoapHeader>
+            {
                 IdHeader.Random,
                 UserIdHeader,
                 ProtocolVersionHeader.Version40,
                 (XRoadClient) xRoadExchangeParameters.ClientSubSystem,
-                new XRoadService {
+                new XRoadService
+                {
                     Instance = securityServerIdentifier.Instance,
                     MemberClass = securityServerIdentifier.MemberClass,
                     MemberCode = securityServerIdentifier.MemberCode,
@@ -59,7 +68,8 @@ namespace XRoad.OpMonitor {
                 (XRoadSecurityServer) securityServerIdentifier
             });
 
-            var result = await client.SendAsync(xRoadExchangeParameters.SecurityServerUri.ToString(), string.Empty, body);
+            var result =
+                await client.SendAsync(xRoadExchangeParameters.SecurityServerUri.ToString(), string.Empty, body);
             result.ThrowIfFaulted();
 
             var operationalData = result.Body<OperationalData>();

@@ -4,9 +4,12 @@ using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Configuration {
-    public class MemberConfiguration : IEntityTypeConfiguration<Member> {
-        public void Configure(EntityTypeBuilder<Member> builder) {
+namespace Catalog.DataAccessLayer.Configuration
+{
+    public class MemberConfiguration : IEntityTypeConfiguration<Member>
+    {
+        public void Configure(EntityTypeBuilder<Member> builder)
+        {
             builder.ConfigureUserTrackableEntity();
             builder.ConfigureSoftDeleteProperties();
 
@@ -14,7 +17,8 @@ namespace Catalog.DataAccessLayer.Configuration {
             builder.Property(identifier => identifier.MemberClass).IsRequired().HasMaxLength(20);
             builder.Property(identifier => identifier.MemberCode).IsRequired().HasMaxLength(20);
 
-            builder.HasIndex(identifier => new {
+            builder.HasIndex(identifier => new
+            {
                 identifier.Instance,
                 identifier.MemberClass,
                 identifier.MemberCode

@@ -8,15 +8,19 @@ using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class ServicesStorageUpdater : IXRoadStorageUpdater<ServiceIdentifier> {
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class ServicesStorageUpdater : IXRoadStorageUpdater<ServiceIdentifier>
+    {
         private readonly CatalogDbContext _catalogDbContext;
 
-        public ServicesStorageUpdater(CatalogDbContext catalogDbContext) {
+        public ServicesStorageUpdater(CatalogDbContext catalogDbContext)
+        {
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList) {
+        public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList)
+        {
             var databaseServicesList = _catalogDbContext.Services
                 .IgnoreQueryFilters()
                 .Include(service => service.SubSystem)
@@ -30,11 +34,13 @@ namespace Catalog.BusinessLogicLayer.Service {
             await _catalogDbContext.SaveChangesAsync();
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             _catalogDbContext.Dispose();
         }
 
-        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl) {
+        public async Task UpdateWsdlAsync(ServiceIdentifier serviceIdentifier, string wsdl)
+        {
             var targetService = _catalogDbContext.Services
                 .Include(service => service.SubSystem)
                 .ThenInclude(system => system.Member)
@@ -51,8 +57,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RestorePreviouslyDeletedServices(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList) {
-            foreach (var databaseService in databaseServicesList) {
+            IImmutableList<ServiceIdentifier> updatedServicesList)
+        {
+            foreach (var databaseService in databaseServicesList)
+            {
                 if (!databaseService.IsDeleted) continue;
                 var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
                 if (!storedInUpdatedList) continue;
@@ -62,16 +70,20 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RemoveNonExistingServices(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList) {
-            foreach (var databaseService in databaseServicesList) {
+            IImmutableList<ServiceIdentifier> updatedServicesList)
+        {
+            foreach (var databaseService in databaseServicesList)
+            {
                 var storedInUpdatedList = updatedServicesList.Any(service => Equals(databaseService, service));
                 if (!storedInUpdatedList) _catalogDbContext.Services.Remove(databaseService);
             }
         }
 
         private void CreateCompletelyNewService(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList) {
-            foreach (var incomingService in updatedServicesList) {
+            IImmutableList<ServiceIdentifier> updatedServicesList)
+        {
+            foreach (var incomingService in updatedServicesList)
+            {
                 var storedInDatabase =
                     databaseServicesList.Any(databaseService => Equals(databaseService, incomingService));
                 if (storedInDatabase) continue;
@@ -89,7 +101,8 @@ namespace Catalog.BusinessLogicLayer.Service {
 
                 if (contextSubSystem == null) continue;
 
-                var completelyNewService = new Domain.Entity.Service {
+                var completelyNewService = new Domain.Entity.Service
+                {
                     ServiceCode = incomingService.ServiceCode,
                     ServiceVersion = incomingService.ServiceVersion,
                     SubSystem = contextSubSystem
@@ -98,7 +111,8 @@ namespace Catalog.BusinessLogicLayer.Service {
             }
         }
 
-        private bool Equals(Domain.Entity.Service service, ServiceIdentifier serviceIdentifier) {
+        private bool Equals(Domain.Entity.Service service, ServiceIdentifier serviceIdentifier)
+        {
             var expression = service.ServiceCode.Equals(serviceIdentifier.ServiceCode)
                 && service.SubSystem.SubSystemCode.Equals(serviceIdentifier.SubSystemCode)
                 && service.SubSystem.Member.Instance.Equals(serviceIdentifier.Instance)

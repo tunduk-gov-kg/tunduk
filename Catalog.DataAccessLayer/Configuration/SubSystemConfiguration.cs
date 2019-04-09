@@ -3,13 +3,17 @@ using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Configuration {
-    internal class SubSystemConfiguration : IEntityTypeConfiguration<SubSystem> {
-        public void Configure(EntityTypeBuilder<SubSystem> builder) {
+namespace Catalog.DataAccessLayer.Configuration
+{
+    internal class SubSystemConfiguration : IEntityTypeConfiguration<SubSystem>
+    {
+        public void Configure(EntityTypeBuilder<SubSystem> builder)
+        {
             builder.ConfigureUserTrackableEntity();
             builder.ConfigureSoftDeleteProperties();
 
-            builder.HasIndex(entity => new {
+            builder.HasIndex(entity => new
+            {
                 entity.MemberId,
                 entity.SubSystemCode
             }).IsUnique();

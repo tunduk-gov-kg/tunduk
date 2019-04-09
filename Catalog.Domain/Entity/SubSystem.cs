@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Catalog.Domain.Entity {
-    public class SubSystem : UserTrackableEntity, ISoftDelete {
+namespace Catalog.Domain.Entity
+{
+    public class SubSystem : UserTrackableEntity, ISoftDelete
+    {
         public string SubSystemCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

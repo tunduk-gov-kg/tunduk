@@ -2,13 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Configuration {
-    internal class ServiceConfiguration : IEntityTypeConfiguration<Domain.Entity.Service> {
-        public void Configure(EntityTypeBuilder<Domain.Entity.Service> builder) {
+namespace Catalog.DataAccessLayer.Configuration
+{
+    internal class ServiceConfiguration : IEntityTypeConfiguration<Domain.Entity.Service>
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entity.Service> builder)
+        {
             builder.ConfigureSoftDeleteProperties();
             builder.ConfigureUserTrackableEntity();
 
-            builder.HasIndex(entity => new {
+            builder.HasIndex(entity => new
+            {
                 entity.SubSystemId,
                 entity.ServiceCode,
                 entity.ServiceVersion

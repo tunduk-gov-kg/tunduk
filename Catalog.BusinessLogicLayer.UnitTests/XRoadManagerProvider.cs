@@ -3,11 +3,16 @@ using Catalog.BusinessLogicLayer.Service;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 
-namespace Catalog.BusinessLogicLayer.UnitTests {
-    public static class XRoadManagerProvider {
-        public static XRoadManager RequireXRoadManager() {
-            return new XRoadManager(new ServiceMetadataManager(), new XRoadExchangeParameters {
-                ClientSubSystem = new SubSystemIdentifier {
+namespace Catalog.BusinessLogicLayer.UnitTests
+{
+    public static class XRoadManagerProvider
+    {
+        public static XRoadManager RequireXRoadManager()
+        {
+            return new XRoadManager(new ServiceMetadataManager(), new XRoadExchangeParameters
+            {
+                ClientSubSystem = new SubSystemIdentifier
+                {
                     Instance = "central-server",
                     MemberClass = "GOV",
                     MemberCode = "70000001",

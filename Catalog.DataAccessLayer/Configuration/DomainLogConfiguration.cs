@@ -4,9 +4,12 @@ using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Catalog.DataAccessLayer.Configuration {
-    public class DomainLogConfiguration : IEntityTypeConfiguration<DomainLog> {
-        public void Configure(EntityTypeBuilder<DomainLog> builder) {
+namespace Catalog.DataAccessLayer.Configuration
+{
+    public class DomainLogConfiguration : IEntityTypeConfiguration<DomainLog>
+    {
+        public void Configure(EntityTypeBuilder<DomainLog> builder)
+        {
             builder.ConfigureBaseEntityProperties();
             builder.HasIndex(entity => entity.LogLevel);
 

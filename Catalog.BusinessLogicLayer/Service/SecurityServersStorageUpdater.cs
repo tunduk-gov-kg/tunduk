@@ -8,19 +8,24 @@ using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class SecurityServersStorageUpdater : IXRoadStorageUpdater<SecurityServerData> {
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class SecurityServersStorageUpdater : IXRoadStorageUpdater<SecurityServerData>
+    {
         private readonly CatalogDbContext _dbContext;
 
-        public SecurityServersStorageUpdater(CatalogDbContext catalogDbContext) {
+        public SecurityServersStorageUpdater(CatalogDbContext catalogDbContext)
+        {
             _dbContext = catalogDbContext;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<SecurityServerData> incomingServersList) {
+        public async Task UpdateLocalDatabaseAsync(IImmutableList<SecurityServerData> incomingServersList)
+        {
             var databaseServersList = _dbContext.SecurityServers
                 .IgnoreQueryFilters()
                 .Include(server => server.Member)
@@ -35,8 +40,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void CreateCompletelyNewServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList) {
-            foreach (var incomingServerData in incomingServersList) {
+            ImmutableList<SecurityServer> databaseServersList)
+        {
+            foreach (var incomingServerData in incomingServersList)
+            {
                 var storedInDatabase =
                     databaseServersList.Any(server => Equals(server, incomingServerData.SecurityServerIdentifier));
 
@@ -51,7 +58,8 @@ namespace Catalog.BusinessLogicLayer.Service {
 
                 if (contextMember == null) continue;
 
-                var completelyNewSecurityServer = new SecurityServer {
+                var completelyNewSecurityServer = new SecurityServer
+                {
                     Member = contextMember,
                     Address = incomingServerData.Address,
                     SecurityServerCode = incomingServerData.SecurityServerIdentifier.SecurityServerCode
@@ -62,8 +70,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RemoveNonExistingServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList) {
-            foreach (var storedInDatabaseServer in databaseServersList) {
+            ImmutableList<SecurityServer> databaseServersList)
+        {
+            foreach (var storedInDatabaseServer in databaseServersList)
+            {
                 var storedInNewList = incomingServersList.Any(server =>
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (!storedInNewList) _dbContext.SecurityServers.Remove(storedInDatabaseServer);
@@ -71,8 +81,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RestorePreviouslyRemovedServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList) {
-            foreach (var storedInDatabaseServer in databaseServersList) {
+            ImmutableList<SecurityServer> databaseServersList)
+        {
+            foreach (var storedInDatabaseServer in databaseServersList)
+            {
                 var storedInNewList = incomingServersList.Any(server =>
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (!storedInNewList || !storedInDatabaseServer.IsDeleted) continue;
@@ -82,8 +94,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void UpdateSecurityServersAddresses(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList) {
-            foreach (var storedInDatabaseServer in databaseServersList) {
+            ImmutableList<SecurityServer> databaseServersList)
+        {
+            foreach (var storedInDatabaseServer in databaseServersList)
+            {
                 var newServerData = incomingServersList.FirstOrDefault(server =>
                     Equals(storedInDatabaseServer, server.SecurityServerIdentifier));
                 if (newServerData == null) continue;
@@ -92,7 +106,8 @@ namespace Catalog.BusinessLogicLayer.Service {
             }
         }
 
-        private bool Equals(SecurityServer server, SecurityServerIdentifier serverIdentifier) {
+        private bool Equals(SecurityServer server, SecurityServerIdentifier serverIdentifier)
+        {
             return server.SecurityServerCode.Equals(serverIdentifier.SecurityServerCode)
                 && server.Member.Instance.Equals(serverIdentifier.Instance)
                 && server.Member.MemberClass.Equals(serverIdentifier.MemberClass)

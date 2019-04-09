@@ -16,16 +16,21 @@ using XRoad.Domain.Header;
 using XRoad.GlobalConfiguration.Domain.SOAP;
 using XRoad.GlobalConfiguration.Metadata;
 
-namespace XRoad.GlobalConfiguration {
-    public class ServiceMetadataManager : IServiceMetadataManager {
+namespace XRoad.GlobalConfiguration
+{
+    public class ServiceMetadataManager : IServiceMetadataManager
+    {
         private static readonly UserIdHeader UserIdHeader = new UserIdHeader
             {Value = ".NetCore_ServiceMetadataManager"};
 
-        public async Task<SharedParams> GetSharedParamsAsync(Uri securityServerUri) {
+        public async Task<SharedParams> GetSharedParamsAsync(Uri securityServerUri)
+        {
             var httpClient          = new HttpClient();
             var verificationConfUri = new Uri(securityServerUri, "verificationconf");
-            using (var httpStream = await httpClient.GetStreamAsync(verificationConfUri)) {
-                using (var zipArchive = new ZipArchive(httpStream)) {
+            using (var httpStream = await httpClient.GetStreamAsync(verificationConfUri))
+            {
+                using (var zipArchive = new ZipArchive(httpStream))
+                {
                     var instanceIdentifier = await GetInstanceIdentifierAsync(zipArchive);
                     return GetSharedParams(instanceIdentifier, zipArchive);
                 }
@@ -33,13 +38,17 @@ namespace XRoad.GlobalConfiguration {
         }
 
         public async Task<byte[]> GetWsdlAsync(Uri securityServerUri, SubSystemIdentifier subSystemId,
-            ServiceIdentifier targetService) {
+            ServiceIdentifier targetService)
+        {
             byte[] wsdlFileBytes = { };
 
             var client = SoapClient.Prepare()
-                .WithHandler(new DelegatingSoapHandler {
-                    OnHttpResponseAsyncAction = async (soapClient, httpContext, cancellationToken) => {
-                        if (httpContext.Response.Content.IsMimeMultipartContent()) {
+                .WithHandler(new DelegatingSoapHandler
+                {
+                    OnHttpResponseAsyncAction = async (soapClient, httpContext, cancellationToken) =>
+                    {
+                        if (httpContext.Response.Content.IsMimeMultipartContent())
+                        {
                             var streamProvider =
                                 await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
                             var contentCursor = streamProvider.Contents.GetEnumerator();
@@ -58,15 +67,18 @@ namespace XRoad.GlobalConfiguration {
                     }
                 });
 
-            var body = SoapEnvelope.Prepare().Body(new GetWsdlRequest {
+            var body = SoapEnvelope.Prepare().Body(new GetWsdlRequest
+            {
                 ServiceCode = targetService.ServiceCode,
                 ServiceVersion = targetService.ServiceVersion
-            }).WithHeaders(new List<SoapHeader> {
+            }).WithHeaders(new List<SoapHeader>
+            {
                 IdHeader.Random,
                 UserIdHeader,
                 ProtocolVersionHeader.Version40,
                 (XRoadClient) subSystemId,
-                new XRoadService {
+                new XRoadService
+                {
                     Instance = targetService.Instance,
                     MemberClass = targetService.MemberClass,
                     MemberCode = targetService.MemberCode,
@@ -83,16 +95,19 @@ namespace XRoad.GlobalConfiguration {
         }
 
         public async Task<IList<ServiceIdentifier>> GetServicesAsync(Uri securityServerUri, SubSystemIdentifier client,
-            SubSystemIdentifier source) {
+            SubSystemIdentifier source)
+        {
             var soapEnvelope = SoapEnvelope.Prepare()
                 .Body(new ListMethodsRequest())
                 .WithHeaders(
-                    new List<SoapHeader> {
+                    new List<SoapHeader>
+                    {
                         IdHeader.Random,
                         UserIdHeader,
                         ProtocolVersionHeader.Version40,
                         (XRoadClient) client,
-                        new XRoadService {
+                        new XRoadService
+                        {
                             Instance = source.Instance,
                             MemberClass = source.MemberClass,
                             MemberCode = source.MemberCode,
@@ -107,25 +122,29 @@ namespace XRoad.GlobalConfiguration {
         }
 
 
-        private async Task<string> GetInstanceIdentifierAsync(ZipArchive zipArchive) {
+        private async Task<string> GetInstanceIdentifierAsync(ZipArchive zipArchive)
+        {
             const string zipEntryName = "verificationconf/instance-identifier";
             var          zipEntry     = zipArchive.GetEntry(zipEntryName);
 
             Debug.Assert(zipEntry != null, nameof(zipEntry) + " != null");
 
-            using (var instanceIdentifierStream = zipEntry.Open()) {
+            using (var instanceIdentifierStream = zipEntry.Open())
+            {
                 var reader = new StreamReader(instanceIdentifierStream);
                 return await reader.ReadToEndAsync();
             }
         }
 
-        private SharedParams GetSharedParams(string instanceIdentifier, ZipArchive zipArchive) {
+        private SharedParams GetSharedParams(string instanceIdentifier, ZipArchive zipArchive)
+        {
             var zipEntryName = $"verificationconf/{instanceIdentifier}/shared-params.xml";
             var zipEntry     = zipArchive.GetEntry(zipEntryName);
 
             Debug.Assert(zipEntry != null, nameof(zipEntry) + " != null");
 
-            using (var sharedParamsStream = zipEntry.Open()) {
+            using (var sharedParamsStream = zipEntry.Open())
+            {
                 var xmlSerializer = new XmlSerializer(typeof(SharedParams));
                 return (SharedParams) xmlSerializer.Deserialize(sharedParamsStream);
             }

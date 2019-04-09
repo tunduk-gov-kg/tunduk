@@ -13,9 +13,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Catalog.WebApi.Controllers {
+namespace Catalog.WebApi.Controllers
+{
     [Route("[controller]/[action]")]
-    public class AccountController : Controller {
+    public class AccountController : Controller
+    {
         private readonly IConfiguration _configuration;
         private readonly SignInManager<CatalogUser> _signInManager;
         private readonly UserManager<CatalogUser> _userManager;
@@ -24,7 +26,8 @@ namespace Catalog.WebApi.Controllers {
             SignInManager<CatalogUser> signInManager
             , UserManager<CatalogUser> userManager
             , IConfiguration configuration
-        ) {
+        )
+        {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
@@ -32,10 +35,12 @@ namespace Catalog.WebApi.Controllers {
 
 
         [HttpPost]
-        public async Task<object> Login([FromBody] LoginData model) {
+        public async Task<object> Login([FromBody] LoginData model)
+        {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
                 return await GenerateJwtToken(model.Email, appUser);
             }
@@ -45,15 +50,18 @@ namespace Catalog.WebApi.Controllers {
 
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public async Task<object> Register([FromBody] RegisterData model) {
-            var user = new CatalogUser {
+        public async Task<object> Register([FromBody] RegisterData model)
+        {
+            var user = new CatalogUser
+            {
                 UserName = model.UserName,
                 Email = model.Email,
                 Name = model.Name
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
                 await _signInManager.SignInAsync(user, false);
                 return await GenerateJwtToken(model.Email, user);
             }
@@ -61,8 +69,10 @@ namespace Catalog.WebApi.Controllers {
             return BadRequest(result.Errors);
         }
 
-        private async Task<object> GenerateJwtToken(string email, IdentityUser user) {
-            var claims = new List<Claim> {
+        private async Task<object> GenerateJwtToken(string email, IdentityUser user)
+        {
+            var claims = new List<Claim>
+            {
                 new Claim(JwtRegisteredClaimNames.Sub, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
@@ -83,13 +93,15 @@ namespace Catalog.WebApi.Controllers {
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public class LoginData {
+        public class LoginData
+        {
             [Required] public string Email { get; set; }
 
             [Required] public string Password { get; set; }
         }
 
-        public class RegisterData {
+        public class RegisterData
+        {
             [Required] public string Email { get; set; }
             [Required] public string UserName { get; set; }
             [Required] public string Name { get; set; }

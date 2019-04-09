@@ -3,17 +3,24 @@ using Catalog.BusinessLogicLayer.Service;
 using XRoad.Domain;
 using Xunit;
 
-namespace Catalog.BusinessLogicLayer.UnitTests {
-    public class MembersStorageUpdaterUnitTests {
+namespace Catalog.BusinessLogicLayer.UnitTests
+{
+    public class MembersStorageUpdaterUnitTests
+    {
         [Fact]
-        public async void UpdateLocalDatabaseAsync_When__() {
+        public async void UpdateLocalDatabaseAsync_When__()
+        {
             var appDbContext = DbContextProvider.RequireDbContext();
 
             var storage = new MembersStorageUpdater(appDbContext);
-            using (storage) {
-                await storage.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(new[] {
-                        new MemberData {
-                            MemberIdentifier = new MemberIdentifier {
+            using (storage)
+            {
+                await storage.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(new[]
+                    {
+                        new MemberData
+                        {
+                            MemberIdentifier = new MemberIdentifier
+                            {
                                 Instance = "KG",
                                 MemberClass = "GOV",
                                 MemberCode = "2000"

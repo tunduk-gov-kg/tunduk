@@ -7,19 +7,24 @@ using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class MembersStorageUpdater : IXRoadStorageUpdater<MemberData> {
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class MembersStorageUpdater : IXRoadStorageUpdater<MemberData>
+    {
         private readonly CatalogDbContext _dbContext;
 
-        public MembersStorageUpdater(CatalogDbContext dbContext) {
+        public MembersStorageUpdater(CatalogDbContext dbContext)
+        {
             _dbContext = dbContext;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<MemberData> newMembersList) {
+        public async Task UpdateLocalDatabaseAsync(IImmutableList<MemberData> newMembersList)
+        {
             var databaseMembersList = _dbContext.Members.IgnoreQueryFilters().ToImmutableList();
 
             RestorePreviouslyRemovedMembers(newMembersList, databaseMembersList);
@@ -30,13 +35,17 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void CreateCompletelyNewMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList) {
-            foreach (var incomingListMember in newMembersList) {
+            ImmutableList<Member> databaseMembersList)
+        {
+            foreach (var incomingListMember in newMembersList)
+            {
                 var storedInDatabase = databaseMembersList.Any(databaseMember =>
                     Equals(databaseMember, incomingListMember.MemberIdentifier));
 
-                if (!storedInDatabase) {
-                    var completelyNewMember = new Member {
+                if (!storedInDatabase)
+                {
+                    var completelyNewMember = new Member
+                    {
                         Instance = incomingListMember.MemberIdentifier.Instance,
                         MemberClass = incomingListMember.MemberIdentifier.MemberClass,
                         MemberCode = incomingListMember.MemberIdentifier.MemberCode,
@@ -48,8 +57,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RemoveNonExistingMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList) {
-            foreach (var databaseMember in databaseMembersList) {
+            ImmutableList<Member> databaseMembersList)
+        {
+            foreach (var databaseMember in databaseMembersList)
+            {
                 var storedInNewList = newMembersList.Any(incomingListMember =>
                     Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (storedInNewList) continue;
@@ -58,8 +69,10 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RestorePreviouslyRemovedMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList) {
-            foreach (var databaseMember in databaseMembersList) {
+            ImmutableList<Member> databaseMembersList)
+        {
+            foreach (var databaseMember in databaseMembersList)
+            {
                 var shouldBeRestored = databaseMember.IsDeleted &&
                     newMembersList.Any(incomingListMember =>
                         Equals(databaseMember, incomingListMember.MemberIdentifier));
@@ -69,7 +82,8 @@ namespace Catalog.BusinessLogicLayer.Service {
             }
         }
 
-        private bool Equals(Member member, MemberIdentifier another) {
+        private bool Equals(Member member, MemberIdentifier another)
+        {
             return member.Instance.Equals(another.Instance)
                 && member.MemberClass.Equals(another.MemberClass)
                 && member.MemberCode.Equals(another.MemberCode);

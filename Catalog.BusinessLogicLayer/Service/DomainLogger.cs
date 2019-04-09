@@ -3,16 +3,21 @@ using Catalog.DataAccessLayer;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Enum;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class DomainLogger : IDomainLogger {
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class DomainLogger : IDomainLogger
+    {
         private readonly CatalogDbContext _dbContext;
 
-        public DomainLogger(CatalogDbContext dbContext) {
+        public DomainLogger(CatalogDbContext dbContext)
+        {
             _dbContext = dbContext;
         }
 
-        public void Log(LogLevel logLevel, string message, string description) {
-            _dbContext.DomainLogs.Add(new DomainLog {
+        public void Log(LogLevel logLevel, string message, string description)
+        {
+            _dbContext.DomainLogs.Add(new DomainLog
+            {
                 LogLevel = logLevel,
                 Message = message,
                 Description = description
@@ -20,7 +25,8 @@ namespace Catalog.BusinessLogicLayer.Service {
             _dbContext.SaveChanges();
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             _dbContext?.Dispose();
         }
     }

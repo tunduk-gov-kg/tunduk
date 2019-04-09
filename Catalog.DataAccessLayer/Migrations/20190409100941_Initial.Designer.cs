@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Catalog.DataAccessLayer.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20190327050934_RemovedErrorLog")]
-    partial class RemovedErrorLog
+    [Migration("20190409100941_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -175,6 +175,212 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.ToTable("MemberRoleReferences");
                 });
 
+            modelBuilder.Entity("Catalog.Domain.Entity.Message", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ConsumerInstance")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ConsumerMemberClass")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ConsumerMemberCode")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ConsumerSecurityServerAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ConsumerSecurityServerInternalIpAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ConsumerSubSystemCode")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("FaultCode")
+                        .HasMaxLength(500);
+
+                    b.Property<string>("FaultString")
+                        .HasMaxLength(1000);
+
+                    b.Property<bool>("IsSucceeded");
+
+                    b.Property<string>("MessageDigest")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<string>("MessageId")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<string>("MessageIssue")
+                        .HasMaxLength(500);
+
+                    b.Property<string>("MessageProtocolVersion")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.Property<string>("MessageState")
+                        .IsRequired();
+
+                    b.Property<string>("MessageUserId")
+                        .HasMaxLength(500);
+
+                    b.Property<DateTime?>("ModifiedAt");
+
+                    b.Property<string>("ProducerInstance")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ProducerMemberClass")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ProducerMemberCode")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ProducerSecurityServerAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ProducerSecurityServerInternalIpAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ProducerServiceCode")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ProducerServiceVersion")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ProducerSubSystemCode")
+                        .HasMaxLength(100);
+
+                    b.Property<int?>("RequestAttachmentsCount");
+
+                    b.Property<int?>("RequestSoapSize");
+
+                    b.Property<int?>("ResponseAttachmentsCount");
+
+                    b.Property<int?>("ResponseSoapSize");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageDigest")
+                        .IsUnique();
+
+                    b.HasIndex("MessageId");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Catalog.Domain.Entity.OperationalDataRecord", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClientMemberClass")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ClientMemberCode")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ClientSecurityServerAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ClientSubsystemCode")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ClientXRoadInstance")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("MessageId")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MessageIssue")
+                        .HasMaxLength(500);
+
+                    b.Property<string>("MessageProtocolVersion")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("MessageUserId")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedAt");
+
+                    b.Property<long?>("MonitoringDataTs");
+
+                    b.Property<string>("RepresentedPartyClass")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("RepresentedPartyCode")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("RequestAttachmentCount");
+
+                    b.Property<long?>("RequestInTs");
+
+                    b.Property<int?>("RequestMimeSize");
+
+                    b.Property<long?>("RequestOutTs");
+
+                    b.Property<int?>("RequestSoapSize");
+
+                    b.Property<int?>("ResponseAttachmentCount");
+
+                    b.Property<long?>("ResponseInTs");
+
+                    b.Property<int?>("ResponseMimeSize");
+
+                    b.Property<long?>("ResponseOutTs");
+
+                    b.Property<int?>("ResponseSoapSize");
+
+                    b.Property<string>("SecurityServerInternalIp");
+
+                    b.Property<string>("SecurityServerType");
+
+                    b.Property<string>("ServiceCode")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ServiceMemberClass")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ServiceMemberCode")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ServiceSecurityServerAddress")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ServiceSubsystemCode")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ServiceVersion")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ServiceXRoadInstance")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("SoapFaultCode");
+
+                    b.Property<string>("SoapFaultString");
+
+                    b.Property<bool?>("Succeeded");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OperationalDataRecords");
+                });
+
             modelBuilder.Entity("Catalog.Domain.Entity.SecurityServer", b =>
                 {
                     b.Property<long>("Id")
@@ -311,6 +517,20 @@ namespace Catalog.DataAccessLayer.Migrations
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "942d9f5f-5d07-4922-97e5-528e73c72e4c",
+                            ConcurrencyStamp = "efc76605-9107-4c61-97a7-69749cc9bd8a",
+                            Name = "Administrator"
+                        },
+                        new
+                        {
+                            Id = "83e39e46-534a-4590-8ec4-183070b0c68c",
+                            ConcurrencyStamp = "2e77da4d-0183-4212-93ae-3e0eb3c6dd68",
+                            Name = "CatalogUser"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -403,6 +623,61 @@ namespace Catalog.DataAccessLayer.Migrations
                         .WithMany("MemberRoles")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Catalog.Domain.Entity.Message", b =>
+                {
+                    b.OwnsOne("Catalog.Domain.Entity.MessageLifecycle", "ConsumerMessageLifecycle", b1 =>
+                        {
+                            b1.Property<long>("MessageId");
+
+                            b1.Property<DateTime?>("RequestInTs")
+                                .HasColumnName("ConsumerRequestInTs");
+
+                            b1.Property<DateTime?>("RequestOutTs")
+                                .HasColumnName("ConsumerRequestOutTs");
+
+                            b1.Property<DateTime?>("ResponseInTs")
+                                .HasColumnName("ConsumerResponseInTs");
+
+                            b1.Property<DateTime?>("ResponseOutTs")
+                                .HasColumnName("ConsumerResponseOutTs`");
+
+                            b1.HasKey("MessageId");
+
+                            b1.ToTable("Messages");
+
+                            b1.HasOne("Catalog.Domain.Entity.Message")
+                                .WithOne("ConsumerMessageLifecycle")
+                                .HasForeignKey("Catalog.Domain.Entity.MessageLifecycle", "MessageId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
+
+                    b.OwnsOne("Catalog.Domain.Entity.MessageLifecycle", "ProducerMessageLifecycle", b1 =>
+                        {
+                            b1.Property<long>("MessageId");
+
+                            b1.Property<DateTime?>("RequestInTs")
+                                .HasColumnName("ProducerRequestInTs");
+
+                            b1.Property<DateTime?>("RequestOutTs")
+                                .HasColumnName("ProducerRequestOutTs");
+
+                            b1.Property<DateTime?>("ResponseInTs")
+                                .HasColumnName("ProducerResponseInTs");
+
+                            b1.Property<DateTime?>("ResponseOutTs")
+                                .HasColumnName("ProducerResponseOutTs`");
+
+                            b1.HasKey("MessageId");
+
+                            b1.ToTable("Messages");
+
+                            b1.HasOne("Catalog.Domain.Entity.Message")
+                                .WithOne("ProducerMessageLifecycle")
+                                .HasForeignKey("Catalog.Domain.Entity.MessageLifecycle", "MessageId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
                 });
 
             modelBuilder.Entity("Catalog.Domain.Entity.SecurityServer", b =>

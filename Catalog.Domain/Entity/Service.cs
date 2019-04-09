@@ -1,5 +1,7 @@
-﻿namespace Catalog.Domain.Entity {
-    public class Service : UserTrackableEntity, ISoftDelete {
+﻿namespace Catalog.Domain.Entity
+{
+    public class Service : UserTrackableEntity, ISoftDelete
+    {
         public string Name { get; set; }
         public string Description { get; set; }
         public string ServiceCode { get; set; }

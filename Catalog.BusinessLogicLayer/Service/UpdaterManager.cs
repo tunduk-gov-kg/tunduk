@@ -7,8 +7,10 @@ using Catalog.Domain.Enum;
 using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class UpdaterManager : IUpdateManager {
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class UpdaterManager : IUpdateManager
+    {
         private readonly IDomainLogger _logger;
         private readonly MembersStorageUpdater _membersStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
@@ -22,7 +24,8 @@ namespace Catalog.BusinessLogicLayer.Service {
             , SubSystemsStorageUpdater subSystemsStorage
             , ServicesStorageUpdater servicesStorage
             , IDomainLogger logger
-        ) {
+        )
+        {
             _xRoadManager = xRoadManager;
             _membersStorage = membersStorage;
             _serversStorageUpdater = serversStorageUpdater;
@@ -32,7 +35,8 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
 
-        public async Task RunBatchUpdateTask() {
+        public async Task RunBatchUpdateTask()
+        {
             var memberDataRecords = await _xRoadManager.GetMembersListAsync();
             await _membersStorage.UpdateLocalDatabaseAsync(memberDataRecords);
 
@@ -53,17 +57,21 @@ namespace Catalog.BusinessLogicLayer.Service {
             await UpdateServicesWsdl(servicesList);
         }
 
-        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService) {
-            try {
+        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService)
+        {
+            try
+            {
                 var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
                 await _servicesStorage.UpdateWsdlAsync(targetService, wsdl);
             }
-            catch (FaultException exception) {
+            catch (FaultException exception)
+            {
                 _logger.Log(LogLevel.Error, exception.Code, exception.String);
             }
         }
 
-        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList) {
+        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList)
+        {
             foreach (var serviceIdentifier in subSystemServicesList.AsParallel())
                 await RunWsdlUpdateTask(serviceIdentifier);
         }

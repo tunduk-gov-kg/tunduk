@@ -1,18 +1,20 @@
 using System.Xml.Serialization;
 using XRoad.Domain.Header;
 
-namespace XRoad.OpMonitor.Domain.SOAP {
+namespace XRoad.OpMonitor.Domain.SOAP
+{
     [XmlRoot(ElementName = "searchCriteria", Namespace = "http://x-road.eu/xsd/op-monitoring.xsd")]
-    public class SearchCriteria {
+    public class SearchCriteria
+    {
         /// <summary>
-        /// The beginning of the time interval of requested operational data (Unix timestamp in seconds)
+        ///     The beginning of the time interval of requested operational data (Unix timestamp in seconds)
         /// </summary>
         [XmlElement(ElementName = "recordsFrom", Namespace = "http://x-road.eu/xsd/op-monitoring.xsd",
             IsNullable = false)]
         public long RecordsFrom { get; set; }
 
         /// <summary>
-        /// The end of the time interval of requested operational data (Unix timestamp in seconds)
+        ///     The end of the time interval of requested operational data (Unix timestamp in seconds)
         /// </summary>
         [XmlElement(ElementName = "recordsTo", Namespace = "http://x-road.eu/xsd/op-monitoring.xsd",
             IsNullable = false)]

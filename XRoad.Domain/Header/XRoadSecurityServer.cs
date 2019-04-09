@@ -1,11 +1,14 @@
 using System.Xml.Serialization;
 using SimpleSOAPClient.Models;
 
-namespace XRoad.Domain.Header {
+namespace XRoad.Domain.Header
+{
     [XmlRoot(ElementName = "securityServer", Namespace = "http://x-road.eu/xsd/xroad.xsd")]
-    public class XRoadSecurityServer : SoapHeader {
+    public class XRoadSecurityServer : SoapHeader
+    {
         [XmlAttribute(AttributeName = "objectType", Namespace = "http://x-road.eu/xsd/identifiers")]
-        public ObjectType ObjectType {
+        public ObjectType ObjectType
+        {
             get => ObjectType.Server;
             // ReSharper disable once ValueParameterNotUsed
             set { }
@@ -23,8 +26,10 @@ namespace XRoad.Domain.Header {
         [XmlElement(ElementName = "serverCode", IsNullable = false, Namespace = "http://x-road.eu/xsd/identifiers")]
         public string ServerCode { get; set; }
 
-        public static implicit operator XRoadSecurityServer(SecurityServerIdentifier serverIdentifier) {
-            return new XRoadSecurityServer {
+        public static implicit operator XRoadSecurityServer(SecurityServerIdentifier serverIdentifier)
+        {
+            return new XRoadSecurityServer
+            {
                 Instance = serverIdentifier.Instance,
                 MemberClass = serverIdentifier.MemberClass,
                 MemberCode = serverIdentifier.MemberCode,

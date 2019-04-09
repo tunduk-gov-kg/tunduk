@@ -11,13 +11,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Catalog.DataAccessLayer {
-    public class CatalogDbContext : IdentityDbContext<CatalogUser> {
+namespace Catalog.DataAccessLayer
+{
+    public class CatalogDbContext : IdentityDbContext<CatalogUser>
+    {
         private readonly string _currentUserId;
 
         public CatalogDbContext(DbContextOptions<CatalogDbContext> dbContextOptions,
             IUserIdProvider<string> userIdProvider)
-            : base(dbContextOptions) {
+            : base(dbContextOptions)
+        {
             _currentUserId = userIdProvider.GetCurrentUserId();
         }
 
@@ -27,10 +30,14 @@ namespace Catalog.DataAccessLayer {
         public DbSet<Domain.Entity.Service> Services { get; set; }
         public DbSet<SubSystem> SubSystems { get; set; }
         public DbSet<DomainLog> DomainLogs { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<OperationalDataRecord> OperationalDataRecords { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole> {
+            modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole>
+            {
                 new IdentityRole("Administrator"),
                 new IdentityRole("CatalogUser")
             });
@@ -42,30 +49,37 @@ namespace Catalog.DataAccessLayer {
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemConfiguration());
             modelBuilder.ApplyConfiguration(new DomainLogConfiguration());
+            modelBuilder.ApplyConfiguration(new MessageConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationalDataRecordConfiguration());
         }
 
-        public override int SaveChanges(bool acceptAllChangesOnSuccess) {
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
             ProcessEntitiesBeforeCommit();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-            CancellationToken cancellationToken = new CancellationToken()) {
+            CancellationToken cancellationToken = new CancellationToken())
+        {
             ProcessEntitiesBeforeCommit();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
-        public override int SaveChanges() {
+        public override int SaveChanges()
+        {
             ProcessEntitiesBeforeCommit();
             return base.SaveChanges();
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken()) {
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
             ProcessEntitiesBeforeCommit();
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        private void ProcessEntitiesBeforeCommit() {
+        private void ProcessEntitiesBeforeCommit()
+        {
             foreach (var entityEntry in ChangeTracker.Entries<ISoftDelete>())
                 ProcessSoftDeleteEntity(entityEntry);
             foreach (var entityEntry in ChangeTracker.Entries<BaseEntity>())
@@ -74,27 +88,44 @@ namespace Catalog.DataAccessLayer {
                 ProcessUserTrackableEntity(entityEntry);
         }
 
-        private void ProcessUserTrackableEntity(EntityEntry<UserTrackableEntity> entityEntry) {
-            if (entityEntry.State == EntityState.Added)
-                entityEntry.CurrentValues["CreatedBy"] = _currentUserId;
-            else if (entityEntry.State == EntityState.Modified)
-                entityEntry.CurrentValues["ModifiedBy"] = _currentUserId;
-        }
-
-        private void ProcessSoftDeleteEntity(EntityEntry<ISoftDelete> entity) {
-            if (entity.State == EntityState.Deleted) {
-                entity.CurrentValues["IsDeleted"] = true;
-                entity.State = EntityState.Modified;
-            }
-            else if (entity.State == EntityState.Added) {
-                entity.CurrentValues["IsDeleted"] = false;
+        private void ProcessUserTrackableEntity(EntityEntry<UserTrackableEntity> entityEntry)
+        {
+            switch (entityEntry.State)
+            {
+                case EntityState.Added:
+                    entityEntry.CurrentValues["CreatedBy"] = _currentUserId;
+                    break;
+                case EntityState.Modified:
+                    entityEntry.CurrentValues["ModifiedBy"] = _currentUserId;
+                    break;
             }
         }
 
-        private void ProcessBaseEntity(EntityEntry<BaseEntity> entity) {
-            if (entity.State == EntityState.Added)
-                entity.CurrentValues["CreatedAt"] = DateTime.Now;
-            else if (entity.State == EntityState.Modified) entity.CurrentValues["ModifiedAt"] = DateTime.Now;
+        private void ProcessSoftDeleteEntity(EntityEntry<ISoftDelete> entity)
+        {
+            switch (entity.State)
+            {
+                case EntityState.Deleted:
+                    entity.CurrentValues["IsDeleted"] = true;
+                    entity.State = EntityState.Modified;
+                    break;
+                case EntityState.Added:
+                    entity.CurrentValues["IsDeleted"] = false;
+                    break;
+            }
+        }
+
+        private void ProcessBaseEntity(EntityEntry<BaseEntity> entity)
+        {
+            switch (entity.State)
+            {
+                case EntityState.Added:
+                    entity.CurrentValues["CreatedAt"] = DateTime.Now;
+                    break;
+                case EntityState.Modified:
+                    entity.CurrentValues["ModifiedAt"] = DateTime.Now;
+                    break;
+            }
         }
     }
 }

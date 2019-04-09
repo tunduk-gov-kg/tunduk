@@ -4,30 +4,37 @@ using XRoad.Domain;
 using XRoad.OpMonitor.Domain.SOAP;
 using Xunit;
 
-namespace XRoad.OpMonitor.UnitTests {
-    public class OperationalDataServiceUnitTets {
+namespace XRoad.OpMonitor.UnitTests
+{
+    public class OperationalDataServiceUnitTets
+    {
         [Fact]
-        public async Task GetOperationalDataAsync__When() {
+        public async Task GetOperationalDataAsync__When()
+        {
             var service = new OperationalDataService();
             var operationalData = await service.GetOperationalDataAsync(
-                new XRoadExchangeParameters {
-                    ClientSubSystem = new SubSystemIdentifier {
+                new XRoadExchangeParameters
+                {
+                    ClientSubSystem = new SubSystemIdentifier
+                    {
                         Instance = "central-server",
                         MemberClass = "GOV",
                         MemberCode = "70000001",
                         SubSystemCode = "monitoring-system"
                     },
                     SecurityServerUri = new Uri("http://10.55.0.4")
-                }, new SecurityServerIdentifier() {
+                }, new SecurityServerIdentifier
+                {
                     Instance = "central-server",
                     MemberCode = "70000001",
                     MemberClass = "GOV",
                     SecurityServerCode = "management-server"
-                }, new SearchCriteria {
-                    RecordsTo = 1554193151,
+                }, new SearchCriteria
+                {
+                    RecordsTo = 1554789177,
                     RecordsFrom = 0L
                 });
-            Assert.True(operationalData.RecordsCount > 0);
+            Assert.True(operationalData.Records.Length > 0);
         }
     }
 }
