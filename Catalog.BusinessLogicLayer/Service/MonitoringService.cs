@@ -24,8 +24,7 @@ namespace Catalog.BusinessLogicLayer.Service
         private readonly ILogger<MonitoringService> _logger;
         private readonly IOperationalDataService _operationalDataService;
 
-        public MonitoringService(
-            CatalogDbContext dbContext
+        public MonitoringService(CatalogDbContext dbContext
             , IMapper mapper
             , IOperationalDataService operationalDataService
             , XRoadExchangeParameters xRoadExchangeParameters
@@ -44,10 +43,15 @@ namespace Catalog.BusinessLogicLayer.Service
         {
             var securityServers = _dbContext.SecurityServers
                 .Include(entity => entity.Member).ToList();
+            _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask, "RunOpdataCollector Task started...");
 
             foreach (var securityServer in securityServers)
             {
                 var securityServerIdentifier = _mapper.Map<SecurityServerIdentifier>(securityServer);
+                _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask,
+                    "Retrieving opdata for security server: {server}",
+                    securityServerIdentifier.ToString()
+                );
 
                 var nextRecordsFrom = RunOpDataCollectorTask(
                     securityServerIdentifier,
@@ -58,6 +62,8 @@ namespace Catalog.BusinessLogicLayer.Service
                 _dbContext.SecurityServers.Update(securityServer);
                 _dbContext.SaveChanges();
             }
+
+            _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask, "RunOpdataCollector Task finished...");
         }
 
 
@@ -77,6 +83,10 @@ namespace Catalog.BusinessLogicLayer.Service
                         RecordsFrom = recordsFrom,
                         RecordsTo = recordsTo
                     };
+                    _logger.LogDebug(LoggingEvents.GetOperationalData,
+                        "Requesting Security Server: {server} for OpData From: {from} To: {to}",
+                        securityServerIdentifier, recordsFrom, recordsTo
+                    );
 
                     var operationalData = _operationalDataService
                         .GetOperationalData(_xRoadExchangeParameters, securityServerIdentifier, searchCriteria);
@@ -85,7 +95,10 @@ namespace Catalog.BusinessLogicLayer.Service
                     _dbContext.OperationalDataRecords.AddRange(dataRecords);
                     _dbContext.SaveChanges();
 
-                    if (!operationalData.NextRecordsFromSpecified)
+                    bool shouldBreakTask =
+                        !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount.Equals(0);
+
+                    if (shouldBreakTask)
                     {
                         recordsFrom = recordsTo + 1;
                         break;
@@ -98,7 +111,8 @@ namespace Catalog.BusinessLogicLayer.Service
             catch (FaultException faultException)
             {
                 _logger.LogError(LoggingEvents.GetOperationalData,
-                    "Error during opdata retrieve operation from security server {id}; error message: {message}",
+                    "Error during opdata retrieve operation from security server {id}; " +
+                    "Server responded with message: {message}",
                     securityServerIdentifier.ToString(),
                     faultException.String
                 );

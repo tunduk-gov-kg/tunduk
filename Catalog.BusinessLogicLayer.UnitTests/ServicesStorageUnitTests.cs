@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service;
+using Catalog.BusinessLogicLayer.UnitTests.Providers;
 using XRoad.Domain;
 using Xunit;
 

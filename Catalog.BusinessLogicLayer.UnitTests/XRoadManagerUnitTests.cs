@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service;
+using Catalog.BusinessLogicLayer.UnitTests.Providers;
 using Microsoft.Extensions.Logging;
 using XRoad.GlobalConfiguration;
 using Xunit;

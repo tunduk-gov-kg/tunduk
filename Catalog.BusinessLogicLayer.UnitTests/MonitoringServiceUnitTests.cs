@@ -1,6 +1,7 @@
 using System;
 using AutoMapper;
 using Catalog.BusinessLogicLayer.Service;
+using Catalog.BusinessLogicLayer.UnitTests.Providers;
 using Catalog.Domain.Mapping;
 using Microsoft.Extensions.Logging;
 using XRoad.Domain;

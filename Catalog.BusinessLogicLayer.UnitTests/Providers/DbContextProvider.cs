@@ -1,6 +1,6 @@
 ﻿using Catalog.DataAccessLayer;
 
-namespace Catalog.BusinessLogicLayer.UnitTests
+namespace Catalog.BusinessLogicLayer.UnitTests.Providers
 {
     internal static class DbContextProvider
     {

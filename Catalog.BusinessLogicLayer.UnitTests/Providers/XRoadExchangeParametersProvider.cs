@@ -1,7 +1,7 @@
 using System;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.UnitTests
+namespace Catalog.BusinessLogicLayer.UnitTests.Providers
 {
     public static class XRoadExchangeParametersProvider
     {
