@@ -1,20 +1,25 @@
 ﻿using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service;
-using Catalog.BusinessLogicLayer.Service.XRoad;
+using Catalog.BusinessLogicLayer.UnitTests.Providers;
 using XRoad.Domain;
 using Xunit;
 
-namespace Catalog.BusinessLogicLayer.UnitTests {
-    public class SubSystemsStorageUnitTests {
+namespace Catalog.BusinessLogicLayer.UnitTests
+{
+    public class SubSystemsStorageUnitTests
+    {
         [Fact]
-        public async Task UpdateLocalDatabaseAsync_When__() {
+        public async Task UpdateLocalDatabaseAsync_When__()
+        {
             var updater = new SubSystemsStorageUpdater(DbContextProvider.RequireDbContext());
-            await updater.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(new[] {
-                new SubSystemIdentifier {
+            await updater.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(new[]
+            {
+                new SubSystemIdentifier
+                {
                     Instance = "KG",
                     MemberClass = "GOV",
-                    MemberCode = "1000",
+                    MemberCode = "2000",
                     SubSystemCode = "MICROSOFT_OFFICE"
                 }
             }));

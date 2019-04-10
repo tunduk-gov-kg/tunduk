@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace XRoad.GlobalConfiguration.Metadata {
+namespace XRoad.GlobalConfiguration.Metadata
+{
     [Serializable]
     [XmlRoot("member")]
-    public class Member {
+    public class Member
+    {
         [XmlAttribute("id")] public string Id { get; set; }
 
         [XmlElement("name")] public string Name { get; set; }

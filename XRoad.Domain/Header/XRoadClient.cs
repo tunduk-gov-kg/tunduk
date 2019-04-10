@@ -1,12 +1,18 @@
-﻿using System.Xml.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
 using SimpleSOAPClient.Models;
 
-namespace XRoad.Domain.Header {
+namespace XRoad.Domain.Header
+{
     [XmlRoot(ElementName = "client", Namespace = "http://x-road.eu/xsd/xroad.xsd")]
-    public class XRoadClient : SoapHeader {
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public class XRoadClient : SoapHeader
+    {
         [XmlAttribute(AttributeName = "objectType", Namespace = "http://x-road.eu/xsd/identifiers")]
-        public ObjectType ObjectType {
+        public ObjectType ObjectType
+        {
             get => null == SubSystemCode ? ObjectType.Member : ObjectType.SubSystem;
+            // ReSharper disable once ValueParameterNotUsed
             set { }
         }
 
@@ -24,8 +30,10 @@ namespace XRoad.Domain.Header {
 
         [XmlIgnore] public bool SubSystemCodeSpecified => SubSystemCode != null;
 
-        public static implicit operator XRoadClient(SubSystemIdentifier subSystem) {
-            return new XRoadClient {
+        public static implicit operator XRoadClient(SubSystemIdentifier subSystem)
+        {
+            return new XRoadClient
+            {
                 Instance = subSystem.Instance,
                 MemberClass = subSystem.MemberClass,
                 MemberCode = subSystem.MemberCode,
@@ -33,8 +41,10 @@ namespace XRoad.Domain.Header {
             };
         }
 
-        public static implicit operator XRoadClient(MemberIdentifier member) {
-            return new XRoadClient {
+        public static implicit operator XRoadClient(MemberIdentifier member)
+        {
+            return new XRoadClient
+            {
                 Instance = member.Instance,
                 MemberClass = member.MemberClass,
                 MemberCode = member.MemberCode

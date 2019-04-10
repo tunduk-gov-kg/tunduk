@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catalog.BusinessLogicLayer\Catalog.BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\XUnit.Helpers\XUnit.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

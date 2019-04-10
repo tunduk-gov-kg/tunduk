@@ -3,37 +3,39 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
-using Catalog.BusinessLogicLayer.Service.XRoad;
-using NLog;
+using Microsoft.Extensions.Logging;
+using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class UpdaterManager : IUpdateManager {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly MemberServicesStorageUpdater _memberServicesStorage;
-
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class UpdaterManager : IUpdateManager
+    {
         private readonly MembersStorageUpdater _membersStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
-        private readonly SubSystemServicesStorageUpdater _subSystemServicesStorage;
+        private readonly ServicesStorageUpdater _servicesStorage;
         private readonly SubSystemsStorageUpdater _subSystemsStorage;
         private readonly IXRoadManager _xRoadManager;
+        private readonly ILogger<UpdaterManager> _logger;
 
         public UpdaterManager(IXRoadManager xRoadManager
             , MembersStorageUpdater membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
-            , SubSystemServicesStorageUpdater subSystemServicesStorage
-            , MemberServicesStorageUpdater memberServicesStorage) {
+            , ServicesStorageUpdater servicesStorage
+            , ILogger<UpdaterManager> logger)
+        {
             _xRoadManager = xRoadManager;
             _membersStorage = membersStorage;
             _serversStorageUpdater = serversStorageUpdater;
             _subSystemsStorage = subSystemsStorage;
-            _subSystemServicesStorage = subSystemServicesStorage;
-            _memberServicesStorage = memberServicesStorage;
+            _servicesStorage = servicesStorage;
+            _logger = logger;
         }
 
 
-        public async Task RunBatchUpdateTask() {
+        public async Task RunBatchUpdateTask()
+        {
             var memberDataRecords = await _xRoadManager.GetMembersListAsync();
             await _membersStorage.UpdateLocalDatabaseAsync(memberDataRecords);
 
@@ -49,30 +51,33 @@ namespace Catalog.BusinessLogicLayer.Service {
                 new Predicate<ServiceIdentifier>(identifier => !string.IsNullOrEmpty(identifier.SubSystemCode));
 
             var subSystemServicesList = servicesList.Where(service => containsSubSystemCode(service)).ToImmutableList();
-            await _subSystemServicesStorage.UpdateLocalDatabaseAsync(subSystemServicesList);
-
-            var memberServicesList = servicesList.Where(service => !containsSubSystemCode(service)).ToImmutableList();
-            await _memberServicesStorage.UpdateLocalDatabaseAsync(memberServicesList);
+            await _servicesStorage.UpdateLocalDatabaseAsync(subSystemServicesList);
 
             await UpdateServicesWsdl(servicesList);
         }
 
-        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService) {
-            var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
-            if (string.IsNullOrEmpty(targetService.SubSystemCode))
-                await _membersStorage.UpdateWsdlAsync(targetService, wsdl);
-            else
-                await _subSystemServicesStorage.UpdateWsdlAsync(targetService, wsdl);
+        public async Task RunWsdlUpdateTask(ServiceIdentifier targetService)
+        {
+            try
+            {
+                var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
+                await _servicesStorage.UpdateWsdlAsync(targetService, wsdl);
+            }
+            catch (FaultException exception)
+            {
+                _logger.LogError(LoggingEvents.UpdateWsdlTask, "" +
+                    "Error occurred during wsdl update task for service: {service}; " +
+                    "Server responded with message: {message}",
+                    targetService.ToString(),
+                    exception.String
+                );
+            }
         }
 
-        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList) {
-            foreach (var serviceIdentifier in subSystemServicesList)
-                try {
-                    await RunWsdlUpdateTask(serviceIdentifier);
-                }
-                catch (Exception exception) {
-                    _logger.Error(exception);
-                }
+        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList)
+        {
+            foreach (var serviceIdentifier in subSystemServicesList.AsParallel())
+                await RunWsdlUpdateTask(serviceIdentifier);
         }
     }
 }

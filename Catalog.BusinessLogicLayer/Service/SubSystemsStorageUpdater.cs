@@ -4,24 +4,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Domain.Entity;
+using Catalog.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
-namespace Catalog.BusinessLogicLayer.Service {
-    public class SubSystemsStorageUpdater : IXRoadStorageUpdater<SubSystemIdentifier> {
-        private readonly AppDbContext _dbContext;
+namespace Catalog.BusinessLogicLayer.Service
+{
+    public class SubSystemsStorageUpdater : IXRoadStorageUpdater<SubSystemIdentifier>
+    {
+        private readonly CatalogDbContext _dbContext;
 
-        public SubSystemsStorageUpdater(AppDbContext dbContext) {
+        public SubSystemsStorageUpdater(CatalogDbContext dbContext)
+        {
             _dbContext = dbContext;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<SubSystemIdentifier> subSystemsList) {
+        public async Task UpdateLocalDatabaseAsync(IImmutableList<SubSystemIdentifier> subSystemsList)
+        {
             var databaseSubSystemsList = _dbContext.SubSystems
+                .IgnoreQueryFilters()
                 .Include(subSystem => subSystem.Member)
                 .ToImmutableList();
 
@@ -34,8 +40,10 @@ namespace Catalog.BusinessLogicLayer.Service {
 
 
         private void CreateCompletelyNewSubSystems(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList) {
-            foreach (var subSystemIdentifier in newSubSystemsList) {
+            ImmutableList<SubSystem> databaseSubSystemsList)
+        {
+            foreach (var subSystemIdentifier in newSubSystemsList)
+            {
                 var storedInDatabase =
                     databaseSubSystemsList.Any(databaseSubSystem => Equals(databaseSubSystem, subSystemIdentifier));
                 if (storedInDatabase) continue;
@@ -49,7 +57,8 @@ namespace Catalog.BusinessLogicLayer.Service {
 
                 if (contextMember == null) continue;
 
-                var completelyNewSubSystem = new SubSystem {
+                var completelyNewSubSystem = new SubSystem
+                {
                     Member = contextMember,
                     SubSystemCode = subSystemIdentifier.SubSystemCode
                 };
@@ -58,29 +67,30 @@ namespace Catalog.BusinessLogicLayer.Service {
         }
 
         private void RemoveNonExistingMembers(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList) {
-            foreach (var databaseSubSystem in databaseSubSystemsList) {
+            ImmutableList<SubSystem> databaseSubSystemsList)
+        {
+            foreach (var databaseSubSystem in databaseSubSystemsList)
+            {
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
-                if (storedInSubSystemsList) continue;
-                databaseSubSystem.IsDeleted = true;
-                databaseSubSystem.ModificationDateTime = DateTime.Now;
-                _dbContext.SubSystems.Update(databaseSubSystem);
+                if (!storedInSubSystemsList) _dbContext.SubSystems.Remove(databaseSubSystem);
             }
         }
 
         private void RestorePreviouslyRemovedMembers(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList) {
-            foreach (var databaseSubSystem in databaseSubSystemsList) {
+            ImmutableList<SubSystem> databaseSubSystemsList)
+        {
+            foreach (var databaseSubSystem in databaseSubSystemsList)
+            {
                 if (!databaseSubSystem.IsDeleted) continue;
                 var storedInSubSystemsList = newSubSystemsList.Any(subSystem => Equals(databaseSubSystem, subSystem));
                 if (!storedInSubSystemsList) continue;
                 databaseSubSystem.IsDeleted = false;
-                databaseSubSystem.ModificationDateTime = DateTime.Now;
                 _dbContext.SubSystems.Update(databaseSubSystem);
             }
         }
 
-        private bool Equals(SubSystem subSystem, SubSystemIdentifier subSystemIdentifier) {
+        private bool Equals(SubSystem subSystem, SubSystemIdentifier subSystemIdentifier)
+        {
             return subSystem.SubSystemCode.Equals(subSystemIdentifier.SubSystemCode)
                 && subSystem.Member.Instance.Equals(subSystemIdentifier.Instance)
                 && subSystem.Member.MemberClass.Equals(subSystemIdentifier.MemberClass)
