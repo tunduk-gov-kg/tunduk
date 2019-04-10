@@ -7,7 +7,7 @@ namespace XRoad.OpMonitor
 {
     public interface IOperationalDataService
     {
-        Task<OperationalData> GetOperationalDataAsync(
+        OperationalData GetOperationalData(
             XRoadExchangeParameters xRoadExchangeParameters,
             SecurityServerIdentifier securityServerIdentifier,
             SearchCriteria searchCriteria

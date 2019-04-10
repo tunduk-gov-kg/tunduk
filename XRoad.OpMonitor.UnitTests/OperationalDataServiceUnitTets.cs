@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using XRoad.Domain;
 using XRoad.OpMonitor.Domain.SOAP;
 using Xunit;
@@ -9,10 +8,10 @@ namespace XRoad.OpMonitor.UnitTests
     public class OperationalDataServiceUnitTets
     {
         [Fact]
-        public async Task GetOperationalDataAsync__When()
+        public void GetOperationalDataAsync__When()
         {
             var service = new OperationalDataService();
-            var operationalData = await service.GetOperationalDataAsync(
+            var operationalData = service.GetOperationalData(
                 new XRoadExchangeParameters
                 {
                     ClientSubSystem = new SubSystemIdentifier

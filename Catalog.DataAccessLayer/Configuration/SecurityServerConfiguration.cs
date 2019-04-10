@@ -20,6 +20,7 @@ namespace Catalog.DataAccessLayer.Configuration
 
             builder.Property(entity => entity.SecurityServerCode).IsRequired().HasMaxLength(200);
             builder.Property(entity => entity.Address).IsRequired().HasMaxLength(500);
+            builder.Property(entity => entity.LastRequestedDateTime).IsRequired(false);
 
             builder.HasOne(server => server.Member)
                 .WithMany(member => member.SecurityServers)

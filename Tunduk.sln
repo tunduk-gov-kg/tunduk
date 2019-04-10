@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRoad.OpMonitor", "XRoad.Op
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRoad.OpMonitor.UnitTests", "XRoad.OpMonitor.UnitTests\XRoad.OpMonitor.UnitTests.csproj", "{5649CC1D-EC65-411A-B824-C25E08A22272}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Domain.UnitTests", "Catalog.Domain.UnitTests\Catalog.Domain.UnitTests.csproj", "{0B08FAA1-44CF-4707-B72B-A990D95DD18B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Helpers", "XUnit.Helpers\XUnit.Helpers.csproj", "{6365DD9D-DCF4-45D1-96AF-18F662C4815B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{5649CC1D-EC65-411A-B824-C25E08A22272}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5649CC1D-EC65-411A-B824-C25E08A22272}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5649CC1D-EC65-411A-B824-C25E08A22272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B08FAA1-44CF-4707-B72B-A990D95DD18B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B08FAA1-44CF-4707-B72B-A990D95DD18B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B08FAA1-44CF-4707-B72B-A990D95DD18B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B08FAA1-44CF-4707-B72B-A990D95DD18B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

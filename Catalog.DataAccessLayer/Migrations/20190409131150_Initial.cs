@@ -323,7 +323,8 @@ namespace Catalog.DataAccessLayer.Migrations
                     SecurityServerCode = table.Column<string>(maxLength: 200, nullable: false),
                     Address = table.Column<string>(maxLength: 500, nullable: false),
                     MemberId = table.Column<long>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastRequestedDateTime = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -397,8 +398,8 @@ namespace Catalog.DataAccessLayer.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "942d9f5f-5d07-4922-97e5-528e73c72e4c", "efc76605-9107-4c61-97a7-69749cc9bd8a", "Administrator", null },
-                    { "83e39e46-534a-4590-8ec4-183070b0c68c", "2e77da4d-0183-4212-93ae-3e0eb3c6dd68", "CatalogUser", null }
+                    { "da11715f-1d5c-4aeb-ab3d-b07c1a8cf5e7", "1d4a256e-58f3-4369-a765-9c54efde5db4", "Administrator", null },
+                    { "843f7734-496f-4404-aca3-7a221be65aed", "3e6592da-f1a9-441a-bfb5-d1f414d2b36e", "CatalogUser", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -474,6 +475,11 @@ namespace Catalog.DataAccessLayer.Migrations
                 name: "IX_Messages_MessageId",
                 table: "Messages",
                 column: "MessageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_MessageState",
+                table: "Messages",
+                column: "MessageState");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SecurityServers_MemberId_SecurityServerCode",

@@ -1,4 +1,6 @@
-﻿namespace Catalog.Domain.Entity
+﻿using System;
+
+namespace Catalog.Domain.Entity
 {
     public class SecurityServer : BaseEntity, ISoftDelete
     {
@@ -7,5 +9,6 @@
         public Member Member { get; set; }
         public long MemberId { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime? LastRequestedDateTime { get; set; }
     }
 }

@@ -276,6 +276,8 @@ namespace Catalog.DataAccessLayer.Migrations
 
                     b.HasIndex("MessageId");
 
+                    b.HasIndex("MessageState");
+
                     b.ToTable("Messages");
                 });
 
@@ -391,6 +393,8 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastRequestedDateTime");
 
                     b.Property<long>("MemberId");
 
@@ -519,14 +523,14 @@ namespace Catalog.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "942d9f5f-5d07-4922-97e5-528e73c72e4c",
-                            ConcurrencyStamp = "efc76605-9107-4c61-97a7-69749cc9bd8a",
+                            Id = "da11715f-1d5c-4aeb-ab3d-b07c1a8cf5e7",
+                            ConcurrencyStamp = "1d4a256e-58f3-4369-a765-9c54efde5db4",
                             Name = "Administrator"
                         },
                         new
                         {
-                            Id = "83e39e46-534a-4590-8ec4-183070b0c68c",
-                            ConcurrencyStamp = "2e77da4d-0183-4212-93ae-3e0eb3c6dd68",
+                            Id = "843f7734-496f-4404-aca3-7a221be65aed",
+                            ConcurrencyStamp = "3e6592da-f1a9-441a-bfb5-d1f414d2b36e",
                             Name = "CatalogUser"
                         });
                 });

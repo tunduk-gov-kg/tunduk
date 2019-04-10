@@ -3,6 +3,8 @@
     public class SecurityServerIdentifier : MemberIdentifier
     {
         public string SecurityServerCode { get; set; }
+
+        public override string ToString() => $"{Instance}/{MemberClass}/{MemberCode}/{SecurityServerCode}";
     }
 
     public class SecurityServerData

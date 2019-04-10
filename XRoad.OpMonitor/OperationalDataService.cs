@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Threading.Tasks;
 using SimpleSOAPClient;
 using SimpleSOAPClient.Handlers;
 using SimpleSOAPClient.Helpers;
@@ -18,7 +17,7 @@ namespace XRoad.OpMonitor
         private static readonly UserIdHeader UserIdHeader = new UserIdHeader
             {Value = ".NetCore_ServiceMetadataManager"};
 
-        public async Task<OperationalData> GetOperationalDataAsync(XRoadExchangeParameters xRoadExchangeParameters,
+        public OperationalData GetOperationalData(XRoadExchangeParameters xRoadExchangeParameters,
             SecurityServerIdentifier securityServerIdentifier,
             SearchCriteria searchCriteria)
         {
@@ -68,8 +67,7 @@ namespace XRoad.OpMonitor
                 (XRoadSecurityServer) securityServerIdentifier
             });
 
-            var result =
-                await client.SendAsync(xRoadExchangeParameters.SecurityServerUri.ToString(), string.Empty, body);
+            var result = client.Send(xRoadExchangeParameters.SecurityServerUri.ToString(), string.Empty, body);
             result.ThrowIfFaulted();
 
             var operationalData = result.Body<OperationalData>();

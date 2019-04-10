@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
-using Catalog.Domain.Enum;
+using Microsoft.Extensions.Logging;
 using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
 
@@ -11,20 +11,19 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class UpdaterManager : IUpdateManager
     {
-        private readonly IDomainLogger _logger;
         private readonly MembersStorageUpdater _membersStorage;
         private readonly SecurityServersStorageUpdater _serversStorageUpdater;
         private readonly ServicesStorageUpdater _servicesStorage;
         private readonly SubSystemsStorageUpdater _subSystemsStorage;
         private readonly IXRoadManager _xRoadManager;
+        private readonly ILogger<UpdaterManager> _logger;
 
         public UpdaterManager(IXRoadManager xRoadManager
             , MembersStorageUpdater membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
             , ServicesStorageUpdater servicesStorage
-            , IDomainLogger logger
-        )
+            , ILogger<UpdaterManager> logger)
         {
             _xRoadManager = xRoadManager;
             _membersStorage = membersStorage;
@@ -66,7 +65,12 @@ namespace Catalog.BusinessLogicLayer.Service
             }
             catch (FaultException exception)
             {
-                _logger.Log(LogLevel.Error, exception.Code, exception.String);
+                _logger.LogError(LoggingEvents.UpdateWsdlTask, "" +
+                    "Error occurred during wsdl update task for service: {service}; " +
+                    "Server responded with message: {message}",
+                    targetService.ToString(),
+                    exception.String
+                );
             }
         }
 

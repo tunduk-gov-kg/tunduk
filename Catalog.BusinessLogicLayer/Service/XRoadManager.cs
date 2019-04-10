@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
-using Catalog.Domain.Enum;
+using Microsoft.Extensions.Logging;
 using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
@@ -15,13 +15,13 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class XRoadManager : IXRoadManager
     {
-        private readonly IDomainLogger _logger;
+        private readonly ILogger<XRoadManager> _logger;
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
 
         public XRoadManager(IServiceMetadataManager serviceMetadataManager
             , XRoadExchangeParameters xRoadExchangeParameters
-            , IDomainLogger logger
+            , ILogger<XRoadManager> logger
         )
         {
             _serviceMetadataManager = serviceMetadataManager;
@@ -109,7 +109,12 @@ namespace Catalog.BusinessLogicLayer.Service
                 }
                 catch (FaultException exception)
                 {
-                    _logger.Log(LogLevel.Error, exception.Code, exception.String);
+                    _logger.LogError(LoggingEvents.GetServicesList,
+                        "Error occurred during service list update operation for sub-system: {subsystem}; " +
+                        "Server responded with message: {message}",
+                        subSystemIdentifier.ToString(),
+                        exception.String
+                    );
                 }
 
             return ImmutableList.CreateRange(servicesList);

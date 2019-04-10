@@ -29,7 +29,6 @@ namespace Catalog.DataAccessLayer
         public DbSet<SecurityServer> SecurityServers { get; set; }
         public DbSet<Domain.Entity.Service> Services { get; set; }
         public DbSet<SubSystem> SubSystems { get; set; }
-        public DbSet<DomainLog> DomainLogs { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<OperationalDataRecord> OperationalDataRecords { get; set; }
 
@@ -48,7 +47,6 @@ namespace Catalog.DataAccessLayer
             modelBuilder.ApplyConfiguration(new SecurityServerConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new SubSystemConfiguration());
-            modelBuilder.ApplyConfiguration(new DomainLogConfiguration());
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.ApplyConfiguration(new OperationalDataRecordConfiguration());
         }

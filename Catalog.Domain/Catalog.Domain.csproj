@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\XRoad.Domain\XRoad.Domain.csproj" />
+      <ProjectReference Include="..\XRoad.OpMonitor\XRoad.OpMonitor.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +20,7 @@
 
     <ItemGroup>
       <PackageReference Include="Ardalis.SmartEnum" Version="1.0.6" />
+      <PackageReference Include="AutoMapper" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

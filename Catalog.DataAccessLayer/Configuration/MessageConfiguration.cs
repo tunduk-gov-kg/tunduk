@@ -14,6 +14,7 @@ namespace Catalog.DataAccessLayer.Configuration
 
             builder.HasIndex(entity => entity.MessageId);
             builder.HasIndex(entity => entity.MessageDigest).IsUnique();
+            builder.HasIndex(entity => entity.MessageState);
 
             builder.Property(entity => entity.MessageId).IsRequired().HasMaxLength(500);
             builder.Property(entity => entity.MessageDigest).IsRequired().HasMaxLength(500);
