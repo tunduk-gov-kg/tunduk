@@ -10,16 +10,16 @@ using XUnit.Helpers;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
-    public class XRoadDataCollectorTests
+    public class XRoadMetadataCollectorTests
     {
-        private readonly ILogger<XRoadDataCollector> _logger;
+        private readonly ILogger<XRoadMetadataCollector> _logger;
         private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
-        public XRoadDataCollectorTests(ITestOutputHelper testOutputHelper)
+        public XRoadMetadataCollectorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
-            _logger = loggerFactory.CreateLogger<XRoadDataCollector>();
+            _logger = loggerFactory.CreateLogger<XRoadMetadataCollector>();
             _xRoadManageLogger = loggerFactory.CreateLogger<XRoadGlobalConfigurationClient>();
         }
 
@@ -32,7 +32,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 _xRoadManageLogger
             );
 
-            var defaultUpdateManager = new XRoadDataCollector(
+            var defaultUpdateManager = new XRoadMetadataCollector(
                 manager,
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),
@@ -52,7 +52,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 _xRoadManageLogger
             );
 
-            var defaultUpdateManager = new XRoadDataCollector(
+            var defaultUpdateManager = new XRoadMetadataCollector(
                 manager,
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),

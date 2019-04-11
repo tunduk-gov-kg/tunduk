@@ -9,11 +9,11 @@ using XUnit.Helpers;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
-    public class XRoadManagerUnitTests
+    public class XRoadGlobalConfigurationClientTests
     {
         private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
-        public XRoadManagerUnitTests(ITestOutputHelper testOutputHelper)
+        public XRoadGlobalConfigurationClientTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));

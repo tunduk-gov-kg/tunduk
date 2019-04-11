@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,21 +10,21 @@ using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service
 {
-    public class XRoadDataCollector
+    public class XRoadMetadataCollector
     {
         private readonly IXRoadStorageUpdater<MemberData> _membersStorage;
         private readonly IXRoadStorageUpdater<SecurityServerData> _serversStorageUpdater;
         private readonly IXRoadStorageUpdater<SubSystemIdentifier> _subSystemsStorage;
         private readonly ServicesStorageUpdater _servicesStorage;
         private readonly IXRoadGlobalConfigurationClient _configurationClient;
-        private readonly ILogger<XRoadDataCollector> _logger;
+        private readonly ILogger<XRoadMetadataCollector> _logger;
 
-        public XRoadDataCollector(IXRoadGlobalConfigurationClient configurationClient
+        public XRoadMetadataCollector(IXRoadGlobalConfigurationClient configurationClient
             , IXRoadStorageUpdater<MemberData> membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
             , ServicesStorageUpdater servicesStorage
-            , ILogger<XRoadDataCollector> logger)
+            , ILogger<XRoadMetadataCollector> logger)
         {
             _configurationClient = configurationClient;
             _membersStorage = membersStorage;
@@ -74,10 +75,12 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList)
+        private async Task UpdateServicesWsdl(IList<ServiceIdentifier> subSystemServicesList)
         {
+            _logger.LogInformation("Update wsdl task started.");
             foreach (var serviceIdentifier in subSystemServicesList.AsParallel())
                 await RunWsdlUpdateTask(serviceIdentifier);
+            _logger.LogInformation("Update wsdl task finished.");
         }
     }
 }
