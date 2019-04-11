@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Catalog.BusinessLogicLayer.Service
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<ServiceIdentifier> updatedServicesList)
+        public async Task UpdateLocalDatabaseAsync(IList<ServiceIdentifier> updatedServicesList)
         {
             var databaseServicesList = _catalogDbContext.Services
                 .IgnoreQueryFilters()
@@ -56,8 +57,8 @@ namespace Catalog.BusinessLogicLayer.Service
             await _catalogDbContext.SaveChangesAsync();
         }
 
-        private void RestorePreviouslyDeletedServices(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
+        private void RestorePreviouslyDeletedServices(IList<Domain.Entity.Service> databaseServicesList,
+            IList<ServiceIdentifier> updatedServicesList)
         {
             foreach (var databaseService in databaseServicesList)
             {
@@ -69,8 +70,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RemoveNonExistingServices(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
+        private void RemoveNonExistingServices(IList<Domain.Entity.Service> databaseServicesList,
+            IList<ServiceIdentifier> updatedServicesList)
         {
             foreach (var databaseService in databaseServicesList)
             {
@@ -79,8 +80,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void CreateCompletelyNewService(ImmutableList<Domain.Entity.Service> databaseServicesList,
-            IImmutableList<ServiceIdentifier> updatedServicesList)
+        private void CreateCompletelyNewService(IList<Domain.Entity.Service> databaseServicesList,
+            IList<ServiceIdentifier> updatedServicesList)
         {
             foreach (var incomingService in updatedServicesList)
             {

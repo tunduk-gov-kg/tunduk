@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Catalog.BusinessLogicLayer.Service
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<SecurityServerData> incomingServersList)
+        public async Task UpdateLocalDatabaseAsync(IList<SecurityServerData> incomingServersList)
         {
             var databaseServersList = _dbContext.SecurityServers
                 .IgnoreQueryFilters()
@@ -39,8 +40,8 @@ namespace Catalog.BusinessLogicLayer.Service
             await _dbContext.SaveChangesAsync();
         }
 
-        private void CreateCompletelyNewServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList)
+        private void CreateCompletelyNewServers(IList<SecurityServerData> incomingServersList,
+            IList<SecurityServer> databaseServersList)
         {
             foreach (var incomingServerData in incomingServersList)
             {
@@ -69,8 +70,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RemoveNonExistingServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList)
+        private void RemoveNonExistingServers(IList<SecurityServerData> incomingServersList,
+            IList<SecurityServer> databaseServersList)
         {
             foreach (var storedInDatabaseServer in databaseServersList)
             {
@@ -80,8 +81,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RestorePreviouslyRemovedServers(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList)
+        private void RestorePreviouslyRemovedServers(IList<SecurityServerData> incomingServersList,
+            IList<SecurityServer> databaseServersList)
         {
             foreach (var storedInDatabaseServer in databaseServersList)
             {
@@ -93,8 +94,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void UpdateSecurityServersAddresses(IImmutableList<SecurityServerData> incomingServersList,
-            ImmutableList<SecurityServer> databaseServersList)
+        private void UpdateSecurityServersAddresses(IList<SecurityServerData> incomingServersList,
+            IList<SecurityServer> databaseServersList)
         {
             foreach (var storedInDatabaseServer in databaseServersList)
             {

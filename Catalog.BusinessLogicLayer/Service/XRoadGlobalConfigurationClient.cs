@@ -13,15 +13,15 @@ using XRoad.GlobalConfiguration.Metadata;
 
 namespace Catalog.BusinessLogicLayer.Service
 {
-    public class XRoadManager : IXRoadManager
+    public class XRoadGlobalConfigurationClient : IXRoadGlobalConfigurationClient
     {
-        private readonly ILogger<XRoadManager> _logger;
+        private readonly ILogger<XRoadGlobalConfigurationClient> _logger;
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
 
-        public XRoadManager(IServiceMetadataManager serviceMetadataManager
+        public XRoadGlobalConfigurationClient(IServiceMetadataManager serviceMetadataManager
             , XRoadExchangeParameters xRoadExchangeParameters
-            , ILogger<XRoadManager> logger
+            , ILogger<XRoadGlobalConfigurationClient> logger
         )
         {
             _serviceMetadataManager = serviceMetadataManager;

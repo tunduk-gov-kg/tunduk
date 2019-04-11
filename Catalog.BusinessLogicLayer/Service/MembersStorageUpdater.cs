@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
@@ -23,7 +24,7 @@ namespace Catalog.BusinessLogicLayer.Service
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<MemberData> newMembersList)
+        public async Task UpdateLocalDatabaseAsync(IList<MemberData> newMembersList)
         {
             var databaseMembersList = _dbContext.Members.IgnoreQueryFilters().ToImmutableList();
 
@@ -34,8 +35,7 @@ namespace Catalog.BusinessLogicLayer.Service
             await _dbContext.SaveChangesAsync();
         }
 
-        private void CreateCompletelyNewMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList)
+        private void CreateCompletelyNewMembers(IList<MemberData> newMembersList, IList<Member> databaseMembersList)
         {
             foreach (var incomingListMember in newMembersList)
             {
@@ -56,8 +56,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RemoveNonExistingMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList)
+        private void RemoveNonExistingMembers(IList<MemberData> newMembersList,
+            IList<Member> databaseMembersList)
         {
             foreach (var databaseMember in databaseMembersList)
             {
@@ -68,14 +68,14 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RestorePreviouslyRemovedMembers(IImmutableList<MemberData> newMembersList,
-            ImmutableList<Member> databaseMembersList)
+        private void RestorePreviouslyRemovedMembers(IList<MemberData> newMembersList,
+            IList<Member> databaseMembersList)
         {
             foreach (var databaseMember in databaseMembersList)
             {
                 var shouldBeRestored = databaseMember.IsDeleted &&
-                    newMembersList.Any(incomingListMember =>
-                        Equals(databaseMember, incomingListMember.MemberIdentifier));
+                    newMembersList.Any(
+                        incomingListMember => Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
                 databaseMember.IsDeleted = false;
                 _dbContext.Members.Update(databaseMember);

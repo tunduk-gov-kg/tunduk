@@ -4,7 +4,7 @@ using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service.Interfaces
 {
-    public interface IXRoadManager
+    public interface IXRoadGlobalConfigurationClient
     {
         Task<ImmutableList<MemberData>> GetMembersListAsync();
         Task<ImmutableList<SecurityServerData>> GetSecurityServersListAsync();

@@ -12,15 +12,15 @@ using XUnit.Helpers;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
-    public class MonitoringServceUnitTests
+    public class OperationalDataCollectorTests
     {
-        private readonly ILogger<MonitoringService> _logger;
+        private readonly ILogger<OperationalDataCollector> _logger;
 
-        public MonitoringServceUnitTests(ITestOutputHelper testOutputHelper)
+        public OperationalDataCollectorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
-            _logger = loggerFactory.CreateLogger<MonitoringService>();
+            _logger = loggerFactory.CreateLogger<OperationalDataCollector>();
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 cfg.AddProfiles(typeof(OperationalDataRecordProfile));
             });
 
-            var monitoringService = new MonitoringService(DbContextProvider.RequireDbContext(),
+            var monitoringService = new OperationalDataCollector(DbContextProvider.RequireDbContext(),
                 mapperConfiguration.CreateMapper(), new OperationalDataService(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _logger);
@@ -49,7 +49,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 cfg.AddProfiles(typeof(OperationalDataRecordProfile));
             });
 
-            var monitoringService = new MonitoringService(
+            var monitoringService = new OperationalDataCollector(
                 DbContextProvider.RequireDbContext(),
                 mapperConfiguration.CreateMapper(),
                 new OperationalDataService(),
