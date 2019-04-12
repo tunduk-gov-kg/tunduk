@@ -54,7 +54,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
                 var nextRecordsFrom = RunOpDataCollectorTask(
                     securityServerIdentifier,
-                    securityServer.LastRequestedDateTime ?? 0L.ToDateTime()
+                    securityServer.LastRequestedDateTime ?? 0L.AsSecondsToDateTime()
                 );
 
                 securityServer.LastRequestedDateTime = nextRecordsFrom;
@@ -117,7 +117,7 @@ namespace Catalog.BusinessLogicLayer.Service
                 );
             }
 
-            return recordsFrom.ToDateTime();
+            return recordsFrom.AsSecondsToDateTime();
         }
     }
 }

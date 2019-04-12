@@ -35,7 +35,8 @@ namespace Catalog.BusinessLogicLayer.UnitTests
             var monitoringService = new XRoadOperationalDataCollector(DbContextProvider.RequireDbContext(),
                 mapperConfiguration.CreateMapper(), new OperationalDataService(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
-                _logger);
+                _logger
+            );
 
             monitoringService.RunOpDataCollectorTask();
         }
