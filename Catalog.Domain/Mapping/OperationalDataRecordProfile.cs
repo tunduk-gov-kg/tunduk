@@ -50,6 +50,8 @@ namespace Catalog.Domain.Mapping
                 .ForMember(message => message.ProducerSecurityServerInternalIpAddress,
                     options => options.MapFrom(expression =>
                         expression.IsProducer ? expression.SecurityServerInternalIp : null))
+                .ForMember(message => message.IsSucceeded,
+                    options => options.MapFrom(expression => expression.Succeeded))
                 .ForMember(message => message.FaultCode,
                     options => options.MapFrom(expression => expression.SoapFaultCode))
                 .ForMember(message => message.FaultString,
