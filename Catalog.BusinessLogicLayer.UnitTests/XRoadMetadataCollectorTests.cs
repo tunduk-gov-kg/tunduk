@@ -10,29 +10,29 @@ using XUnit.Helpers;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
-    public class UpdateManagerUnitTests
+    public class XRoadMetadataCollectorTests
     {
-        private readonly ILogger<UpdaterManager> _logger;
-        private readonly ILogger<XRoadManager> _xRoadManageLogger;
+        private readonly ILogger<XRoadMetadataCollector> _logger;
+        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
-        public UpdateManagerUnitTests(ITestOutputHelper testOutputHelper)
+        public XRoadMetadataCollectorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
-            _logger = loggerFactory.CreateLogger<UpdaterManager>();
-            _xRoadManageLogger = loggerFactory.CreateLogger<XRoadManager>();
+            _logger = loggerFactory.CreateLogger<XRoadMetadataCollector>();
+            _xRoadManageLogger = loggerFactory.CreateLogger<XRoadGlobalConfigurationClient>();
         }
 
         [Fact]
         public async Task RunBatchUpdateTask__When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger
             );
 
-            var defaultUpdateManager = new UpdaterManager(
+            var defaultUpdateManager = new XRoadMetadataCollector(
                 manager,
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),
@@ -46,13 +46,13 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public async Task RunWsdlUpdateTaskAsync__When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger
             );
 
-            var defaultUpdateManager = new UpdaterManager(
+            var defaultUpdateManager = new XRoadMetadataCollector(
                 manager,
                 new MembersStorageUpdater(DbContextProvider.RequireDbContext()),
                 new SecurityServersStorageUpdater(DbContextProvider.RequireDbContext()),

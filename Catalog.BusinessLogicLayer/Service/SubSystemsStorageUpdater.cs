@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Catalog.BusinessLogicLayer.Service
             _dbContext.Dispose();
         }
 
-        public async Task UpdateLocalDatabaseAsync(IImmutableList<SubSystemIdentifier> subSystemsList)
+        public async Task UpdateLocalDatabaseAsync(IList<SubSystemIdentifier> subSystemsList)
         {
             var databaseSubSystemsList = _dbContext.SubSystems
                 .IgnoreQueryFilters()
@@ -39,8 +40,8 @@ namespace Catalog.BusinessLogicLayer.Service
         }
 
 
-        private void CreateCompletelyNewSubSystems(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList)
+        private void CreateCompletelyNewSubSystems(IList<SubSystemIdentifier> newSubSystemsList,
+            IList<SubSystem> databaseSubSystemsList)
         {
             foreach (var subSystemIdentifier in newSubSystemsList)
             {
@@ -66,8 +67,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RemoveNonExistingMembers(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList)
+        private void RemoveNonExistingMembers(IList<SubSystemIdentifier> newSubSystemsList,
+            IList<SubSystem> databaseSubSystemsList)
         {
             foreach (var databaseSubSystem in databaseSubSystemsList)
             {
@@ -76,8 +77,8 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private void RestorePreviouslyRemovedMembers(IImmutableList<SubSystemIdentifier> newSubSystemsList,
-            ImmutableList<SubSystem> databaseSubSystemsList)
+        private void RestorePreviouslyRemovedMembers(IList<SubSystemIdentifier> newSubSystemsList,
+            IList<SubSystem> databaseSubSystemsList)
         {
             foreach (var databaseSubSystem in databaseSubSystemsList)
             {

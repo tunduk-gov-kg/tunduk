@@ -9,21 +9,21 @@ using XUnit.Helpers;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
-    public class XRoadManagerUnitTests
+    public class XRoadGlobalConfigurationClientTests
     {
-        private readonly ILogger<XRoadManager> _xRoadManageLogger;
+        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
-        public XRoadManagerUnitTests(ITestOutputHelper testOutputHelper)
+        public XRoadGlobalConfigurationClientTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
-            _xRoadManageLogger = loggerFactory.CreateLogger<XRoadManager>();
+            _xRoadManageLogger = loggerFactory.CreateLogger<XRoadGlobalConfigurationClient>();
         }
 
         [Fact]
         public async Task GetMembersListAsync_When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger
@@ -36,7 +36,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public async Task GetSecurityServersListAsync_When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger
@@ -48,7 +48,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public async Task GetServicesListAsync_When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger
@@ -60,7 +60,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public async Task GetSubSystemsListAsync_When__()
         {
-            var manager = new XRoadManager(
+            var manager = new XRoadGlobalConfigurationClient(
                 new ServiceMetadataManager(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
                 _xRoadManageLogger

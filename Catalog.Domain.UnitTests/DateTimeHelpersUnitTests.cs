@@ -26,7 +26,7 @@ namespace Catalog.Domain.UnitTests
         public void ToDateTime_WhenDateTime()
         {
             var dateTime = new DateTime(2000, 1, 1, 0, 0, 0);
-            Assert.Equal(dateTime, 946684800L.ToDateTime());
+            Assert.Equal(dateTime, 946684800L.AsSecondsToDateTime());
         }
     }
 }

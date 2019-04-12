@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using AutoMapper;
-using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.DataAccessLayer;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Helpers;
@@ -14,21 +13,21 @@ using XRoad.OpMonitor.Domain.SOAP;
 
 namespace Catalog.BusinessLogicLayer.Service
 {
-    public class MonitoringService : IMonitoringService
+    public sealed class XRoadOperationalDataCollector
     {
         private static readonly int MaxIteration = 10;
         private static readonly int OffsetSeconds = 120;
 
         private readonly IMapper _mapper;
         private readonly CatalogDbContext _dbContext;
-        private readonly ILogger<MonitoringService> _logger;
+        private readonly ILogger<XRoadOperationalDataCollector> _logger;
         private readonly IOperationalDataService _operationalDataService;
 
-        public MonitoringService(CatalogDbContext dbContext
+        public XRoadOperationalDataCollector(CatalogDbContext dbContext
             , IMapper mapper
             , IOperationalDataService operationalDataService
             , XRoadExchangeParameters xRoadExchangeParameters
-            , ILogger<MonitoringService> logger)
+            , ILogger<XRoadOperationalDataCollector> logger)
         {
             _dbContext = dbContext;
             _operationalDataService = operationalDataService;
@@ -55,7 +54,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
                 var nextRecordsFrom = RunOpDataCollectorTask(
                     securityServerIdentifier,
-                    securityServer.LastRequestedDateTime ?? 0L.ToDateTime()
+                    securityServer.LastRequestedDateTime ?? 0L.AsSecondsToDateTime()
                 );
 
                 securityServer.LastRequestedDateTime = nextRecordsFrom;
@@ -118,7 +117,7 @@ namespace Catalog.BusinessLogicLayer.Service
                 );
             }
 
-            return recordsFrom.ToDateTime();
+            return recordsFrom.AsSecondsToDateTime();
         }
     }
 }

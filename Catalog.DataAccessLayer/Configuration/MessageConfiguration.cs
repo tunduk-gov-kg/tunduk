@@ -29,7 +29,7 @@ namespace Catalog.DataAccessLayer.Configuration
             builder.Property(entity => entity.ConsumerInstance).IsRequired().HasMaxLength(20);
             builder.Property(entity => entity.ConsumerMemberClass).IsRequired().HasMaxLength(20);
             builder.Property(entity => entity.ConsumerMemberCode).IsRequired().HasMaxLength(100);
-            builder.Property(entity => entity.ConsumerSubSystemCode).IsRequired().HasMaxLength(100);
+            builder.Property(entity => entity.ConsumerSubSystemCode).IsRequired(false).HasMaxLength(100);
 
             builder.Property(entity => entity.ProducerInstance).IsRequired().HasMaxLength(20);
             builder.Property(entity => entity.ProducerMemberClass).IsRequired().HasMaxLength(20);

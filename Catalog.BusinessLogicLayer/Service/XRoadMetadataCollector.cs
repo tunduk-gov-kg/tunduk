@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,23 +10,23 @@ using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service
 {
-    public class UpdaterManager : IUpdateManager
+    public class XRoadMetadataCollector
     {
-        private readonly MembersStorageUpdater _membersStorage;
-        private readonly SecurityServersStorageUpdater _serversStorageUpdater;
+        private readonly IXRoadStorageUpdater<MemberData> _membersStorage;
+        private readonly IXRoadStorageUpdater<SecurityServerData> _serversStorageUpdater;
+        private readonly IXRoadStorageUpdater<SubSystemIdentifier> _subSystemsStorage;
         private readonly ServicesStorageUpdater _servicesStorage;
-        private readonly SubSystemsStorageUpdater _subSystemsStorage;
-        private readonly IXRoadManager _xRoadManager;
-        private readonly ILogger<UpdaterManager> _logger;
+        private readonly IXRoadGlobalConfigurationClient _configurationClient;
+        private readonly ILogger<XRoadMetadataCollector> _logger;
 
-        public UpdaterManager(IXRoadManager xRoadManager
-            , MembersStorageUpdater membersStorage
+        public XRoadMetadataCollector(IXRoadGlobalConfigurationClient configurationClient
+            , IXRoadStorageUpdater<MemberData> membersStorage
             , SecurityServersStorageUpdater serversStorageUpdater
             , SubSystemsStorageUpdater subSystemsStorage
             , ServicesStorageUpdater servicesStorage
-            , ILogger<UpdaterManager> logger)
+            , ILogger<XRoadMetadataCollector> logger)
         {
-            _xRoadManager = xRoadManager;
+            _configurationClient = configurationClient;
             _membersStorage = membersStorage;
             _serversStorageUpdater = serversStorageUpdater;
             _subSystemsStorage = subSystemsStorage;
@@ -36,16 +37,16 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public async Task RunBatchUpdateTask()
         {
-            var memberDataRecords = await _xRoadManager.GetMembersListAsync();
+            var memberDataRecords = await _configurationClient.GetMembersListAsync();
             await _membersStorage.UpdateLocalDatabaseAsync(memberDataRecords);
 
-            var securityServerDataRecords = await _xRoadManager.GetSecurityServersListAsync();
+            var securityServerDataRecords = await _configurationClient.GetSecurityServersListAsync();
             await _serversStorageUpdater.UpdateLocalDatabaseAsync(securityServerDataRecords);
 
-            var subSystemIdentifiers = await _xRoadManager.GetSubSystemsListAsync();
+            var subSystemIdentifiers = await _configurationClient.GetSubSystemsListAsync();
             await _subSystemsStorage.UpdateLocalDatabaseAsync(subSystemIdentifiers);
 
-            var servicesList = await _xRoadManager.GetServicesListAsync();
+            var servicesList = await _configurationClient.GetServicesListAsync();
 
             var containsSubSystemCode =
                 new Predicate<ServiceIdentifier>(identifier => !string.IsNullOrEmpty(identifier.SubSystemCode));
@@ -60,7 +61,7 @@ namespace Catalog.BusinessLogicLayer.Service
         {
             try
             {
-                var wsdl = await _xRoadManager.GetWsdlAsync(targetService);
+                var wsdl = await _configurationClient.GetWsdlAsync(targetService);
                 await _servicesStorage.UpdateWsdlAsync(targetService, wsdl);
             }
             catch (FaultException exception)
@@ -74,10 +75,12 @@ namespace Catalog.BusinessLogicLayer.Service
             }
         }
 
-        private async Task UpdateServicesWsdl(ImmutableList<ServiceIdentifier> subSystemServicesList)
+        private async Task UpdateServicesWsdl(IList<ServiceIdentifier> subSystemServicesList)
         {
+            _logger.LogInformation("Update wsdl task started.");
             foreach (var serviceIdentifier in subSystemServicesList.AsParallel())
                 await RunWsdlUpdateTask(serviceIdentifier);
+            _logger.LogInformation("Update wsdl task finished.");
         }
     }
 }

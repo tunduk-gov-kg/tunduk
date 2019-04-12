@@ -13,15 +13,15 @@ using XRoad.GlobalConfiguration.Metadata;
 
 namespace Catalog.BusinessLogicLayer.Service
 {
-    public class XRoadManager : IXRoadManager
+    public class XRoadGlobalConfigurationClient : IXRoadGlobalConfigurationClient
     {
-        private readonly ILogger<XRoadManager> _logger;
+        private readonly ILogger<XRoadGlobalConfigurationClient> _logger;
         private readonly IServiceMetadataManager _serviceMetadataManager;
         private readonly XRoadExchangeParameters _xRoadExchangeParameters;
 
-        public XRoadManager(IServiceMetadataManager serviceMetadataManager
+        public XRoadGlobalConfigurationClient(IServiceMetadataManager serviceMetadataManager
             , XRoadExchangeParameters xRoadExchangeParameters
-            , ILogger<XRoadManager> logger
+            , ILogger<XRoadGlobalConfigurationClient> logger
         )
         {
             _serviceMetadataManager = serviceMetadataManager;
@@ -29,7 +29,7 @@ namespace Catalog.BusinessLogicLayer.Service
             _logger = logger;
         }
 
-        public async Task<ImmutableList<MemberData>> GetMembersListAsync()
+        public async Task<IList<MemberData>> GetMembersListAsync()
         {
             var sharedParams =
                 await _serviceMetadataManager.GetSharedParamsAsync(_xRoadExchangeParameters.SecurityServerUri);
@@ -50,7 +50,7 @@ namespace Catalog.BusinessLogicLayer.Service
             );
         }
 
-        public async Task<ImmutableList<SecurityServerData>> GetSecurityServersListAsync()
+        public async Task<IList<SecurityServerData>> GetSecurityServersListAsync()
         {
             var sharedParams =
                 await _serviceMetadataManager.GetSharedParamsAsync(_xRoadExchangeParameters.SecurityServerUri);
@@ -71,12 +71,10 @@ namespace Catalog.BusinessLogicLayer.Service
                 };
             });
 
-            return ImmutableList.CreateRange(
-                sharedParams.SecurityServers.ConvertAll(converter)
-            );
+            return sharedParams.SecurityServers.ConvertAll(converter);
         }
 
-        public async Task<ImmutableList<SubSystemIdentifier>> GetSubSystemsListAsync()
+        public async Task<IList<SubSystemIdentifier>> GetSubSystemsListAsync()
         {
             var sharedParams =
                 await _serviceMetadataManager.GetSharedParamsAsync(_xRoadExchangeParameters.SecurityServerUri);
@@ -90,10 +88,10 @@ namespace Catalog.BusinessLogicLayer.Service
                     SubSystemCode = subSystem.SubSystemCode
                 });
             });
-            return ImmutableList.CreateRange(sharedParams.Members.ConvertAll(converter).SelectMany(list => list));
+            return sharedParams.Members.ConvertAll(converter).SelectMany(list => list).ToList();
         }
 
-        public async Task<ImmutableList<ServiceIdentifier>> GetServicesListAsync()
+        public async Task<IList<ServiceIdentifier>> GetServicesListAsync()
         {
             var subSystemIdentifiers = await GetSubSystemsListAsync();
             var servicesList         = new List<ServiceIdentifier>();
@@ -117,7 +115,7 @@ namespace Catalog.BusinessLogicLayer.Service
                     );
                 }
 
-            return ImmutableList.CreateRange(servicesList);
+            return servicesList;
         }
 
         public async Task<string> GetWsdlAsync(ServiceIdentifier targetService)
