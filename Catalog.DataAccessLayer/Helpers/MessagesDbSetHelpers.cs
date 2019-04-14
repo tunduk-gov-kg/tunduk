@@ -10,8 +10,8 @@ namespace Catalog.DataAccessLayer.Helpers
         {
             var queryable = source.Where(
                 message => message.ConsumerInstance == member.Instance
-                    && message.ConsumerMemberClass == member.MemberClass
-                    && message.ConsumerMemberCode == member.MemberCode
+                           && message.ConsumerMemberClass == member.MemberClass
+                           && message.ConsumerMemberCode == member.MemberCode
             );
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (containsSubSystemCode)
@@ -28,7 +28,7 @@ namespace Catalog.DataAccessLayer.Helpers
                 .Where(message => message.ConsumerSubSystemCode == subSystem.SubSystemCode);
         }
 
-        public static IQueryable<Message> WhereIsSucceeded(this IQueryable<Message> source, bool value)
+        public static IQueryable<Message> WhereIsSucceeded(this IQueryable<Message> source, bool value = true)
         {
             return source.Where(message => message.IsSucceeded == value);
         }

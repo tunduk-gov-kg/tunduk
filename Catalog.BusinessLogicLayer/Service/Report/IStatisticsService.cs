@@ -6,6 +6,6 @@ namespace Catalog.BusinessLogicLayer.Service.Report
 {
     public interface IStatisticsService : IDisposable
     {
-        MemberExchangeInformation GetExchangeInformation(Member member);
+        MemberExchangeInformation GetExchangeInformation(Member member, DateTime from, DateTime to);
     }
 }
