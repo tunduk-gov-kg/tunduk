@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Catalog.BusinessLogicLayer.Service.Report;
 using Catalog.DataAccessLayer;
 using Catalog.DataAccessLayer.Service;
 using Catalog.Domain.Entity;
@@ -30,9 +31,9 @@ namespace Catalog.WebApi
             services.AddHttpContextAccessor();
             services.AddScoped<IUserIdProvider<string>, HttpContextUserIdProvider>();
             services.AddDbContext<CatalogDbContext>(builder =>
-            {
-                builder.UseNpgsql(Configuration.GetConnectionString("CatalogDb"));
-            });
+                builder.UseNpgsql(Configuration.GetConnectionString("CatalogDb")));
+
+            services.AddScoped<IStatisticsService, StatisticsService>();
 
             services.AddIdentity<CatalogUser, IdentityRole>()
                 .AddEntityFrameworkStores<CatalogDbContext>()
