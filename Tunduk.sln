@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Domain.UnitTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Helpers", "XUnit.Helpers\XUnit.Helpers.csproj", "{6365DD9D-DCF4-45D1-96AF-18F662C4815B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Daemon", "Catalog.Daemon\Catalog.Daemon.csproj", "{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
