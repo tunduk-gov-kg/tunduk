@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web.Http;
 using Catalog.BusinessLogicLayer.Service.Report;
 using Catalog.DataAccessLayer;
 using Catalog.Domain.Model;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Catalog.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
         private readonly IStatisticsService _statistics;
@@ -21,11 +22,16 @@ namespace Catalog.WebApi.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet]
-        public MemberExchangeInformation GetMemberExchangeInformation()
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public MemberExchangeInformation GetMemberExchangeInformation(
+            [FromUri] long memberId,
+            [FromUri] DateTime from,
+            [FromUri] DateTime? to = null
+        )
         {
-            var member = _dbContext.Members.Include(it => it.SubSystems).SingleOrDefault(it => it.Id == 3L);
-            return _statistics.GetExchangeInformation(member, DateTime.Now.AddDays(-10), DateTime.Now);
+            var member = _dbContext.Members.Include(it => it.SubSystems)
+                .SingleOrDefault(it => it.Id == memberId);
+            return _statistics.GetExchangeInformation(member, from, to ?? DateTime.Now);
         }
     }
 }
