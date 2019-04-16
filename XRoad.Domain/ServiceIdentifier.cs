@@ -7,6 +7,31 @@ namespace XRoad.Domain
         public string ServiceCode { get; set; }
         public string ServiceVersion { get; set; }
 
+        protected bool Equals(ServiceIdentifier other)
+        {
+            return base.Equals(other) && string.Equals(ServiceCode, other.ServiceCode) &&
+                string.Equals(ServiceVersion, other.ServiceVersion);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ServiceIdentifier) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = base.GetHashCode();
+                hashCode = (hashCode * 397) ^ (ServiceCode != null ? ServiceCode.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (ServiceVersion != null ? ServiceVersion.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
         public static implicit operator ServiceIdentifier(XRoadService xRoadService)
         {
             return new ServiceIdentifier
