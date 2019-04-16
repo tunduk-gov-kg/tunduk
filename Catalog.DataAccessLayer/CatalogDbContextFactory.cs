@@ -1,5 +1,4 @@
-﻿using Catalog.DataAccessLayer.Service;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Catalog.DataAccessLayer
@@ -11,8 +10,8 @@ namespace Catalog.DataAccessLayer
             var options = new DbContextOptionsBuilder<CatalogDbContext>()
                 .UseNpgsql("Server=localhost;Port=5432;Database=Tunduk;User Id=postgres;Password=postgres;")
                 .Options;
-
-            return new CatalogDbContext(options, new MockUserIdProvider());
+            
+            return new CatalogDbContext(options);
         }
     }
 }

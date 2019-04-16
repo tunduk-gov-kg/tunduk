@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using AutoMapper;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Service;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +41,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void RunOpDataCollectorTask()
         {
-            var catalogDbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider());
+            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
             var securityServers = catalogDbContext.SecurityServers
                 .Include(entity => entity.Member).ToList();
             _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask, "RunOpdataCollector Task started...");
@@ -102,7 +101,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
                     do
                     {
-                        using (var dbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider()))
+                        using (var dbContext = new CatalogDbContext(_dbContextOptions))
                         {
                             pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
                             dbContext.OperationalDataRecords.AddRange(pagedList);

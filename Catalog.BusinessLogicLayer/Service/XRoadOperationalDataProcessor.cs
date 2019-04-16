@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using AutoMapper;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Service;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Helpers;
 using LinqKit;
@@ -20,7 +19,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void ProcessRecords()
         {
-            var catalogDbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider());
+            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
             catalogDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             var requireCleanData = PredicateBuilder.New<OperationalDataRecord>()
@@ -58,7 +57,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
         private void ProcessOperationalDataRecord(OperationalDataRecord record)
         {
-            var catalogDbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider());
+            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
 
             try
             {

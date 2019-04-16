@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.DataAccessLayer.Configuration;
-using Catalog.DataAccessLayer.Service;
 using Catalog.Domain;
 using Catalog.Domain.Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,13 @@ namespace Catalog.DataAccessLayer
         private readonly string _currentUserId;
 
         public CatalogDbContext(DbContextOptions<CatalogDbContext> dbContextOptions,
-            IUserIdProvider<string> userIdProvider)
+            IHttpContextAccessor httpContextAccessor = null)
             : base(dbContextOptions)
         {
-            _currentUserId = userIdProvider.GetCurrentUserId();
+            var identityName = httpContextAccessor?.HttpContext.User?.Identity.Name;
+            var authenticatedUserId =
+                httpContextAccessor?.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _currentUserId = identityName ?? authenticatedUserId;
         }
 
         public DbSet<Member> Members { get; set; }

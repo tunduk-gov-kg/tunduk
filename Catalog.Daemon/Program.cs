@@ -5,7 +5,6 @@ using Catalog.BusinessLogicLayer.Service;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
 using Catalog.Daemon.HostedService;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +52,6 @@ namespace Catalog.Daemon
                         }
                     });
 
-                    services.AddScoped<IUserIdProvider<string>, MockUserIdProvider>();
                     services.AddScoped<IServiceMetadataManager, ServiceMetadataManager>();
                     services.AddScoped<IXRoadStorageUpdater<MemberData>, MembersStorageUpdater>();
                     services.AddScoped<IXRoadStorageUpdater<SecurityServerData>, SecurityServersStorageUpdater>();
