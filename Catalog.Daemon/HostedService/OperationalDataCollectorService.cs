@@ -5,7 +5,7 @@ using Catalog.BusinessLogicLayer.Service;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Catalog.Daemon
+namespace Catalog.Daemon.HostedService
 {
     public class OperationalDataCollectorService : IHostedService, IDisposable
     {
@@ -45,7 +45,7 @@ namespace Catalog.Daemon
             _logger.LogInformation(nameof(OperationalDataCollectorService) + " is stopping");
 
             _timer?.Change(Timeout.Infinite, 0);
-            
+
             return Task.CompletedTask;
         }
 

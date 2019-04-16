@@ -5,7 +5,7 @@ using Catalog.BusinessLogicLayer.Service;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Catalog.Daemon
+namespace Catalog.Daemon.HostedService
 {
     public class OperationalDataProcessorService : IHostedService, IDisposable
     {
@@ -26,7 +26,7 @@ namespace Catalog.Daemon
         {
             _logger.LogInformation(nameof(OperationalDataProcessorService) + " is starting");
 
-            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromHours(2));
 
             return Task.CompletedTask;
         }

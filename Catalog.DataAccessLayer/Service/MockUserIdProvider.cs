@@ -4,7 +4,7 @@ namespace Catalog.DataAccessLayer.Service
     {
         public string GetCurrentUserId()
         {
-            return "sample_user_id";
+            return "SystemId";
         }
     }
 }

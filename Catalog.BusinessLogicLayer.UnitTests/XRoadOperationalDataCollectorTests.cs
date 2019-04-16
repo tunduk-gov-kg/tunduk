@@ -2,7 +2,9 @@ using System;
 using AutoMapper;
 using Catalog.BusinessLogicLayer.Service;
 using Catalog.BusinessLogicLayer.UnitTests.Providers;
+using Catalog.DataAccessLayer;
 using Catalog.Domain.Mapping;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using XRoad.Domain;
 using XRoad.OpMonitor;
@@ -26,16 +28,21 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public void RunOpDataCollectorTask__When__()
         {
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<CatalogDbContext>()
+                .UseNpgsql("Server=localhost;Port=5432;Database=Tunduk;User Id=postgres;Password=postgres;");
+
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfiles(typeof(SecurityServerProfile));
                 cfg.AddProfiles(typeof(OperationalDataRecordProfile));
             });
 
-            var monitoringService = new XRoadOperationalDataCollector(DbContextProvider.RequireDbContext(),
-                mapperConfiguration.CreateMapper(), new OperationalDataService(),
+            var monitoringService = new XRoadOperationalDataCollector(
+                mapperConfiguration.CreateMapper(),
+                new OperationalDataService(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
-                _logger
+                _logger,
+                dbContextOptionsBuilder.Options
             );
 
             monitoringService.RunOpDataCollectorTask();
@@ -44,6 +51,9 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public void RunOpDataCollectorTask__When__SecuirtyServer()
         {
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<CatalogDbContext>()
+                .UseNpgsql("Server=localhost;Port=5432;Database=Tunduk;User Id=postgres;Password=postgres;");
+
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfiles(typeof(SecurityServerProfile));
@@ -51,11 +61,11 @@ namespace Catalog.BusinessLogicLayer.UnitTests
             });
 
             var monitoringService = new XRoadOperationalDataCollector(
-                DbContextProvider.RequireDbContext(),
                 mapperConfiguration.CreateMapper(),
                 new OperationalDataService(),
                 XRoadExchangeParametersProvider.RequireXRoadExchangeParameters(),
-                _logger
+                _logger,
+                dbContextOptionsBuilder.Options
             );
 
             var nextRecordsFrom = monitoringService.RunOpDataCollectorTask(

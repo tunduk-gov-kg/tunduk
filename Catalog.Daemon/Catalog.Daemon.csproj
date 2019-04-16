@@ -15,15 +15,23 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Catalog.BusinessLogicLayer\Catalog.BusinessLogicLayer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

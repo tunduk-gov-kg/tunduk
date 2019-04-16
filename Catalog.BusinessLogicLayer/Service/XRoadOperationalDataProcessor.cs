@@ -21,6 +21,7 @@ namespace Catalog.BusinessLogicLayer.Service
         public void ProcessRecords()
         {
             var catalogDbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider());
+            catalogDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             var requireCleanData = PredicateBuilder.New<OperationalDataRecord>()
                 .And(it => !it.IsProcessed)
