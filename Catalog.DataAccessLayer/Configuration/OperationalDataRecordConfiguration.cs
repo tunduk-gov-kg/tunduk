@@ -10,6 +10,8 @@ namespace Catalog.DataAccessLayer.Configuration
         public void Configure(EntityTypeBuilder<OperationalDataRecord> builder)
         {
             builder.ConfigureBaseEntityProperties();
+            builder.HasIndex(entity => entity.MessageId);
+
             builder.Property(entity => entity.ClientXRoadInstance).IsRequired(false).HasMaxLength(50);
             builder.Property(entity => entity.ClientMemberClass).IsRequired(false).HasMaxLength(50);
             builder.Property(entity => entity.ClientMemberCode).IsRequired(false).HasMaxLength(50);
@@ -24,7 +26,7 @@ namespace Catalog.DataAccessLayer.Configuration
             builder.Property(entity => entity.ServiceVersion).IsRequired(false).HasMaxLength(50);
             builder.Property(entity => entity.ServiceSecurityServerAddress).IsRequired(false).HasMaxLength(200);
 
-            builder.Property(entity => entity.MessageId).IsRequired(false).HasMaxLength(100);
+            builder.Property(entity => entity.MessageId).IsRequired(false).HasMaxLength(300);
             builder.Property(entity => entity.MessageIssue).IsRequired(false).HasMaxLength(500);
             builder.Property(entity => entity.MessageProtocolVersion).IsRequired(false).HasMaxLength(20);
             builder.Property(entity => entity.MessageUserId).IsRequired(false).HasMaxLength(100);

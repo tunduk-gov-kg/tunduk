@@ -104,16 +104,9 @@ namespace Catalog.BusinessLogicLayer.Service
                     {
                         using (var dbContext = new CatalogDbContext(_dbContextOptions, new MockUserIdProvider()))
                         {
-                            try
-                            {
-                                pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
-                                dbContext.OperationalDataRecords.AddRange(pagedList);
-                                dbContext.SaveChanges();
-                            }
-                            catch (DbUpdateException exception)
-                            {
-                                _logger.LogError(exception.Message);
-                            }
+                            pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
+                            dbContext.OperationalDataRecords.AddRange(pagedList);
+                            dbContext.SaveChanges();
                         }
 
                         _logger.LogInformation("{PageNumber}", pageNumber);
@@ -140,6 +133,12 @@ namespace Catalog.BusinessLogicLayer.Service
                     securityServerIdentifier.ToString(),
                     faultException.String
                 );
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                _logger.LogError(LoggingEvents.GetOperationalData,
+                    "Error during opdata insert operation; security server {id}" + securityServerIdentifier
+                    + "; Error: " + dbUpdateException.Message);
             }
 
             return recordsFrom.AsSecondsToDateTime();
