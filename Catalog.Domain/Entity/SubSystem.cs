@@ -11,5 +11,6 @@ namespace Catalog.Domain.Entity
         public long MemberId { get; set; }
         public List<Service> Services { get; set; }
         public bool IsDeleted { get; set; }
+        public string NormalizedName => Name ?? SubSystemCode;
     }
 }

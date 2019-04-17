@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XRoad.Domain;
 
 namespace Catalog.Domain.Model
 {
     [Serializable]
     public class MemberExchangeInformation
     {
+        public MemberIdentifier MemberIdentifier { get; set; }
         public DateTime From { get; set; }
         public DateTime To { get; set; }
 

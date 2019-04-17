@@ -1,0 +1,91 @@
+@model Catalog.Report.Models.ReportViewModel
+@{
+    ViewBag.Title = "Report";
+    Layout = "_Layout";
+    bool includeMetaServices = ViewBag.IncludeMetaServices;
+}
+<table id="reportTable" class="table table-bordered table-sm">
+    <thead>
+    <tr>
+        <th width="5%">№</th>
+        <th width="30%">Участник</th>
+        <th>Информационная система</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (int index = 0; index < Model.Members.Count; index++)
+    {
+        <tr>
+            <td>@(index + 1)</td>
+            <td>@(Model.Members[index].Name)</td>
+            <td>
+                @{
+                    int memberHandledCount = 0;
+                }
+                <b>Информационные системы</b>
+                <table class="table table-sm">
+                    @foreach (var subSystem in Model.Members[index].SubSystems)
+                    {
+                        <tr>
+                            <td width="30%">@subSystem.Name</td>
+                            <td>
+                                @{ int subSystemHandledCount = 0; }
+                                <b>Сервисы</b>
+                                <table width="100%" class="table table-sm">
+                                    @foreach (var service in subSystem.ProducedServices)
+                                    {
+                                        if (service.HandledRequests != 0)
+                                        {
+                                            <tr>
+                                                <td width="70%">@service.Name</td>
+                                                <td>@service.HandledRequests</td>
+                                                @{
+                                                    subSystemHandledCount += service.HandledRequests;
+                                                }
+                                            </tr>   
+                                        }
+                                    }
+                                    <tr>
+                                        <td class="text-right" colspan="2">@subSystemHandledCount</td>
+                                        @{
+                                            memberHandledCount += subSystemHandledCount;
+                                        }
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </table>
+                @if (includeMetaServices)
+                {
+                    <b>Мета-сервисы</b>
+                    <table class="table table-sm">
+                        @{
+                            int metaServicesRequestsCount = 0;
+                        }
+                        @foreach (var metaService in Model.Members[index].MetaServices)
+                        {
+                            <tr>
+                                <td width="70%">@metaService.Name</td>
+                                <td>@metaService.HandledRequests</td>
+                                @{
+                                    metaServicesRequestsCount += metaService.HandledRequests;
+                                }
+                            </tr>
+                        }
+                        <tr>
+                            <td class="text-right" colspan="2">@metaServicesRequestsCount</td>
+                            @{
+                                memberHandledCount += metaServicesRequestsCount;
+                            }
+                        </tr>
+                    </table>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right" colspan="3">@memberHandledCount</td>
+        </tr>
+    }
+    </tbody>
+</table>
