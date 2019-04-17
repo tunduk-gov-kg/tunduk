@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Catalog.BusinessLogicLayer.Service.Report;
 using Catalog.DataAccessLayer;
-using Catalog.DataAccessLayer.Service;
 using Catalog.Domain.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +28,6 @@ namespace Catalog.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IUserIdProvider<string>, HttpContextUserIdProvider>();
             services.AddDbContext<CatalogDbContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("CatalogDb")));
 

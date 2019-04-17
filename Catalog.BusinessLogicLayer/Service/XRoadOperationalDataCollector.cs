@@ -7,6 +7,7 @@ using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SimpleSOAPClient.Exceptions;
+using X.PagedList;
 using XRoad.Domain;
 using XRoad.OpMonitor;
 using XRoad.OpMonitor.Domain.SOAP;
@@ -19,20 +20,20 @@ namespace Catalog.BusinessLogicLayer.Service
         private static readonly int OffsetSeconds = 120;
 
         private readonly IMapper _mapper;
-        private readonly CatalogDbContext _dbContext;
+        private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataCollector> _logger;
         private readonly IOperationalDataService _operationalDataService;
 
-        public XRoadOperationalDataCollector(CatalogDbContext dbContext
-            , IMapper mapper
+        public XRoadOperationalDataCollector(IMapper mapper
             , IOperationalDataService operationalDataService
             , XRoadExchangeParameters xRoadExchangeParameters
-            , ILogger<XRoadOperationalDataCollector> logger)
+            , ILogger<XRoadOperationalDataCollector> logger
+            , DbContextOptions<CatalogDbContext> dbContextOptions)
         {
-            _dbContext = dbContext;
             _operationalDataService = operationalDataService;
             _xRoadExchangeParameters = xRoadExchangeParameters;
             _logger = logger;
+            _dbContextOptions = dbContextOptions;
             _mapper = mapper;
         }
 
@@ -40,7 +41,8 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void RunOpDataCollectorTask()
         {
-            var securityServers = _dbContext.SecurityServers
+            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
+            var securityServers = catalogDbContext.SecurityServers
                 .Include(entity => entity.Member).ToList();
             _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask, "RunOpdataCollector Task started...");
 
@@ -58,8 +60,8 @@ namespace Catalog.BusinessLogicLayer.Service
                 );
 
                 securityServer.LastRequestedDateTime = nextRecordsFrom;
-                _dbContext.SecurityServers.Update(securityServer);
-                _dbContext.SaveChanges();
+                catalogDbContext.SecurityServers.Update(securityServer);
+                catalogDbContext.SaveChanges();
             }
 
             _logger.LogInformation(LoggingEvents.RunOpdataCollectorTask, "RunOpdataCollector Task finished...");
@@ -82,7 +84,7 @@ namespace Catalog.BusinessLogicLayer.Service
                         RecordsFrom = recordsFrom,
                         RecordsTo = recordsTo
                     };
-                    _logger.LogDebug(LoggingEvents.GetOperationalData,
+                    _logger.LogInformation(LoggingEvents.GetOperationalData,
                         "Requesting Security Server: {server} for OpData From: {from} To: {to}",
                         securityServerIdentifier, recordsFrom, recordsTo
                     );
@@ -91,8 +93,23 @@ namespace Catalog.BusinessLogicLayer.Service
                         .GetOperationalData(_xRoadExchangeParameters, securityServerIdentifier, searchCriteria);
 
                     var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
-                    _dbContext.OperationalDataRecords.AddRange(dataRecords);
-                    _dbContext.SaveChanges();
+
+                    int pageNumber = 1;
+                    int pageSize   = 50;
+
+                    IPagedList<OperationalDataRecord> pagedList;
+
+                    do
+                    {
+                        using (var dbContext = new CatalogDbContext(_dbContextOptions))
+                        {
+                            pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
+                            dbContext.OperationalDataRecords.AddRange(pagedList);
+                            dbContext.SaveChanges();
+                        }
+
+                        _logger.LogInformation("{PageNumber}", pageNumber);
+                    } while (pagedList.HasNextPage);
 
                     bool shouldBreakTask =
                         !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount.Equals(0);
@@ -115,6 +132,12 @@ namespace Catalog.BusinessLogicLayer.Service
                     securityServerIdentifier.ToString(),
                     faultException.String
                 );
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                _logger.LogError(LoggingEvents.GetOperationalData,
+                    "Error during opdata insert operation; security server {id}" + securityServerIdentifier
+                    + "; Error: " + dbUpdateException.Message);
             }
 
             return recordsFrom.AsSecondsToDateTime();

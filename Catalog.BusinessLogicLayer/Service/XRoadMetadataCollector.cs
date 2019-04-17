@@ -21,8 +21,8 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public XRoadMetadataCollector(IXRoadGlobalConfigurationClient configurationClient
             , IXRoadStorageUpdater<MemberData> membersStorage
-            , SecurityServersStorageUpdater serversStorageUpdater
-            , SubSystemsStorageUpdater subSystemsStorage
+            , IXRoadStorageUpdater<SecurityServerData> serversStorageUpdater
+            , IXRoadStorageUpdater<SubSystemIdentifier> subSystemsStorage
             , ServicesStorageUpdater servicesStorage
             , ILogger<XRoadMetadataCollector> logger)
         {
