@@ -31,7 +31,7 @@ namespace Catalog.DataAccessLayer
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberRoleReference> MemberRoleReferences { get; set; }
         public DbSet<SecurityServer> SecurityServers { get; set; }
-        public DbSet<Domain.Entity.Service> Services { get; set; }
+        public DbSet<Service> Services { get; set; }
         public DbSet<SubSystem> SubSystems { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<OperationalDataRecord> OperationalDataRecords { get; set; }

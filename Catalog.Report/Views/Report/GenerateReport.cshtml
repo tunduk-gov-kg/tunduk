@@ -1,0 +1,21 @@
+@model Catalog.Report.Models.GenerateReportViewModel
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<h5>Generate report</h5>
+<form method="post" action="/Report/GenerateReport">
+    <div class="form-group">
+        <label for="from">From</label>
+        <input type="date" class="form-control" id="from" asp-for="From"/>
+    </div>
+    <div class="form-group">
+        <label for="to">To</label>
+        <input type="date" class="form-control" id="to" asp-for="To"/>
+    </div>
+    <div class="form-group">
+        <label for="includeMetaServices">Show meta services</label>
+        <input type="checkbox" id="includeMetaServices" asp-for="IncludeMetaServices"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

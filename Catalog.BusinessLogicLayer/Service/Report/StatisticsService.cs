@@ -25,6 +25,12 @@ namespace Catalog.BusinessLogicLayer.Service.Report
             {
                 From = from,
                 To = to,
+                MemberIdentifier = new MemberIdentifier    
+                {
+                    Instance = member.Instance,
+                    MemberClass = member.MemberClass,
+                    MemberCode = member.MemberCode
+                },
                 ExchangeInformation = GetMemberExchangeInformation(member, from, to),
                 SubSystems = GetSubSystemsExchangeInformation(member, from, to)
             };

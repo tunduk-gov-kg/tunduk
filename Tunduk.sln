@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Helpers", "XUnit.Help
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Daemon", "Catalog.Daemon\Catalog.Daemon.csproj", "{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Report", "Catalog.Report\Catalog.Report.csproj", "{171F61DE-A0F6-47C4-8747-179E3418DEF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F16E27B9-9DA4-4CF2-ACE4-A86841C2BCDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
