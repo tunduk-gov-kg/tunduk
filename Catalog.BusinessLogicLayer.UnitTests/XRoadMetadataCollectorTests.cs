@@ -12,9 +12,6 @@ namespace Catalog.BusinessLogicLayer.UnitTests
 {
     public class XRoadMetadataCollectorTests
     {
-        private readonly ILogger<XRoadMetadataCollector> _logger;
-        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
-
         public XRoadMetadataCollectorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
@@ -22,6 +19,9 @@ namespace Catalog.BusinessLogicLayer.UnitTests
             _logger = loggerFactory.CreateLogger<XRoadMetadataCollector>();
             _xRoadManageLogger = loggerFactory.CreateLogger<XRoadGlobalConfigurationClient>();
         }
+
+        private readonly ILogger<XRoadMetadataCollector> _logger;
+        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
         [Fact]
         public async Task RunBatchUpdateTask__When__()

@@ -12,12 +12,12 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class XRoadMetadataCollector
     {
-        private readonly IXRoadStorageUpdater<MemberData> _membersStorage;
-        private readonly IXRoadStorageUpdater<SecurityServerData> _serversStorageUpdater;
-        private readonly IXRoadStorageUpdater<SubSystemIdentifier> _subSystemsStorage;
-        private readonly ServicesStorageUpdater _servicesStorage;
         private readonly IXRoadGlobalConfigurationClient _configurationClient;
         private readonly ILogger<XRoadMetadataCollector> _logger;
+        private readonly IXRoadStorageUpdater<MemberData> _membersStorage;
+        private readonly IXRoadStorageUpdater<SecurityServerData> _serversStorageUpdater;
+        private readonly ServicesStorageUpdater _servicesStorage;
+        private readonly IXRoadStorageUpdater<SubSystemIdentifier> _subSystemsStorage;
 
         public XRoadMetadataCollector(IXRoadGlobalConfigurationClient configurationClient
             , IXRoadStorageUpdater<MemberData> membersStorage
@@ -67,8 +67,8 @@ namespace Catalog.BusinessLogicLayer.Service
             catch (FaultException exception)
             {
                 _logger.LogError(LoggingEvents.UpdateWsdlTask, "" +
-                    "Error occurred during wsdl update task for service: {service}; " +
-                    "Server responded with message: {message}",
+                                                               "Error occurred during wsdl update task for service: {service}; " +
+                                                               "Server responded with message: {message}",
                     targetService.ToString(),
                     exception.String
                 );

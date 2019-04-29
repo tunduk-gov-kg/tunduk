@@ -6,8 +6,8 @@ namespace XUnit.Helpers
 {
     public class XUnitLogger : ILogger
     {
-        private readonly ITestOutputHelper _testOutputHelper;
         private readonly string _categoryName;
+        private readonly ITestOutputHelper _testOutputHelper;
 
         public XUnitLogger(ITestOutputHelper testOutputHelper, string categoryName)
         {
@@ -16,10 +16,14 @@ namespace XUnit.Helpers
         }
 
         public IDisposable BeginScope<TState>(TState state)
-            => NoopDisposable.Instance;
+        {
+            return NoopDisposable.Instance;
+        }
 
         public bool IsEnabled(LogLevel logLevel)
-            => true;
+        {
+            return true;
+        }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
             Func<TState, Exception, string> formatter)
@@ -31,8 +35,11 @@ namespace XUnit.Helpers
 
         private class NoopDisposable : IDisposable
         {
-            public static NoopDisposable Instance = new NoopDisposable();
-            public void Dispose() { }
+            public static readonly NoopDisposable Instance = new NoopDisposable();
+
+            public void Dispose()
+            {
+            }
         }
     }
 }

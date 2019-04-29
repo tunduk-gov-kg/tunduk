@@ -10,15 +10,9 @@ namespace Catalog.Domain.Mapping.Resolvers
         public MessageState Resolve(OperationalDataRecord source, Message destination, MessageState destMember,
             ResolutionContext context)
         {
-            if (source.IsConsumer)
-            {
-                return MessageState.MergedConsumer;
-            }
-            
-            if (source.IsProducer)
-            {
-                return MessageState.MergedProducer;
-            }
+            if (source.IsConsumer) return MessageState.MergedConsumer;
+
+            if (source.IsProducer) return MessageState.MergedProducer;
 
             throw new Exception("Cannot resolve message state for security server type: " + source.SecurityServerType);
         }

@@ -10,7 +10,7 @@ namespace Catalog.DataAccessLayer
             var options = new DbContextOptionsBuilder<CatalogDbContext>()
                 .UseNpgsql("Server=localhost;Port=5432;Database=Tunduk;User Id=postgres;Password=postgres;")
                 .Options;
-            
+
             return new CatalogDbContext(options);
         }
     }

@@ -32,7 +32,7 @@ namespace Catalog.Daemon
                 {
                     config.AddJsonFile("appsettings.json", true);
                     config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
-                        optional: true);
+                        true);
                     config.AddCommandLine(args);
                 })
                 .ConfigureServices((hostContext, services) =>

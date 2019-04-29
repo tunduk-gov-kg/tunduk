@@ -93,9 +93,9 @@ namespace Catalog.BusinessLogicLayer.Service
         private bool Equals(SubSystem subSystem, SubSystemIdentifier subSystemIdentifier)
         {
             return subSystem.SubSystemCode.Equals(subSystemIdentifier.SubSystemCode)
-                && subSystem.Member.Instance.Equals(subSystemIdentifier.Instance)
-                && subSystem.Member.MemberClass.Equals(subSystemIdentifier.MemberClass)
-                && subSystem.Member.MemberCode.Equals(subSystemIdentifier.MemberCode);
+                   && subSystem.Member.Instance.Equals(subSystemIdentifier.Instance)
+                   && subSystem.Member.MemberClass.Equals(subSystemIdentifier.MemberClass)
+                   && subSystem.Member.MemberCode.Equals(subSystemIdentifier.MemberCode);
         }
     }
 }

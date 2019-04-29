@@ -9,9 +9,9 @@ namespace Catalog.Daemon.HostedService
 {
     public class XRoadMetadataCollectorService : IHostedService, IDisposable
     {
+        private readonly XRoadMetadataCollector _collector;
         private readonly object _lockObject = new object();
         private readonly ILogger _logger;
-        private readonly XRoadMetadataCollector _collector;
         private Timer _timer;
 
         public XRoadMetadataCollectorService(
@@ -22,23 +22,17 @@ namespace Catalog.Daemon.HostedService
             _logger = logger;
         }
 
+        public void Dispose()
+        {
+            _timer?.Dispose();
+        }
+
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation(nameof(XRoadMetadataCollectorService) + " is starting");
             _timer = new Timer(Collect, null, TimeSpan.Zero, TimeSpan.FromHours(1));
             return Task.CompletedTask;
-        }
-
-        private void Collect(object state)
-        {
-            lock (_lockObject)
-            {
-                _logger.LogInformation("Starting XRoad Metadata Collector Task");
-                var task = Task.Run(async () => { await _collector.RunBatchUpdateTask(); });
-                task.Wait();
-                _logger.LogInformation("XRoad Metadata Collector Task Completed");
-            }
         }
 
 
@@ -51,9 +45,15 @@ namespace Catalog.Daemon.HostedService
             return Task.CompletedTask;
         }
 
-        public void Dispose()
+        private void Collect(object state)
         {
-            _timer?.Dispose();
+            lock (_lockObject)
+            {
+                _logger.LogInformation("Starting XRoad Metadata Collector Task");
+                var task = Task.Run(async () => { await _collector.RunBatchUpdateTask(); });
+                task.Wait();
+                _logger.LogInformation("XRoad Metadata Collector Task Completed");
+            }
         }
     }
 }

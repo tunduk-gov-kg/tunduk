@@ -33,14 +33,11 @@ namespace Catalog.DataAccessLayer.Helpers
         {
             var queryable = source.Where(
                 message => message.ConsumerInstance == member.Instance
-                    && message.ConsumerMemberClass == member.MemberClass
-                    && message.ConsumerMemberCode == member.MemberCode
+                           && message.ConsumerMemberClass == member.MemberClass
+                           && message.ConsumerMemberCode == member.MemberCode
             );
             // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (containsSubSystemCode)
-            {
-                return queryable.Where(message => message.ConsumerSubSystemCode != null);
-            }
+            if (containsSubSystemCode) return queryable.Where(message => message.ConsumerSubSystemCode != null);
 
             return queryable.Where(message => message.ConsumerSubSystemCode == null);
         }
@@ -50,14 +47,11 @@ namespace Catalog.DataAccessLayer.Helpers
         {
             var queryable = source.Where(
                 message => message.ProducerInstance == member.Instance
-                    && message.ProducerMemberClass == member.MemberClass
-                    && message.ProducerMemberCode == member.MemberCode
+                           && message.ProducerMemberClass == member.MemberClass
+                           && message.ProducerMemberCode == member.MemberCode
             );
             // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (containsSubSystemCode)
-            {
-                return queryable.Where(message => message.ProducerSubSystemCode != null);
-            }
+            if (containsSubSystemCode) return queryable.Where(message => message.ProducerSubSystemCode != null);
 
             return queryable.Where(message => message.ProducerSubSystemCode == null);
         }

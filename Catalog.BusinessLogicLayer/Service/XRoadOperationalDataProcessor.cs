@@ -12,10 +12,19 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class XRoadOperationalDataProcessor
     {
+        private const int ProcessLimit = 10000;
+        private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataProcessor> _logger;
         private readonly IMapper _mapper;
-        private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
-        private const int ProcessLimit = 10000;
+
+        public XRoadOperationalDataProcessor(ILogger<XRoadOperationalDataProcessor> logger
+            , DbContextOptions<CatalogDbContext> dbContextOptions
+            , IMapper mapper)
+        {
+            _logger = logger;
+            _mapper = mapper;
+            _dbContextOptions = dbContextOptions;
+        }
 
         public void ProcessRecords()
         {
@@ -41,18 +50,7 @@ namespace Catalog.BusinessLogicLayer.Service
                 .ToList();
 
             foreach (var operationalDataRecord in operationalDataRecords)
-            {
                 ProcessOperationalDataRecord(operationalDataRecord);
-            }
-        }
-
-        public XRoadOperationalDataProcessor(ILogger<XRoadOperationalDataProcessor> logger
-            , DbContextOptions<CatalogDbContext> dbContextOptions
-            , IMapper mapper)
-        {
-            _logger = logger;
-            _mapper = mapper;
-            _dbContextOptions = dbContextOptions;
         }
 
         private void ProcessOperationalDataRecord(OperationalDataRecord record)

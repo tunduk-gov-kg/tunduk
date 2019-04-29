@@ -8,7 +8,7 @@ namespace Catalog.Domain.Entity
         public string Address { get; set; }
         public Member Member { get; set; }
         public long MemberId { get; set; }
-        public bool IsDeleted { get; set; }
         public DateTime? LastRequestedDateTime { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -12,8 +12,13 @@ namespace XUnit.Helpers
             _testOutputHelper = testOutputHelper;
         }
 
-        public ILogger CreateLogger(string categoryName) => new XUnitLogger(_testOutputHelper, categoryName);
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new XUnitLogger(_testOutputHelper, categoryName);
+        }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

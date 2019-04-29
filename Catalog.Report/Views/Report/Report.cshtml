@@ -13,14 +13,14 @@
     </tr>
     </thead>
     <tbody>
-    @for (int index = 0; index < Model.Members.Count; index++)
+    @for (var index = 0; index < Model.Members.Count; index++)
     {
         <tr>
             <td>@(index + 1)</td>
             <td>@(Model.Members[index].Name)</td>
             <td>
                 @{
-                    int memberHandledCount = 0;
+                    var memberHandledCount = 0;
                 }
                 <b>Информационные системы</b>
                 <table class="table table-sm">
@@ -29,7 +29,7 @@
                         <tr>
                             <td width="30%">@subSystem.Name</td>
                             <td>
-                                @{ int subSystemHandledCount = 0; }
+                                @{ var subSystemHandledCount = 0; }
                                 <b>Сервисы</b>
                                 <table width="100%" class="table table-sm">
                                     @foreach (var service in subSystem.ProducedServices)
@@ -42,7 +42,7 @@
                                                 @{
                                                     subSystemHandledCount += service.HandledRequests;
                                                 }
-                                            </tr>   
+                                            </tr>
                                         }
                                     }
                                     <tr>
@@ -61,7 +61,7 @@
                     <b>Мета-сервисы</b>
                     <table class="table table-sm">
                         @{
-                            int metaServicesRequestsCount = 0;
+                            var metaServicesRequestsCount = 0;
                         }
                         @foreach (var metaService in Model.Members[index].MetaServices)
                         {

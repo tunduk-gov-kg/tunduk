@@ -12,6 +12,8 @@ namespace Catalog.Domain.Enum
         public static MemberType LegalEntity = new MemberType("Юридическое лицо", 6);
         public static MemberType Individual = new MemberType("Физическое лицо", 7);
 
-        private MemberType(string name, int value) : base(name, value) { }
+        private MemberType(string name, int value) : base(name, value)
+        {
+        }
     }
 }

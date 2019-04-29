@@ -9,14 +9,14 @@
         protected bool Equals(MemberIdentifier other)
         {
             return string.Equals(Instance, other.Instance) && string.Equals(MemberClass, other.MemberClass) &&
-                string.Equals(MemberCode, other.MemberCode);
+                   string.Equals(MemberCode, other.MemberCode);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((MemberIdentifier) obj);
         }
 

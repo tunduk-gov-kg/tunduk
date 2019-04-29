@@ -10,14 +10,14 @@ namespace XRoad.Domain
         protected bool Equals(ServiceIdentifier other)
         {
             return base.Equals(other) && string.Equals(ServiceCode, other.ServiceCode) &&
-                string.Equals(ServiceVersion, other.ServiceVersion);
+                   string.Equals(ServiceVersion, other.ServiceVersion);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((ServiceIdentifier) obj);
         }
 
@@ -25,7 +25,7 @@ namespace XRoad.Domain
         {
             unchecked
             {
-                int hashCode = base.GetHashCode();
+                var hashCode = base.GetHashCode();
                 hashCode = (hashCode * 397) ^ (ServiceCode != null ? ServiceCode.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (ServiceVersion != null ? ServiceVersion.GetHashCode() : 0);
                 return hashCode;

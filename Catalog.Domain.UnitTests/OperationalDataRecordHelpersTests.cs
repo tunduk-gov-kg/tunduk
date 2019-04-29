@@ -9,17 +9,17 @@ namespace Catalog.Domain.UnitTests
 {
     public class OperationalDataRecordHelpersTests
     {
-        private readonly ITestOutputHelper _helper;
-
         public OperationalDataRecordHelpersTests(ITestOutputHelper helper)
         {
             _helper = helper;
         }
 
+        private readonly ITestOutputHelper _helper;
+
         [Fact]
         public void CalculateDigest()
         {
-            OperationalDataRecord operationalDataRecord = new OperationalDataRecord
+            var operationalDataRecord = new OperationalDataRecord
             {
                 ClientMemberClass = "GOV",
                 ClientMemberCode = "100",
@@ -37,9 +37,9 @@ namespace Catalog.Domain.UnitTests
         public void CalculateDigest_MultipleTimes()
         {
             var begin = DateTime.Now;
-            for (int i = 0; i < 100000; i++)
+            for (var i = 0; i < 100000; i++)
             {
-                OperationalDataRecord operationalDataRecord = new OperationalDataRecord
+                var operationalDataRecord = new OperationalDataRecord
                 {
                     ClientMemberClass = "GOV",
                     ClientMemberCode = i.ToString(),

@@ -9,7 +9,7 @@ namespace Catalog.Domain.Helpers
     {
         public static string CalculateDigest(this OperationalDataRecord record)
         {
-            var json          = JsonConvert.SerializeObject(record);
+            var json = JsonConvert.SerializeObject(record);
             var stringBuilder = new StringBuilder();
 
             using (var sha = SHA256.Create())

@@ -1,12 +1,13 @@
-﻿using Catalog.Domain.Helpers;
+﻿using Catalog.Domain.Entity;
+using Catalog.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Catalog.DataAccessLayer.Configuration
 {
-    internal class ServiceConfiguration : IEntityTypeConfiguration<Domain.Entity.Service>
+    internal class ServiceConfiguration : IEntityTypeConfiguration<Service>
     {
-        public void Configure(EntityTypeBuilder<Domain.Entity.Service> builder)
+        public void Configure(EntityTypeBuilder<Service> builder)
         {
             builder.ConfigureSoftDeleteProperties();
             builder.ConfigureUserTrackableEntity();

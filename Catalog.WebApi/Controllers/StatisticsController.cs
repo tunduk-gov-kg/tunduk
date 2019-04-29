@@ -13,8 +13,8 @@ namespace Catalog.WebApi.Controllers
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
-        private readonly IStatisticsService _statistics;
         private readonly CatalogDbContext _dbContext;
+        private readonly IStatisticsService _statistics;
 
         public StatisticsController(IStatisticsService statistics, CatalogDbContext dbContext)
         {

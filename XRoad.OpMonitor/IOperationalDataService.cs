@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using XRoad.Domain;
 using XRoad.OpMonitor.Domain;
 using XRoad.OpMonitor.Domain.SOAP;

@@ -10,7 +10,6 @@ namespace Catalog.Domain.Mapping.Resolvers
             ResolutionContext context)
         {
             if (source.IsConsumer)
-            {
                 return new MessageLifecycle
                 {
                     RequestInTs = source.RequestInTs?.AsMilliSecondsToDateTime(),
@@ -18,7 +17,6 @@ namespace Catalog.Domain.Mapping.Resolvers
                     ResponseInTs = source.ResponseInTs?.AsMilliSecondsToDateTime(),
                     ResponseOutTs = source.ResponseOutTs?.AsMilliSecondsToDateTime()
                 };
-            }
 
             return new MessageLifecycle();
         }

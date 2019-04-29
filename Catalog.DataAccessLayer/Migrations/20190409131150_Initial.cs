@@ -9,22 +9,19 @@ namespace Catalog.DataAccessLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
-                columns: table => new
+                "AspNetRoles",
+                table => new
                 {
                     Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_AspNetRoles", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
+                "AspNetUsers",
+                table => new
                 {
                     Id = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
@@ -43,31 +40,25 @@ namespace Catalog.DataAccessLayer.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_AspNetUsers", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "DomainLogs",
-                columns: table => new
+                "DomainLogs",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedAt = table.Column<DateTime>(nullable: true),
                     LogLevel = table.Column<string>(maxLength: 100, nullable: false),
-                    Message = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Message = table.Column<string>("text", nullable: true),
+                    Description = table.Column<string>("text", nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DomainLogs", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_DomainLogs", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
+                "Members",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -79,21 +70,18 @@ namespace Catalog.DataAccessLayer.Migrations
                     MemberClass = table.Column<string>(maxLength: 20, nullable: false),
                     MemberCode = table.Column<string>(maxLength: 20, nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>("text", nullable: true),
                     Site = table.Column<string>(maxLength: 500, nullable: true),
                     Address = table.Column<string>(maxLength: 500, nullable: true),
                     MemberStatus = table.Column<string>(maxLength: 200, nullable: true),
                     MemberType = table.Column<string>(maxLength: 200, nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Members", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
+                "Messages",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -135,14 +123,11 @@ namespace Catalog.DataAccessLayer.Migrations
                     FaultCode = table.Column<string>(maxLength: 500, nullable: true),
                     FaultString = table.Column<string>(maxLength: 1000, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Messages", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "OperationalDataRecords",
-                columns: table => new
+                "OperationalDataRecords",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -183,14 +168,11 @@ namespace Catalog.DataAccessLayer.Migrations
                     SoapFaultCode = table.Column<string>(nullable: true),
                     SoapFaultString = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OperationalDataRecords", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_OperationalDataRecords", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
+                "AspNetRoleClaims",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -202,16 +184,16 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        x => x.RoleId,
+                        "AspNetRoles",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                columns: table => new
+                "AspNetUserClaims",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -223,16 +205,16 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        x => x.UserId,
+                        "AspNetUsers",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                columns: table => new
+                "AspNetUserLogins",
+                table => new
                 {
                     LoginProvider = table.Column<string>(nullable: false),
                     ProviderKey = table.Column<string>(nullable: false),
@@ -241,42 +223,42 @@ namespace Catalog.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new {x.LoginProvider, x.ProviderKey});
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        x => x.UserId,
+                        "AspNetUsers",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
+                "AspNetUserRoles",
+                table => new
                 {
                     UserId = table.Column<string>(nullable: false),
                     RoleId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new {x.UserId, x.RoleId});
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        x => x.RoleId,
+                        "AspNetRoles",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        x => x.UserId,
+                        "AspNetUsers",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
+                "AspNetUserTokens",
+                table => new
                 {
                     UserId = table.Column<string>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
@@ -285,36 +267,36 @@ namespace Catalog.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new {x.UserId, x.LoginProvider, x.Name});
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        x => x.UserId,
+                        "AspNetUsers",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MemberRoleReferences",
-                columns: table => new
+                "MemberRoleReferences",
+                table => new
                 {
                     MemberRole = table.Column<string>(maxLength: 200, nullable: false),
                     MemberId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberRoleReferences", x => new { x.MemberRole, x.MemberId });
+                    table.PrimaryKey("PK_MemberRoleReferences", x => new {x.MemberRole, x.MemberId});
                     table.ForeignKey(
-                        name: "FK_MemberRoleReferences_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_MemberRoleReferences_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SecurityServers",
-                columns: table => new
+                "SecurityServers",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -330,16 +312,16 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_SecurityServers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SecurityServers_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_SecurityServers_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubSystems",
-                columns: table => new
+                "SubSystems",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -349,7 +331,7 @@ namespace Catalog.DataAccessLayer.Migrations
                     ModifiedBy = table.Column<string>(maxLength: 500, nullable: true),
                     SubSystemCode = table.Column<string>(maxLength: 100, nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>("text", nullable: true),
                     MemberId = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
@@ -357,16 +339,16 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_SubSystems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubSystems_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
+                        "FK_SubSystems_Members_MemberId",
+                        x => x.MemberId,
+                        "Members",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Services",
-                columns: table => new
+                "Services",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
@@ -378,7 +360,7 @@ namespace Catalog.DataAccessLayer.Migrations
                     Description = table.Column<string>(nullable: true),
                     ServiceCode = table.Column<string>(maxLength: 200, nullable: false),
                     ServiceVersion = table.Column<string>(maxLength: 20, nullable: true),
-                    Wsdl = table.Column<string>(type: "text", nullable: true),
+                    Wsdl = table.Column<string>("text", nullable: true),
                     SubSystemId = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
@@ -386,186 +368,192 @@ namespace Catalog.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_Services", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Services_SubSystems_SubSystemId",
-                        column: x => x.SubSystemId,
-                        principalTable: "SubSystems",
-                        principalColumn: "Id",
+                        "FK_Services_SubSystems_SubSystemId",
+                        x => x.SubSystemId,
+                        "SubSystems",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
+                "AspNetRoles",
+                new[] {"Id", "ConcurrencyStamp", "Name", "NormalizedName"},
+                new object[,]
                 {
-                    { "da11715f-1d5c-4aeb-ab3d-b07c1a8cf5e7", "1d4a256e-58f3-4369-a765-9c54efde5db4", "Administrator", null },
-                    { "843f7734-496f-4404-aca3-7a221be65aed", "3e6592da-f1a9-441a-bfb5-d1f414d2b36e", "CatalogUser", null }
+                    {
+                        "da11715f-1d5c-4aeb-ab3d-b07c1a8cf5e7", "1d4a256e-58f3-4369-a765-9c54efde5db4", "Administrator",
+                        null
+                    },
+                    {
+                        "843f7734-496f-4404-aca3-7a221be65aed", "3e6592da-f1a9-441a-bfb5-d1f414d2b36e", "CatalogUser",
+                        null
+                    }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
+                "IX_AspNetRoleClaims_RoleId",
+                "AspNetRoleClaims",
+                "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
+                "RoleNameIndex",
+                "AspNetRoles",
+                "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
+                "IX_AspNetUserClaims_UserId",
+                "AspNetUserClaims",
+                "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
+                "IX_AspNetUserLogins_UserId",
+                "AspNetUserLogins",
+                "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
+                "IX_AspNetUserRoles_RoleId",
+                "AspNetUserRoles",
+                "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
+                "EmailIndex",
+                "AspNetUsers",
+                "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
+                "UserNameIndex",
+                "AspNetUsers",
+                "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DomainLogs_LogLevel",
-                table: "DomainLogs",
-                column: "LogLevel");
+                "IX_DomainLogs_LogLevel",
+                "DomainLogs",
+                "LogLevel");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberRoleReferences_MemberId",
-                table: "MemberRoleReferences",
-                column: "MemberId");
+                "IX_MemberRoleReferences_MemberId",
+                "MemberRoleReferences",
+                "MemberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_CreatedBy",
-                table: "Members",
-                column: "CreatedBy");
+                "IX_Members_CreatedBy",
+                "Members",
+                "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_ModifiedBy",
-                table: "Members",
-                column: "ModifiedBy");
+                "IX_Members_ModifiedBy",
+                "Members",
+                "ModifiedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_Instance_MemberClass_MemberCode",
-                table: "Members",
-                columns: new[] { "Instance", "MemberClass", "MemberCode" },
+                "IX_Members_Instance_MemberClass_MemberCode",
+                "Members",
+                new[] {"Instance", "MemberClass", "MemberCode"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_MessageDigest",
-                table: "Messages",
-                column: "MessageDigest",
+                "IX_Messages_MessageDigest",
+                "Messages",
+                "MessageDigest",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_MessageId",
-                table: "Messages",
-                column: "MessageId");
+                "IX_Messages_MessageId",
+                "Messages",
+                "MessageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_MessageState",
-                table: "Messages",
-                column: "MessageState");
+                "IX_Messages_MessageState",
+                "Messages",
+                "MessageState");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SecurityServers_MemberId_SecurityServerCode",
-                table: "SecurityServers",
-                columns: new[] { "MemberId", "SecurityServerCode" },
+                "IX_SecurityServers_MemberId_SecurityServerCode",
+                "SecurityServers",
+                new[] {"MemberId", "SecurityServerCode"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_CreatedBy",
-                table: "Services",
-                column: "CreatedBy");
+                "IX_Services_CreatedBy",
+                "Services",
+                "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_ModifiedBy",
-                table: "Services",
-                column: "ModifiedBy");
+                "IX_Services_ModifiedBy",
+                "Services",
+                "ModifiedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_SubSystemId_ServiceCode_ServiceVersion",
-                table: "Services",
-                columns: new[] { "SubSystemId", "ServiceCode", "ServiceVersion" },
+                "IX_Services_SubSystemId_ServiceCode_ServiceVersion",
+                "Services",
+                new[] {"SubSystemId", "ServiceCode", "ServiceVersion"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubSystems_CreatedBy",
-                table: "SubSystems",
-                column: "CreatedBy");
+                "IX_SubSystems_CreatedBy",
+                "SubSystems",
+                "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubSystems_ModifiedBy",
-                table: "SubSystems",
-                column: "ModifiedBy");
+                "IX_SubSystems_ModifiedBy",
+                "SubSystems",
+                "ModifiedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubSystems_MemberId_SubSystemCode",
-                table: "SubSystems",
-                columns: new[] { "MemberId", "SubSystemCode" },
+                "IX_SubSystems_MemberId_SubSystemCode",
+                "SubSystems",
+                new[] {"MemberId", "SubSystemCode"},
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                "AspNetUserClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                "AspNetUserLogins");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
+                "AspNetUserRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DomainLogs");
+                "DomainLogs");
 
             migrationBuilder.DropTable(
-                name: "MemberRoleReferences");
+                "MemberRoleReferences");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                "Messages");
 
             migrationBuilder.DropTable(
-                name: "OperationalDataRecords");
+                "OperationalDataRecords");
 
             migrationBuilder.DropTable(
-                name: "SecurityServers");
+                "SecurityServers");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                "Services");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "SubSystems");
+                "SubSystems");
 
             migrationBuilder.DropTable(
-                name: "Members");
+                "Members");
         }
     }
 }

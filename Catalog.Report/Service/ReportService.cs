@@ -13,8 +13,8 @@ namespace Catalog.Report.Service
 {
     public class ReportService : IReportService
     {
-        private readonly IStatisticsService _statisticsService;
         private readonly CatalogDbContext _catalogDbContext;
+        private readonly IStatisticsService _statisticsService;
 
         public ReportService(IStatisticsService statisticsService
             , CatalogDbContext catalogDbContext)
@@ -30,7 +30,7 @@ namespace Catalog.Report.Service
                 .ToList();
 
             var exchangeInformations =
-                membersList.Select(member => _statisticsService.GetExchangeInformation(member, @from, to));
+                membersList.Select(member => _statisticsService.GetExchangeInformation(member, from, to));
 
             var reportViewModel = new ReportViewModel();
             reportViewModel.From = from;
@@ -48,17 +48,13 @@ namespace Catalog.Report.Service
                 member.SubSystems = new List<SubSystem>();
 
                 if (includeMetaServices)
-                {
                     foreach (var producedService in memberExchange.ExchangeInformation.ProducedServices)
-                    {
                         member.MetaServices.Add(new ProducedService
                         {
                             IsMetaService = true,
                             Name = producedService.ServiceIdentifier.ServiceCode,
                             HandledRequests = producedService.RequestsCount.Total
                         });
-                    }
-                }
 
                 foreach (var subSystemExchange in memberExchange.SubSystems)
                 {
@@ -72,15 +68,11 @@ namespace Catalog.Report.Service
 
                     foreach (var producedService in subSystemExchange.ExchangeInformation.ProducedServices)
                     {
-                        bool isMetaService = IsMetaService(producedService.ServiceIdentifier);
+                        var isMetaService = IsMetaService(producedService.ServiceIdentifier);
 
                         if (!includeMetaServices)
-                        {
                             if (isMetaService)
-                            {
                                 continue;
-                            }
-                        }
 
                         var contextService = _catalogDbContext.Services.FindByServiceIdentifier(
                             producedService.ServiceIdentifier

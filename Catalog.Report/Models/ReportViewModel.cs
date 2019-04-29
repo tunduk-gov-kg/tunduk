@@ -19,10 +19,7 @@ namespace Catalog.Report.Models
 
         public int HandledRequestsCount
         {
-            get
-            {
-                return SubSystems.Sum(system => system.ProducedServices.Sum(service => service.HandledRequests));
-            }
+            get { return SubSystems.Sum(system => system.ProducedServices.Sum(service => service.HandledRequests)); }
         }
     }
 

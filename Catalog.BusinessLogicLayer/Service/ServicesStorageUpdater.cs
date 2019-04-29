@@ -115,10 +115,10 @@ namespace Catalog.BusinessLogicLayer.Service
         private bool Equals(Domain.Entity.Service service, ServiceIdentifier serviceIdentifier)
         {
             var expression = service.ServiceCode.Equals(serviceIdentifier.ServiceCode)
-                && service.SubSystem.SubSystemCode.Equals(serviceIdentifier.SubSystemCode)
-                && service.SubSystem.Member.Instance.Equals(serviceIdentifier.Instance)
-                && service.SubSystem.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
-                && service.SubSystem.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
+                             && service.SubSystem.SubSystemCode.Equals(serviceIdentifier.SubSystemCode)
+                             && service.SubSystem.Member.Instance.Equals(serviceIdentifier.Instance)
+                             && service.SubSystem.Member.MemberClass.Equals(serviceIdentifier.MemberClass)
+                             && service.SubSystem.Member.MemberCode.Equals(serviceIdentifier.MemberCode);
 
             if (service.ServiceVersion == null) return expression && serviceIdentifier.ServiceVersion == null;
 

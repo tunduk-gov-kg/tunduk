@@ -8,9 +8,9 @@ namespace Catalog.Domain.Validation
         public OperationalDataRecordValidator()
         {
             RuleFor(model => model.Succeeded).NotNull();
-            
+
             RuleFor(model => model.SecurityServerType).NotEmpty();
-            
+
             RuleFor(model => model.MessageId).NotEmpty();
             RuleFor(model => model.MessageProtocolVersion).NotEmpty();
 

@@ -18,11 +18,13 @@ namespace Catalog.BusinessLogicLayer.Service
     {
         private static readonly int MaxIteration = 10;
         private static readonly int OffsetSeconds = 120;
-
-        private readonly IMapper _mapper;
         private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataCollector> _logger;
+
+        private readonly IMapper _mapper;
         private readonly IOperationalDataService _operationalDataService;
+
+        private readonly XRoadExchangeParameters _xRoadExchangeParameters;
 
         public XRoadOperationalDataCollector(IMapper mapper
             , IOperationalDataService operationalDataService
@@ -36,8 +38,6 @@ namespace Catalog.BusinessLogicLayer.Service
             _dbContextOptions = dbContextOptions;
             _mapper = mapper;
         }
-
-        private readonly XRoadExchangeParameters _xRoadExchangeParameters;
 
         public void RunOpDataCollectorTask()
         {
@@ -71,7 +71,7 @@ namespace Catalog.BusinessLogicLayer.Service
         public DateTime RunOpDataCollectorTask(SecurityServerIdentifier securityServerIdentifier, DateTime from)
         {
             var recordsFrom = from.ToUnixTimestamp();
-            var recordsTo   = DateTime.Now.ToUnixTimestamp() - OffsetSeconds;
+            var recordsTo = DateTime.Now.ToUnixTimestamp() - OffsetSeconds;
 
             if (recordsTo - recordsFrom <= 0) throw new ArgumentException("Out of timeline range");
 
@@ -94,8 +94,8 @@ namespace Catalog.BusinessLogicLayer.Service
 
                     var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
 
-                    int pageNumber = 1;
-                    int pageSize   = 50;
+                    var pageNumber = 1;
+                    var pageSize = 50;
 
                     IPagedList<OperationalDataRecord> pagedList;
 
@@ -111,7 +111,7 @@ namespace Catalog.BusinessLogicLayer.Service
                         _logger.LogInformation("{PageNumber}", pageNumber);
                     } while (pagedList.HasNextPage);
 
-                    bool shouldBreakTask =
+                    var shouldBreakTask =
                         !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount.Equals(0);
 
                     if (shouldBreakTask)
@@ -137,7 +137,8 @@ namespace Catalog.BusinessLogicLayer.Service
             {
                 _logger.LogError(LoggingEvents.GetOperationalData,
                     "Error during opdata insert operation; security server {id}" + securityServerIdentifier
-                    + "; Error: " + dbUpdateException.Message);
+                                                                                 + "; Error: " +
+                                                                                 dbUpdateException.Message);
             }
 
             return recordsFrom.AsSecondsToDateTime();

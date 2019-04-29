@@ -16,14 +16,14 @@ namespace Catalog.BusinessLogicLayer.UnitTests
 {
     public class XRoadOperationalDataCollectorTests
     {
-        private readonly ILogger<XRoadOperationalDataCollector> _logger;
-
         public XRoadOperationalDataCollectorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
             _logger = loggerFactory.CreateLogger<XRoadOperationalDataCollector>();
         }
+
+        private readonly ILogger<XRoadOperationalDataCollector> _logger;
 
         [Fact]
         public void RunOpDataCollectorTask__When__()

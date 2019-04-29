@@ -94,7 +94,7 @@ namespace Catalog.BusinessLogicLayer.Service
         public async Task<IList<ServiceIdentifier>> GetServicesListAsync()
         {
             var subSystemIdentifiers = await GetSubSystemsListAsync();
-            var servicesList         = new List<ServiceIdentifier>();
+            var servicesList = new List<ServiceIdentifier>();
 
             foreach (var subSystemIdentifier in subSystemIdentifiers)
                 try

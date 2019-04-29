@@ -9,8 +9,8 @@
         public string Wsdl { get; set; }
         public SubSystem SubSystem { get; set; }
         public long SubSystemId { get; set; }
-        public bool IsDeleted { get; set; }
 
         public string NormalizedName => Name ?? ServiceCode;
+        public bool IsDeleted { get; set; }
     }
 }

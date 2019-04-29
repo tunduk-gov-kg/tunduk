@@ -8,6 +8,8 @@ namespace Catalog.Domain.Enum
         public static readonly MemberRole ServiceClient = new MemberRole("Пользователь услуг", 2);
         public static readonly MemberRole ServiceDeveloper = new MemberRole("Разработчик решений", 3);
 
-        private MemberRole(string name, int value) : base(name, value) { }
+        private MemberRole(string name, int value) : base(name, value)
+        {
+        }
     }
 }

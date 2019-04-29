@@ -12,7 +12,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
         [Fact]
         public async Task UpdateLocalDatabaseAsync_When__()
         {
-            var dbContext      = DbContextProvider.RequireDbContext();
+            var dbContext = DbContextProvider.RequireDbContext();
             var storageUpdater = new ServicesStorageUpdater(dbContext);
             await storageUpdater.UpdateLocalDatabaseAsync(ImmutableList.CreateRange(
                 new[]

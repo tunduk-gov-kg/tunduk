@@ -11,8 +11,8 @@ namespace Catalog.DataAccessLayer.Helpers
         {
             return source.SingleOrDefault(
                 it => it.Instance == memberIdentifier.Instance
-                    && it.MemberClass == memberIdentifier.MemberClass
-                    && it.MemberCode == memberIdentifier.MemberCode);
+                      && it.MemberClass == memberIdentifier.MemberClass
+                      && it.MemberCode == memberIdentifier.MemberCode);
         }
     }
 }

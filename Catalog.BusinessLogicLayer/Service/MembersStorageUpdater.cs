@@ -74,8 +74,9 @@ namespace Catalog.BusinessLogicLayer.Service
             foreach (var databaseMember in databaseMembersList)
             {
                 var shouldBeRestored = databaseMember.IsDeleted &&
-                    newMembersList.Any(
-                        incomingListMember => Equals(databaseMember, incomingListMember.MemberIdentifier));
+                                       newMembersList.Any(
+                                           incomingListMember =>
+                                               Equals(databaseMember, incomingListMember.MemberIdentifier));
                 if (!shouldBeRestored) continue;
                 databaseMember.IsDeleted = false;
                 _dbContext.Members.Update(databaseMember);
@@ -85,8 +86,8 @@ namespace Catalog.BusinessLogicLayer.Service
         private bool Equals(Member member, MemberIdentifier another)
         {
             return member.Instance.Equals(another.Instance)
-                && member.MemberClass.Equals(another.MemberClass)
-                && member.MemberCode.Equals(another.MemberCode);
+                   && member.MemberClass.Equals(another.MemberClass)
+                   && member.MemberCode.Equals(another.MemberCode);
         }
     }
 }

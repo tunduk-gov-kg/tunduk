@@ -25,7 +25,7 @@ namespace Catalog.BusinessLogicLayer.Service.Report
             {
                 From = from,
                 To = to,
-                MemberIdentifier = new MemberIdentifier    
+                MemberIdentifier = new MemberIdentifier
                 {
                     Instance = member.Instance,
                     MemberClass = member.MemberClass,
@@ -35,6 +35,11 @@ namespace Catalog.BusinessLogicLayer.Service.Report
                 SubSystems = GetSubSystemsExchangeInformation(member, from, to)
             };
             return memberExchangeInformation;
+        }
+
+        public void Dispose()
+        {
+            _dbContext.Dispose();
         }
 
         private List<SubSystemExchangeInformation> GetSubSystemsExchangeInformation(Member member, DateTime from,
@@ -159,11 +164,6 @@ namespace Catalog.BusinessLogicLayer.Service.Report
                 .ToList();
 
             return exchangeInformation;
-        }
-
-        public void Dispose()
-        {
-            _dbContext.Dispose();
         }
     }
 }

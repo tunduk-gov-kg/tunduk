@@ -110,9 +110,9 @@ namespace Catalog.BusinessLogicLayer.Service
         private bool Equals(SecurityServer server, SecurityServerIdentifier serverIdentifier)
         {
             return server.SecurityServerCode.Equals(serverIdentifier.SecurityServerCode)
-                && server.Member.Instance.Equals(serverIdentifier.Instance)
-                && server.Member.MemberClass.Equals(serverIdentifier.MemberClass)
-                && server.Member.MemberCode.Equals(serverIdentifier.MemberCode);
+                   && server.Member.Instance.Equals(serverIdentifier.Instance)
+                   && server.Member.MemberClass.Equals(serverIdentifier.MemberClass)
+                   && server.Member.MemberCode.Equals(serverIdentifier.MemberCode);
         }
     }
 }

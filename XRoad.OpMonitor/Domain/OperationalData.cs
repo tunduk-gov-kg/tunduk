@@ -26,7 +26,7 @@ namespace XRoad.OpMonitor.Domain
                 using (var stream = new GZipStream(new MemoryStream(Attachment), CompressionMode.Decompress))
                 {
                     var streamReader = new StreamReader(stream);
-                    var jsonString   = streamReader.ReadToEnd();
+                    var jsonString = streamReader.ReadToEnd();
                     return JsonConvert.DeserializeObject<OperationalDataRecordCollection>(jsonString).Records;
                 }
             }

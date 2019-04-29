@@ -12,14 +12,14 @@ namespace Catalog.BusinessLogicLayer.UnitTests
 {
     public class XRoadOperationalDataProcessorTests
     {
-        private readonly ILogger<XRoadOperationalDataProcessor> _logger;
-
         public XRoadOperationalDataProcessorTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
             _logger = loggerFactory.CreateLogger<XRoadOperationalDataProcessor>();
         }
+
+        private readonly ILogger<XRoadOperationalDataProcessor> _logger;
 
         [Fact]
         public void ProcessRecords()
@@ -33,7 +33,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                 cfg.AddProfiles(typeof(OperationalDataRecordProfile));
             });
 
-            XRoadOperationalDataProcessor xRoadOperationalDataProcessor = new XRoadOperationalDataProcessor(
+            var xRoadOperationalDataProcessor = new XRoadOperationalDataProcessor(
                 _logger,
                 dbContextOptionsBuilder.Options,
                 mapperConfiguration.CreateMapper()

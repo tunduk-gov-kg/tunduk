@@ -4,7 +4,10 @@
     {
         public string SecurityServerCode { get; set; }
 
-        public override string ToString() => $"{Instance}/{MemberClass}/{MemberCode}/{SecurityServerCode}";
+        public override string ToString()
+        {
+            return $"{Instance}/{MemberClass}/{MemberCode}/{SecurityServerCode}";
+        }
     }
 
     public class SecurityServerData

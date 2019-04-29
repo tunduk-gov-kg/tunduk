@@ -11,14 +11,14 @@ namespace Catalog.BusinessLogicLayer.UnitTests
 {
     public class XRoadGlobalConfigurationClientTests
     {
-        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
-
         public XRoadGlobalConfigurationClientTests(ITestOutputHelper testOutputHelper)
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XUnitLoggerProvider(testOutputHelper));
             _xRoadManageLogger = loggerFactory.CreateLogger<XRoadGlobalConfigurationClient>();
         }
+
+        private readonly ILogger<XRoadGlobalConfigurationClient> _xRoadManageLogger;
 
         [Fact]
         public async Task GetMembersListAsync_When__()
