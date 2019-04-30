@@ -29,8 +29,9 @@ namespace Catalog.Report.Service
                 .Include(member => member.SubSystems)
                 .ToList();
 
-            var exchangeInformations =
-                membersList.Select(member => _statisticsService.GetExchangeInformation(member, from, to));
+            var exchangeInformations = membersList
+                    .AsParallel()
+                    .Select(member => _statisticsService.GetExchangeInformation(member, from, to));
 
             var reportViewModel = new ReportViewModel();
             reportViewModel.From = from;

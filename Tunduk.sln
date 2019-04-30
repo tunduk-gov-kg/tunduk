@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Daemon", "Catalog.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Report", "Catalog.Report\Catalog.Report.csproj", "{171F61DE-A0F6-47C4-8747-179E3418DEF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.WebApplication", "Catalog.WebApplication\Catalog.WebApplication.csproj", "{343E793A-8D6E-4C0C-B433-DF36238CAFAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{171F61DE-A0F6-47C4-8747-179E3418DEF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343E793A-8D6E-4C0C-B433-DF36238CAFAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343E793A-8D6E-4C0C-B433-DF36238CAFAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343E793A-8D6E-4C0C-B433-DF36238CAFAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343E793A-8D6E-4C0C-B433-DF36238CAFAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
