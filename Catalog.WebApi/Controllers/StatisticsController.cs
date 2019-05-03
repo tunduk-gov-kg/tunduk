@@ -14,24 +14,24 @@ namespace Catalog.WebApi.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly CatalogDbContext _dbContext;
-        private readonly IStatisticsService _statistics;
+        private readonly IExchangeDataCalculator _statistics;
 
-        public StatisticsController(IStatisticsService statistics, CatalogDbContext dbContext)
+        public StatisticsController(IExchangeDataCalculator statistics, CatalogDbContext dbContext)
         {
             _statistics = statistics;
             _dbContext = dbContext;
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public MemberExchangeInformation GetMemberExchangeInformation(
+        public MemberExchangeData GetMemberExchangeInformation(
             [FromUri] long memberId,
             [FromUri] DateTime from,
             [FromUri] DateTime? to = null
         )
         {
             var member = _dbContext.Members.Include(it => it.SubSystems)
-                .SingleOrDefault(it => it.Id == memberId);
-            return _statistics.GetExchangeInformation(member, from, to ?? DateTime.Now);
+                .Single(it => it.Id == memberId);
+            return _statistics.GetExchangeData(member, from, to ?? DateTime.Now);
         }
     }
 }

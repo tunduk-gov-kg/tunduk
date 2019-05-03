@@ -28,49 +28,44 @@ namespace Catalog.DataAccessLayer.Helpers
                 });
         }
 
-        public static IQueryable<Message> WhereConsumerEquals(this IQueryable<Message> source, Member member,
-            bool containsSubSystemCode)
+        public static IQueryable<Message> WhereConsumerEquals(this IQueryable<Message> source, Member member)
         {
-            var queryable = source.Where(
-                message => message.ConsumerInstance == member.Instance
-                           && message.ConsumerMemberClass == member.MemberClass
+            return source.Where(
+                message => message.ConsumerSubSystemCode == null
                            && message.ConsumerMemberCode == member.MemberCode
+                           && message.ConsumerMemberClass == member.MemberClass
+                           && message.ConsumerInstance == member.Instance
             );
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (containsSubSystemCode) return queryable.Where(message => message.ConsumerSubSystemCode != null);
-
-            return queryable.Where(message => message.ConsumerSubSystemCode == null);
         }
 
-        public static IQueryable<Message> WhereProducerEquals(this IQueryable<Message> source, Member member,
-            bool containsSubSystemCode)
+        public static IQueryable<Message> WhereProducerEquals(this IQueryable<Message> source, Member member)
         {
-            var queryable = source.Where(
-                message => message.ProducerInstance == member.Instance
-                           && message.ProducerMemberClass == member.MemberClass
+            return source.Where(
+                message => message.ProducerSubSystemCode == null
                            && message.ProducerMemberCode == member.MemberCode
+                           && message.ProducerMemberClass == member.MemberClass
+                           && message.ProducerInstance == member.Instance
             );
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (containsSubSystemCode) return queryable.Where(message => message.ProducerSubSystemCode != null);
-
-            return queryable.Where(message => message.ProducerSubSystemCode == null);
         }
 
         public static IQueryable<Message> WhereConsumerEquals(this IQueryable<Message> source, SubSystem subSystem)
         {
-            return source.WhereConsumerEquals(subSystem.Member, true)
-                .Where(message => message.ConsumerSubSystemCode == subSystem.SubSystemCode);
+            return source.Where(
+                message => message.ConsumerSubSystemCode == subSystem.SubSystemCode
+                           && message.ConsumerMemberCode == subSystem.Member.MemberCode
+                           && message.ConsumerMemberClass == subSystem.Member.MemberClass
+                           && message.ConsumerInstance == subSystem.Member.Instance
+            );
         }
 
         public static IQueryable<Message> WhereProducerEquals(this IQueryable<Message> source, SubSystem subSystem)
         {
-            return source.WhereProducerEquals(subSystem.Member, true)
-                .Where(message => message.ProducerSubSystemCode == subSystem.SubSystemCode);
-        }
-
-        public static IQueryable<Message> WhereIsSucceeded(this IQueryable<Message> source, bool value = true)
-        {
-            return source.Where(message => message.IsSucceeded == value);
+            return source.Where(
+                message => message.ProducerSubSystemCode == subSystem.SubSystemCode
+                           && message.ProducerMemberCode == subSystem.Member.MemberCode
+                           && message.ProducerMemberClass == subSystem.Member.MemberClass
+                           && message.ProducerInstance == subSystem.Member.Instance
+            );
         }
     }
 }

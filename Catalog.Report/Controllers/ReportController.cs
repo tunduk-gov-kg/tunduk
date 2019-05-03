@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Catalog.Report.Models;
 using Catalog.Report.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -7,28 +7,33 @@ namespace Catalog.Report.Controllers
 {
     public class ReportController : Controller
     {
-        private readonly IReportService _reportService;
+        private IExchangeDataReportService _reportService;
 
-        public ReportController(IReportService reportService)
+        public ReportController(IExchangeDataReportService reportService)
         {
             _reportService = reportService;
         }
 
-        public IActionResult GenerateReport()
+        [HttpGet]
+        public IActionResult GenerateBatchReport()
         {
             return View();
         }
 
-
         [HttpPost]
-        public IActionResult GenerateReport(GenerateReportViewModel generateReportViewModel)
+        public IActionResult GenerateBatchReport(GenerateBatchReportViewModel model)
         {
-            ViewBag.IncludeMetaServices = generateReportViewModel.IncludeMetaServices;
-            var reportViewModel = _reportService.GenerateReport(
-                generateReportViewModel.From
-                , generateReportViewModel.To ?? DateTime.Now
-                , generateReportViewModel.IncludeMetaServices);
-            return View("Report", reportViewModel);
+            if (ModelState.IsValid)
+            {
+                DateTime to = model.To ?? DateTime.Now;
+                ViewBag.From = model.From;
+                ViewBag.To = to;
+                
+                var exchangeDataRecords = _reportService.GenerateReport(model.From, to);
+                return View("BatchReport", exchangeDataRecords);
+            }
+
+            return View();
         }
     }
 }

@@ -28,10 +28,17 @@ namespace Catalog.Report
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<CatalogDbContext>(
-                options => options.UseNpgsql(Configuration.GetConnectionString("CatalogDb")));
-            services.AddScoped<IStatisticsService, StatisticsService>();
-            services.AddScoped<IReportService, ReportService>();
+            services.AddSingleton(o =>
+            {
+                var dbContextOptionsBuilder = new DbContextOptionsBuilder<CatalogDbContext>()
+                    .UseNpgsql(Configuration.GetConnectionString(nameof(CatalogDbContext)));
+                return dbContextOptionsBuilder.Options;
+            });
+            
+            services.AddDbContext<CatalogDbContext>(options => options.UseNpgsql(nameof(CatalogDbContext)));
+            services.AddScoped<IExchangeDataCalculator, ExchangeDataCalculator>();
+            services.AddScoped<IExchangeDataReportService, ExchangeDataReportService>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -50,7 +57,7 @@ namespace Catalog.Report
             {
                 routes.MapRoute(
                     "default",
-                    "{controller=Report}/{action=GenerateReport}/{id?}");
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

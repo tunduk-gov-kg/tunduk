@@ -1,6 +1,8 @@
+using System;
+
 namespace Catalog.Domain.Model
 {
-    public class RequestsCount
+    public class RequestsCount : IComparable<RequestsCount>
     {
         public RequestsCount(int failed, int succeeded)
         {
@@ -8,12 +10,15 @@ namespace Catalog.Domain.Model
             Succeeded = succeeded;
         }
 
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-        public int Failed { get; set; }
+        public int Failed { get; }
 
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-        public int Succeeded { get; set; }
+        public int Succeeded { get; }
 
         public int Total => Failed + Succeeded;
+
+        public int CompareTo(RequestsCount other)
+        {
+            return Total.CompareTo(other.Total);
+        }
     }
 }

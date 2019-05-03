@@ -86,7 +86,9 @@ namespace Catalog.BusinessLogicLayer.Service
                     };
                     _logger.LogInformation(LoggingEvents.GetOperationalData,
                         "Requesting Security Server: {server} for OpData From: {from} To: {to}",
-                        securityServerIdentifier, recordsFrom, recordsTo
+                        securityServerIdentifier,
+                        recordsFrom.AsSecondsToDateTime().ToString("s"),
+                        recordsTo.AsSecondsToDateTime().ToString("s")
                     );
 
                     var operationalData = _operationalDataService
@@ -94,22 +96,7 @@ namespace Catalog.BusinessLogicLayer.Service
 
                     var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
 
-                    var pageNumber = 1;
-                    var pageSize = 50;
-
-                    IPagedList<OperationalDataRecord> pagedList;
-
-                    do
-                    {
-                        using (var dbContext = new CatalogDbContext(_dbContextOptions))
-                        {
-                            pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
-                            dbContext.OperationalDataRecords.AddRange(pagedList);
-                            dbContext.SaveChanges();
-                        }
-
-                        _logger.LogInformation("{PageNumber}", pageNumber);
-                    } while (pagedList.HasNextPage);
+                    InsertRecordsToDatabase(dataRecords);
 
                     var shouldBreakTask =
                         !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount.Equals(0);
@@ -142,6 +129,22 @@ namespace Catalog.BusinessLogicLayer.Service
             }
 
             return recordsFrom.AsSecondsToDateTime();
+        }
+
+        private void InsertRecordsToDatabase(OperationalDataRecord[] dataRecords)
+        {
+            var pageNumber = 1;
+            var pageSize = 50;
+            IPagedList<OperationalDataRecord> pagedList;
+            do
+            {
+                using (var dbContext = new CatalogDbContext(_dbContextOptions))
+                {
+                    pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
+                    dbContext.OperationalDataRecords.AddRange(pagedList);
+                    dbContext.SaveChanges();
+                }
+            } while (pagedList.HasNextPage);
         }
     }
 }

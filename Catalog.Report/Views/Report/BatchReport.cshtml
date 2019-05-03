@@ -1,0 +1,53 @@
+@model List<Catalog.Domain.Model.MemberExchangeData>
+
+@{
+    ViewBag.Title = "Batch Report";
+    Layout = "_Layout";
+}
+
+
+@for (int i = 0; i < Model.Count; i++)
+{
+    <div class="row">
+        @{ var exchangeData = Model[i]; }
+        <div class="col-md-12">
+            <h3>@exchangeData.ExchangeData.Name</h3>
+        </div>
+        <div class="col-md-12">
+            <h5>Produced Services</h5>
+            <div class="row">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Service name</td>
+                        <td>Consumer</td>
+                        <td>Succeed Requests</td>
+                        <td>Failed Requests</td>
+                        <td>Total Requests</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td rowspan="2">@i+1</td>
+                        <td rowspan="2">Получение информации о человеке</td>
+                        <td>Информационная система титек</td>
+                        <td>123</td>
+                        <td>23</td>
+                        <td>146</td>
+                    </tr>
+                    <tr>
+                        <td>Информационная система титек</td>
+                        <td>123</td>
+                        <td>23</td>
+                        <td>146</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h5>Consumed Services</h5>
+        </div>
+    </div>
+}

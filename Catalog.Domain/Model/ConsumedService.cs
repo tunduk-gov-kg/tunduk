@@ -2,9 +2,9 @@ using XRoad.Domain;
 
 namespace Catalog.Domain.Model
 {
-    public class ConsumedServiceInformation
+    public class ConsumedService
     {
-        public SubSystemIdentifier Consumer { get; set; }
+        public string Name { get; set; }
         public ServiceIdentifier Producer { get; set; }
         public RequestsCount RequestsCount { get; set; }
     }

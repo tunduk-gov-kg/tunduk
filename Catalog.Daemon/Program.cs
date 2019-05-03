@@ -25,7 +25,8 @@ namespace Catalog.Daemon
                 {
                     config.AddConsole();
                     config.AddDebug();
-                    config.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                    config.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.None);
+                    config.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
                 })
                 .ConfigureHostConfiguration(config => { config.AddEnvironmentVariables(); })
                 .ConfigureAppConfiguration((hostContext, config) =>
@@ -61,7 +62,7 @@ namespace Catalog.Daemon
                     services.AddScoped<IXRoadGlobalConfigurationClient, XRoadGlobalConfigurationClient>();
 
                     services.AddDbContext<CatalogDbContext>(builder =>
-                        builder.UseNpgsql(hostContext.Configuration.GetConnectionString("CatalogDb")));
+                        builder.UseNpgsql(nameof(CatalogDbContext)));
 
                     services.AddScoped<XRoadOperationalDataCollector>();
                     services.AddScoped<XRoadOperationalDataProcessor>();

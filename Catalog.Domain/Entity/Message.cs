@@ -1,4 +1,5 @@
 using Catalog.Domain.Enum;
+using XRoad.Domain;
 
 namespace Catalog.Domain.Entity
 {
@@ -39,5 +40,14 @@ namespace Catalog.Domain.Entity
         public bool IsSucceeded { get; set; }
         public string FaultCode { get; set; }
         public string FaultString { get; set; }
+
+        public SubSystemIdentifier ConsumerIdentifier =>
+            new SubSystemIdentifier
+            {
+                Instance = ConsumerInstance,
+                MemberClass = ConsumerMemberClass,
+                MemberCode = ConsumerMemberCode,
+                SubSystemCode = ConsumerSubSystemCode
+            };
     }
 }

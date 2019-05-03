@@ -14,9 +14,9 @@ namespace Catalog.BusinessLogicLayer.UnitTests.Report
         {
             var dbContext = DbContextProvider.RequireDbContext();
             var member = dbContext.Members.Include(it => it.SubSystems).First();
-            var statisticsService = new StatisticsService(dbContext);
+            var statisticsService = new ExchangeDataCalculator(dbContext);
             var memberExchangeInformation =
-                statisticsService.GetExchangeInformation(member, DateTime.Now.AddDays(-10), DateTime.Now);
+                statisticsService.GetExchangeData(member, DateTime.Now.AddDays(-10), DateTime.Now);
 
             Assert.True(true);
         }

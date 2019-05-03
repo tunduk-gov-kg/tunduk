@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using XRoad.Domain;
 
 namespace Catalog.Domain.Model
 {
-    public class ExchangeInformation
+    public class ExchangeData
     {
-        public List<ConsumedServiceInformation> ConsumedServices { get; set; }
-        public List<ProducedServiceInformation> ProducedServices { get; set; }
+        public string Name { get; set; }
+        public SubSystemIdentifier Identifier { get; set; }
+        public List<ConsumedService> ConsumedServices { get; set; }
+        public List<ProducedService> ProducedServices { get; set; }
 
         public RequestsCount OutgoingRequestsCount
         {

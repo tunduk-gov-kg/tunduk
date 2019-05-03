@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace Catalog.WebApi
 {
@@ -31,7 +32,7 @@ namespace Catalog.WebApi
             services.AddDbContext<CatalogDbContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("CatalogDb")));
 
-            services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IExchangeDataCalculator, ExchangeDataCalculator>();
 
             services.AddIdentity<CatalogUser, IdentityRole>()
                 .AddEntityFrameworkStores<CatalogDbContext>()
@@ -56,7 +57,9 @@ namespace Catalog.WebApi
                 };
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .AddJsonOptions(options=>options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
