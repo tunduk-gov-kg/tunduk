@@ -10,6 +10,7 @@ using SimpleSOAPClient.Exceptions;
 using X.PagedList;
 using XRoad.Domain;
 using XRoad.OpMonitor;
+using XRoad.OpMonitor.Domain;
 using XRoad.OpMonitor.Domain.SOAP;
 
 namespace Catalog.BusinessLogicLayer.Service
@@ -75,41 +76,52 @@ namespace Catalog.BusinessLogicLayer.Service
 
             if (recordsTo - recordsFrom <= 0) throw new ArgumentException("Out of timeline range");
 
+            for (var i = 0; i < MaxIteration; i++)
+            {
+                var searchCriteria = new SearchCriteria
+                {
+                    RecordsFrom = recordsFrom,
+                    RecordsTo = recordsTo
+                };
+                _logger.LogInformation(LoggingEvents.GetOperationalData,
+                    "Requesting Security Server: {server} for OpData From: {from} To: {to}",
+                    securityServerIdentifier,
+                    recordsFrom.AsSecondsToDateTime().ToString("s"),
+                    recordsTo.AsSecondsToDateTime().ToString("s")
+                );
+
+
+                var operationalData = GetOperationalData(securityServerIdentifier, searchCriteria);
+
+                if (operationalData.RecordsCount > 0)
+                {
+                    var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
+                    InsertRecordsToDatabase(dataRecords);
+                }
+
+                var shouldBreakTask =
+                    !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount == 0;
+
+                if (shouldBreakTask)
+                {
+                    recordsFrom = recordsTo + 1;
+                    break;
+                }
+
+                // ReSharper disable once PossibleInvalidOperationException
+                recordsFrom = operationalData.NextRecordsFrom.Value;
+            }
+
+            return recordsFrom.AsSecondsToDateTime();
+        }
+
+        private OperationalData GetOperationalData(SecurityServerIdentifier securityServerIdentifier,
+            SearchCriteria searchCriteria)
+        {
             try
             {
-                for (var i = 0; i < MaxIteration; i++)
-                {
-                    var searchCriteria = new SearchCriteria
-                    {
-                        RecordsFrom = recordsFrom,
-                        RecordsTo = recordsTo
-                    };
-                    _logger.LogInformation(LoggingEvents.GetOperationalData,
-                        "Requesting Security Server: {server} for OpData From: {from} To: {to}",
-                        securityServerIdentifier,
-                        recordsFrom.AsSecondsToDateTime().ToString("s"),
-                        recordsTo.AsSecondsToDateTime().ToString("s")
-                    );
-
-                    var operationalData = _operationalDataService
-                        .GetOperationalData(_xRoadExchangeParameters, securityServerIdentifier, searchCriteria);
-
-                    var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
-
-                    InsertRecordsToDatabase(dataRecords);
-
-                    var shouldBreakTask =
-                        !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount.Equals(0);
-
-                    if (shouldBreakTask)
-                    {
-                        recordsFrom = recordsTo + 1;
-                        break;
-                    }
-
-                    // ReSharper disable once PossibleInvalidOperationException
-                    recordsFrom = operationalData.NextRecordsFrom.Value;
-                }
+                return _operationalDataService
+                    .GetOperationalData(_xRoadExchangeParameters, securityServerIdentifier, searchCriteria);
             }
             catch (FaultException faultException)
             {
@@ -120,31 +132,35 @@ namespace Catalog.BusinessLogicLayer.Service
                     faultException.String
                 );
             }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogError(LoggingEvents.GetOperationalData,
-                    "Error during opdata insert operation; security server {id}" + securityServerIdentifier
-                                                                                 + "; Error: " +
-                                                                                 dbUpdateException.Message);
-            }
 
-            return recordsFrom.AsSecondsToDateTime();
+            return new OperationalData
+            {
+                RecordsCount = 0
+            };
         }
 
         private void InsertRecordsToDatabase(OperationalDataRecord[] dataRecords)
         {
-            var pageNumber = 1;
-            var pageSize = 50;
-            IPagedList<OperationalDataRecord> pagedList;
-            do
+            try
             {
-                using (var dbContext = new CatalogDbContext(_dbContextOptions))
+                var pageNumber = 1;
+                var pageSize = 50;
+                IPagedList<OperationalDataRecord> pagedList;
+                do
                 {
-                    pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
-                    dbContext.OperationalDataRecords.AddRange(pagedList);
-                    dbContext.SaveChanges();
-                }
-            } while (pagedList.HasNextPage);
+                    using (var dbContext = new CatalogDbContext(_dbContextOptions))
+                    {
+                        pagedList = dataRecords.ToPagedList(pageNumber++, pageSize);
+                        dbContext.OperationalDataRecords.AddRange(pagedList);
+                        dbContext.SaveChanges();
+                    }
+                } while (pagedList.HasNextPage);
+            }
+            catch (DbUpdateException exception)
+            {
+                _logger.LogError(LoggingEvents.GetOperationalData,
+                    "Error during opdata insert operation; Error: " + exception.Message);
+            }
         }
     }
 }

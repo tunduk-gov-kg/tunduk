@@ -6,10 +6,10 @@
 }
 
 
-@for (int i = 0; i < Model.Count; i++)
+@for (int exchangeIndex = 0; exchangeIndex < Model.Count; exchangeIndex++)
 {
     <div class="row">
-        @{ var exchangeData = Model[i]; }
+        @{ var exchangeData = Model[exchangeIndex]; }
         <div class="col-md-12">
             <h3>@exchangeData.ExchangeData.Name</h3>
         </div>
@@ -20,7 +20,8 @@
                     <thead>
                     <tr>
                         <td>#</td>
-                        <td>Service name</td>
+                        <td>Subsystem</td>
+                        <td>Service</td>
                         <td>Consumer</td>
                         <td>Succeed Requests</td>
                         <td>Failed Requests</td>
@@ -28,26 +29,63 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td rowspan="2">@i+1</td>
-                        <td rowspan="2">Получение информации о человеке</td>
-                        <td>Информационная система титек</td>
-                        <td>123</td>
-                        <td>23</td>
-                        <td>146</td>
-                    </tr>
-                    <tr>
-                        <td>Информационная система титек</td>
-                        <td>123</td>
-                        <td>23</td>
-                        <td>146</td>
-                    </tr>
+                    @for (int subSystemIndex = 0; subSystemIndex < exchangeData.SubSystems.Count; subSystemIndex++)
+                    {
+                        var subSystem = exchangeData.SubSystems[subSystemIndex];
+                        for (int serviceIndex = 0; serviceIndex < subSystem.ProducedServices.Count; serviceIndex++)
+                        {
+                            var producedService = subSystem.ProducedServices[serviceIndex];
+                            for (int consumerIndex = 0; consumerIndex < producedService.Consumers.Count; consumerIndex++)
+                            {
+                                <tr>@consumerIndex + 1</tr>
+                                <tr>@subSystem.Name</tr>
+                                <tr>@producedService.Name</tr>
+                                <tr>@producedService.Consumers[consumerIndex].Name</tr>
+                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Succeeded</tr>
+                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Failed</tr>
+                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Total</tr>
+                            }
+                        }
+                    }
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="col-md-12">
             <h5>Consumed Services</h5>
+            <div class="row">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Subsystem</td>
+                        <td>Producer</td>
+                        <td>Succeed Requests</td>
+                        <td>Failed Requests</td>
+                        <td>Total Requests</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (int subSystemIndex = 0; subSystemIndex < exchangeData.SubSystems.Count; subSystemIndex++)
+                    {
+                        var subSystem = exchangeData.SubSystems[subSystemIndex];
+                        for (int serviceIndex = 0; serviceIndex < subSystem.ConsumedServices.Count; serviceIndex++)
+                        {
+                            var consumedService = subSystem.ConsumedServices[serviceIndex];
+                            <tr>
+                                <td>@serviceIndex+1</td>
+                                <td>@subSystem.Name</td>
+                                <td>@consumedService.Name</td>
+                                <td>@consumedService.RequestsCount.Succeeded</td>
+                                <td>@consumedService.RequestsCount.Failed</td>
+                                <td>@consumedService.RequestsCount.Total</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 }
+1111`
