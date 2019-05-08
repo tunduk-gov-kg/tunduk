@@ -6,7 +6,6 @@ using Catalog.DataAccessLayer.Helpers;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Model;
 using LinqKit;
-using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service.Report
@@ -150,8 +149,8 @@ namespace Catalog.BusinessLogicLayer.Service.Report
                 {
                     Producer = producer.Key,
                     RequestsCount = new RequestsCount(
-                        producer.Count(message => message.IsSucceeded),
-                        producer.Count(message => !message.IsSucceeded))
+                        producer.Count(message => !message.IsSucceeded),
+                        producer.Count(message => message.IsSucceeded))
                 }).ToList();
 
             exchangeInformation.ProducedServices = _dbContext.Messages

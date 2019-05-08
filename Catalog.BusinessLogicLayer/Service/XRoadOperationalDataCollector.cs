@@ -90,38 +90,43 @@ namespace Catalog.BusinessLogicLayer.Service
                     recordsTo.AsSecondsToDateTime().ToString("s")
                 );
 
+                OperationalData operationalData;
 
-                var operationalData = GetOperationalData(securityServerIdentifier, searchCriteria);
-
-                if (operationalData.RecordsCount > 0)
+                if (TryGetOperationalData(out operationalData, securityServerIdentifier, searchCriteria))
                 {
                     var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
+                    
                     InsertRecordsToDatabase(dataRecords);
+                    
+                    var shouldBreakTask =
+                        operationalData.RecordsCount == 0 || !operationalData.NextRecordsFromSpecified;
+
+                    if (shouldBreakTask)
+                    {
+                        recordsFrom = recordsTo + 1;
+                        break;
+                    }
+                    // ReSharper disable once PossibleInvalidOperationException
+                    recordsFrom = operationalData.NextRecordsFrom.Value;
                 }
-
-                var shouldBreakTask =
-                    !operationalData.NextRecordsFromSpecified || operationalData.RecordsCount == 0;
-
-                if (shouldBreakTask)
+                else
                 {
-                    recordsFrom = recordsTo + 1;
                     break;
                 }
-
-                // ReSharper disable once PossibleInvalidOperationException
-                recordsFrom = operationalData.NextRecordsFrom.Value;
             }
 
             return recordsFrom.AsSecondsToDateTime();
         }
 
-        private OperationalData GetOperationalData(SecurityServerIdentifier securityServerIdentifier,
+        private bool TryGetOperationalData(out OperationalData operationalData,
+            SecurityServerIdentifier securityServerIdentifier,
             SearchCriteria searchCriteria)
         {
             try
             {
-                return _operationalDataService
+                operationalData = _operationalDataService
                     .GetOperationalData(_xRoadExchangeParameters, securityServerIdentifier, searchCriteria);
+                return true;
             }
             catch (FaultException faultException)
             {
@@ -131,12 +136,9 @@ namespace Catalog.BusinessLogicLayer.Service
                     securityServerIdentifier.ToString(),
                     faultException.String
                 );
+                operationalData = null;
+                return false;
             }
-
-            return new OperationalData
-            {
-                RecordsCount = 0
-            };
         }
 
         private void InsertRecordsToDatabase(OperationalDataRecord[] dataRecords)

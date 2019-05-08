@@ -5,10 +5,23 @@
     Layout = "_Layout";
 }
 
+<style>
+    .member-exchange {
+        background: #eee;
+        padding: 20px;
+        border: 1px #ccc solid;
+        font-size: 0.9em;
+        margin: 10px 0px;
+        margin-top: 10px;
+        margin-right: 0px;
+        margin-bottom: 10px;
+        margin-left: 0px;
+    }
+</style>
 
 @for (int exchangeIndex = 0; exchangeIndex < Model.Count; exchangeIndex++)
 {
-    <div class="row">
+    <div class="row member-exchange">
         @{ var exchangeData = Model[exchangeIndex]; }
         <div class="col-md-12">
             <h3>@exchangeData.ExchangeData.Name</h3>
@@ -19,13 +32,13 @@
                 <table class="table table-sm">
                     <thead>
                     <tr>
-                        <td>#</td>
-                        <td>Subsystem</td>
-                        <td>Service</td>
-                        <td>Consumer</td>
-                        <td>Succeed Requests</td>
-                        <td>Failed Requests</td>
-                        <td>Total Requests</td>
+                        <td width="5%">#</td>
+                        <td width="21%">Subsystem</td>
+                        <td width="25%">Service</td>
+                        <td width="25%">Consumer</td>
+                        <td width="8%">Succeed Requests</td>
+                        <td width="8%">Failed Requests</td>
+                        <td width="8%">Total Requests</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,13 +50,15 @@
                             var producedService = subSystem.ProducedServices[serviceIndex];
                             for (int consumerIndex = 0; consumerIndex < producedService.Consumers.Count; consumerIndex++)
                             {
-                                <tr>@consumerIndex + 1</tr>
-                                <tr>@subSystem.Name</tr>
-                                <tr>@producedService.Name</tr>
-                                <tr>@producedService.Consumers[consumerIndex].Name</tr>
-                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Succeeded</tr>
-                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Failed</tr>
-                                <tr>@producedService.Consumers[consumerIndex].RequestsCount.Total</tr>
+                                <tr>
+                                    <td>@(consumerIndex + 1)</td>
+                                    <td>@subSystem.Name</td>
+                                    <td>@producedService.Name</td>
+                                    <td>@producedService.Consumers[consumerIndex].Name</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Succeeded</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Failed</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Total</td>
+                                </tr>
                             }
                         }
                     }
@@ -57,12 +72,12 @@
                 <table class="table table-sm">
                     <thead>
                     <tr>
-                        <td>#</td>
-                        <td>Subsystem</td>
-                        <td>Producer</td>
-                        <td>Succeed Requests</td>
-                        <td>Failed Requests</td>
-                        <td>Total Requests</td>
+                        <td width="9">#</td>
+                        <td width="32">Client Subsystem</td>
+                        <td width="32">Producer</td>
+                        <td width="9">Succeed Requests</td>
+                        <td width="9">Failed Requests</td>
+                        <td width="9">Total Requests</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -73,7 +88,7 @@
                         {
                             var consumedService = subSystem.ConsumedServices[serviceIndex];
                             <tr>
-                                <td>@serviceIndex+1</td>
+                                <td>@(serviceIndex + 1)</td>
                                 <td>@subSystem.Name</td>
                                 <td>@consumedService.Name</td>
                                 <td>@consumedService.RequestsCount.Succeeded</td>
@@ -88,4 +103,3 @@
         </div>
     </div>
 }
-1111`

@@ -38,9 +38,6 @@ namespace Catalog.Report.Service
                 })
                 .ToList();
             
-            query.RemoveAll(it=> it.TotalIncomingRequestsCount.Total == 0 || it.TotalOutgoingRequestsCount.Total == 0);
-            query.RemoveAll(it => it.TotalOutgoingRequestsCount.Total == 0 || it.TotalOutgoingRequestsCount.Total == 0);
-
             return query
                 .OrderBy(it => it.TotalIncomingRequestsCount)
                 .ThenBy(it=>it.TotalOutgoingRequestsCount).ToList();

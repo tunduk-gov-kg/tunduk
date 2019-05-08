@@ -23,17 +23,12 @@ namespace Catalog.Report.Controllers
         [HttpPost]
         public IActionResult GenerateBatchReport(GenerateBatchReportViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                DateTime to = model.To ?? DateTime.Now;
-                ViewBag.From = model.From;
-                ViewBag.To = to;
-                
-                var exchangeDataRecords = _reportService.GenerateReport(model.From, to);
-                return View("BatchReport", exchangeDataRecords);
-            }
+            DateTime to = model.To ?? DateTime.Now;
+            ViewBag.From = model.From;
+            ViewBag.To = to;
 
-            return View();
+            var exchangeDataRecords = _reportService.GenerateReport(model.From, to);
+            return View("BatchReport", exchangeDataRecords);
         }
     }
 }
