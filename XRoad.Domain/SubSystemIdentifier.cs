@@ -11,7 +11,7 @@
 
         public override string ToString()
         {
-            return $"{base.ToString()}/${SubSystemCode}";
+            return $"{base.ToString()}/{SubSystemCode}";
         }
 
         public override bool Equals(object obj)

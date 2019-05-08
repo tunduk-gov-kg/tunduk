@@ -18,7 +18,7 @@ namespace Catalog.BusinessLogicLayer.Service
     public sealed class XRoadOperationalDataCollector
     {
         private static readonly int MaxIteration = 10;
-        private static readonly int OffsetSeconds = 120;
+        private static readonly int OffsetSeconds = 180;
         private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataCollector> _logger;
 
@@ -89,15 +89,13 @@ namespace Catalog.BusinessLogicLayer.Service
                     recordsFrom.AsSecondsToDateTime().ToString("s"),
                     recordsTo.AsSecondsToDateTime().ToString("s")
                 );
-
-                OperationalData operationalData;
-
-                if (TryGetOperationalData(out operationalData, securityServerIdentifier, searchCriteria))
+                
+                if (TryGetOperationalData(out var operationalData, securityServerIdentifier, searchCriteria))
                 {
                     var dataRecords = _mapper.Map<OperationalDataRecord[]>(operationalData.Records);
-                    
+
                     InsertRecordsToDatabase(dataRecords);
-                    
+
                     var shouldBreakTask =
                         operationalData.RecordsCount == 0 || !operationalData.NextRecordsFromSpecified;
 
@@ -106,13 +104,11 @@ namespace Catalog.BusinessLogicLayer.Service
                         recordsFrom = recordsTo + 1;
                         break;
                     }
+
                     // ReSharper disable once PossibleInvalidOperationException
                     recordsFrom = operationalData.NextRecordsFrom.Value;
                 }
-                else
-                {
-                    break;
-                }
+                else break;
             }
 
             return recordsFrom.AsSecondsToDateTime();

@@ -39,8 +39,10 @@ namespace Catalog.Report.Service
                 .ToList();
             
             return query
-                .OrderBy(it => it.TotalIncomingRequestsCount)
-                .ThenBy(it=>it.TotalOutgoingRequestsCount).ToList();
+                .OrderByDescending(it => it.TotalIncomingRequestsCount)
+                .ThenByDescending(it=>it.TotalOutgoingRequestsCount)
+                .ThenByDescending(it=>it.ExchangeData.Name)
+                .ToList();
         }
 
         public List<MemberExchangeData> GenerateMetadataReport(DateTime from, DateTime to)
