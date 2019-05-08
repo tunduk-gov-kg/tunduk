@@ -7,6 +7,11 @@ namespace XRoad.Domain
         public string ServiceCode { get; set; }
         public string ServiceVersion { get; set; }
 
+        public override string ToString()
+        {
+            return $"{base.ToString()}/{ServiceCode}/{ServiceVersion}";
+        }
+
         protected bool Equals(ServiceIdentifier other)
         {
             return base.Equals(other) && string.Equals(ServiceCode, other.ServiceCode) &&

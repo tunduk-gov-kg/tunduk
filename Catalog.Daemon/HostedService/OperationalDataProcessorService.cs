@@ -31,7 +31,7 @@ namespace Catalog.Daemon.HostedService
         {
             _logger.LogInformation(nameof(OperationalDataProcessorService) + " is starting");
 
-            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromHours(2));
+            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromHours(1));
 
             return Task.CompletedTask;
         }

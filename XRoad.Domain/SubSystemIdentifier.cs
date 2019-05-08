@@ -9,6 +9,11 @@
             return base.Equals(other) && string.Equals(SubSystemCode, other.SubSystemCode);
         }
 
+        public override string ToString()
+        {
+            return $"{base.ToString()}/${SubSystemCode}";
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
