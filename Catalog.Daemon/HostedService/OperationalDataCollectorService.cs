@@ -9,9 +9,9 @@ namespace Catalog.Daemon.HostedService
 {
     public class OperationalDataCollectorService : IHostedService, IDisposable
     {
-        private readonly XRoadOperationalDataCollector _collector;
         private readonly object _lockObject = new object();
         private readonly ILogger _logger;
+        private readonly XRoadOperationalDataCollector _collector;
         private Timer _timer;
 
         public OperationalDataCollectorService(ILogger<OperationalDataCollectorService> logger
@@ -21,25 +21,11 @@ namespace Catalog.Daemon.HostedService
             _collector = collector;
         }
 
-        public void Dispose()
-        {
-            _timer?.Dispose();
-        }
-
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation(nameof(OperationalDataCollectorService) + " is starting");
 
             _timer = new Timer(Collect, null, TimeSpan.Zero, TimeSpan.FromHours(2));
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation(nameof(OperationalDataCollectorService) + " is stopping");
-
-            _timer?.Change(Timeout.Infinite, 0);
 
             return Task.CompletedTask;
         }
@@ -52,6 +38,20 @@ namespace Catalog.Daemon.HostedService
                 _collector.RunOpDataCollectorTask();
                 _logger.LogInformation("Operational Data Collector Task Completed");
             }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation(nameof(OperationalDataCollectorService) + " is stopping");
+
+            _timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

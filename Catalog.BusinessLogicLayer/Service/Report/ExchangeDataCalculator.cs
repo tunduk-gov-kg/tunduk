@@ -6,7 +6,6 @@ using Catalog.DataAccessLayer.Helpers;
 using Catalog.Domain.Entity;
 using Catalog.Domain.Model;
 using LinqKit;
-using Microsoft.EntityFrameworkCore;
 using XRoad.Domain;
 
 namespace Catalog.BusinessLogicLayer.Service.Report
@@ -43,7 +42,7 @@ namespace Catalog.BusinessLogicLayer.Service.Report
             {
                 foreach (var consumedService in consumedServices)
                     consumedService.Name = _dbContext.Services.FindByServiceIdentifier(consumedService.Producer)
-                                               ?.NormalizedName ?? consumedService.Producer.ServiceCode;
+                                               ?.NormalizedName ?? consumedService.Producer.ToString();
             }
 
             void InitializeProducedServicesNames(List<ProducedService> producedServices)
@@ -52,18 +51,21 @@ namespace Catalog.BusinessLogicLayer.Service.Report
                 {
                     producedService.Name = _dbContext.Services
                                                .FindByServiceIdentifier(producedService.ServiceIdentifier)
-                                               ?.NormalizedName ?? producedService.ServiceIdentifier.ServiceCode;
+                                               ?.NormalizedName ?? producedService.ServiceIdentifier.ToString();
 
                     foreach (var consumer in producedService.Consumers)
                     {
                         if (consumer.ConsumerIdentifier.SubSystemCode != null)
                         {
-                            consumer.Name = _dbContext.SubSystems.FindBySubSystemIdentifier(consumer.ConsumerIdentifier)
-                                ?.NormalizedName;
+                            consumer.Name =
+                                _dbContext.SubSystems.FindBySubSystemIdentifier(consumer.ConsumerIdentifier)?.Name ??
+                                consumer.ConsumerIdentifier.ToString();
                         }
                         else
                         {
-                            consumer.Name = _dbContext.Members.FindByMemberIdentifier(consumer.ConsumerIdentifier).Name;
+                            consumer.Name =
+                                _dbContext.Members.FindByMemberIdentifier(consumer.ConsumerIdentifier)?.Name ??
+                                consumer.ConsumerIdentifier.ToString();
                         }
                     }
                 }
@@ -150,8 +152,8 @@ namespace Catalog.BusinessLogicLayer.Service.Report
                 {
                     Producer = producer.Key,
                     RequestsCount = new RequestsCount(
-                        producer.Count(message => message.IsSucceeded),
-                        producer.Count(message => !message.IsSucceeded))
+                        producer.Count(message => !message.IsSucceeded),
+                        producer.Count(message => message.IsSucceeded))
                 }).ToList();
 
             exchangeInformation.ProducedServices = _dbContext.Messages

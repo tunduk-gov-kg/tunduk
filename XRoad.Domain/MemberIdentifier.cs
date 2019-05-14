@@ -6,6 +6,11 @@
         public string MemberClass { get; set; }
         public string MemberCode { get; set; }
 
+        public override string ToString()
+        {
+            return $"{Instance}/{MemberClass}/{MemberCode}";
+        }
+
         protected bool Equals(MemberIdentifier other)
         {
             return string.Equals(Instance, other.Instance) && string.Equals(MemberClass, other.MemberClass) &&

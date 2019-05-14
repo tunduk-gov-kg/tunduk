@@ -5,11 +5,24 @@
     Layout = "_Layout";
 }
 
+<style>
+    .member-exchange {
+        background: #eee;
+        padding: 20px;
+        border: 1px #ccc solid;
+        font-size: 0.9em;
+        margin: 10px 0px;
+        margin-top: 10px;
+        margin-right: 0px;
+        margin-bottom: 10px;
+        margin-left: 0px;
+    }
+</style>
 
-@for (int i = 0; i < Model.Count; i++)
+@for (int exchangeIndex = 0; exchangeIndex < Model.Count; exchangeIndex++)
 {
-    <div class="row">
-        @{ var exchangeData = Model[i]; }
+    <div class="row member-exchange">
+        @{ var exchangeData = Model[exchangeIndex]; }
         <div class="col-md-12">
             <h3>@exchangeData.ExchangeData.Name</h3>
         </div>
@@ -19,35 +32,74 @@
                 <table class="table table-sm">
                     <thead>
                     <tr>
-                        <td>#</td>
-                        <td>Service name</td>
-                        <td>Consumer</td>
-                        <td>Succeed Requests</td>
-                        <td>Failed Requests</td>
-                        <td>Total Requests</td>
+                        <td width="5%">#</td>
+                        <td width="21%">Subsystem</td>
+                        <td width="25%">Service</td>
+                        <td width="25%">Consumer</td>
+                        <td width="8%">Succeed Requests</td>
+                        <td width="8%">Failed Requests</td>
+                        <td width="8%">Total Requests</td>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td rowspan="2">@i+1</td>
-                        <td rowspan="2">Получение информации о человеке</td>
-                        <td>Информационная система титек</td>
-                        <td>123</td>
-                        <td>23</td>
-                        <td>146</td>
-                    </tr>
-                    <tr>
-                        <td>Информационная система титек</td>
-                        <td>123</td>
-                        <td>23</td>
-                        <td>146</td>
-                    </tr>
+                    @for (int subSystemIndex = 0; subSystemIndex < exchangeData.SubSystems.Count; subSystemIndex++)
+                    {
+                        var subSystem = exchangeData.SubSystems[subSystemIndex];
+                        for (int serviceIndex = 0; serviceIndex < subSystem.ProducedServices.Count; serviceIndex++)
+                        {
+                            var producedService = subSystem.ProducedServices[serviceIndex];
+                            for (int consumerIndex = 0; consumerIndex < producedService.Consumers.Count; consumerIndex++)
+                            {
+                                <tr>
+                                    <td>@(consumerIndex + 1)</td>
+                                    <td>@subSystem.Name</td>
+                                    <td>@producedService.Name</td>
+                                    <td>@producedService.Consumers[consumerIndex].Name</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Succeeded</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Failed</td>
+                                    <td>@producedService.Consumers[consumerIndex].RequestsCount.Total</td>
+                                </tr>
+                            }
+                        }
+                    }
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="col-md-12">
             <h5>Consumed Services</h5>
+            <div class="row">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <td width="9">#</td>
+                        <td width="32">Client Subsystem</td>
+                        <td width="32">Producer</td>
+                        <td width="9">Succeed Requests</td>
+                        <td width="9">Failed Requests</td>
+                        <td width="9">Total Requests</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (int subSystemIndex = 0; subSystemIndex < exchangeData.SubSystems.Count; subSystemIndex++)
+                    {
+                        var subSystem = exchangeData.SubSystems[subSystemIndex];
+                        for (int serviceIndex = 0; serviceIndex < subSystem.ConsumedServices.Count; serviceIndex++)
+                        {
+                            var consumedService = subSystem.ConsumedServices[serviceIndex];
+                            <tr>
+                                <td>@(serviceIndex + 1)</td>
+                                <td>@subSystem.Name</td>
+                                <td>@consumedService.Name</td>
+                                <td>@consumedService.RequestsCount.Succeeded</td>
+                                <td>@consumedService.RequestsCount.Failed</td>
+                                <td>@consumedService.RequestsCount.Total</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 }

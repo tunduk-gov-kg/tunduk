@@ -10,7 +10,7 @@
         public SubSystem SubSystem { get; set; }
         public long SubSystemId { get; set; }
 
-        public string NormalizedName => Name ?? ServiceCode;
+        public string NormalizedName => Name ?? $"{ServiceCode}/{ServiceVersion}";
         public bool IsDeleted { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Catalog.BusinessLogicLayer;
 using Catalog.BusinessLogicLayer.Service;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -50,8 +51,18 @@ namespace Catalog.Daemon.HostedService
             lock (_lockObject)
             {
                 _logger.LogInformation("Starting XRoad Metadata Collector Task");
-                var task = Task.Run(async () => { await _collector.RunBatchUpdateTask(); });
-                task.Wait();
+                try
+                {
+                    var task = Task.Run(async () => { await _collector.RunBatchUpdateTask(); });
+                    task.Wait();
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(LoggingEvents.RunBatchUpdateTask,
+                        "XRoad Metadata Collector Task Completed with Error: {message}; {stackTrace}",
+                        exception.Message, exception.StackTrace);
+                }
+
                 _logger.LogInformation("XRoad Metadata Collector Task Completed");
             }
         }

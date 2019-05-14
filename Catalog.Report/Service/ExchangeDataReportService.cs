@@ -31,19 +31,18 @@ namespace Catalog.Report.Service
                 {
                     using (var dataCalculator = new ExchangeDataCalculator(new CatalogDbContext(_dbContextOptions)))
                     {
-                        var memberExchangeData = dataCalculator.GetExchangeData(member, from, to);
+                        var memberExchangeData = dataCalculator.GetExchangeData(member, from.ToUniversalTime(), to.ToUniversalTime());
                         CleanMetadataExchange(ref memberExchangeData);
                         return memberExchangeData;
                     }
                 })
                 .ToList();
             
-            query.RemoveAll(it=> it.TotalIncomingRequestsCount.Total == 0 || it.TotalOutgoingRequestsCount.Total == 0);
-            query.RemoveAll(it => it.TotalOutgoingRequestsCount.Total == 0 || it.TotalOutgoingRequestsCount.Total == 0);
-
             return query
-                .OrderBy(it => it.TotalIncomingRequestsCount)
-                .ThenBy(it=>it.TotalOutgoingRequestsCount).ToList();
+                .OrderByDescending(it => it.TotalIncomingRequestsCount)
+                .ThenByDescending(it=>it.TotalOutgoingRequestsCount)
+                .ThenByDescending(it=>it.ExchangeData.Name)
+                .ToList();
         }
 
         public List<MemberExchangeData> GenerateMetadataReport(DateTime from, DateTime to)

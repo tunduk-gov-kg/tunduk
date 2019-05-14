@@ -52,7 +52,15 @@ namespace Catalog.Daemon
                             SubSystemCode = hostContext.Configuration["SubSystemCode"]
                         }
                     });
+                    services.AddSingleton(o =>
+                    {
+                        var dbContextOptionsBuilder = new DbContextOptionsBuilder<CatalogDbContext>()
+                            .UseNpgsql(hostContext.Configuration.GetConnectionString(nameof(CatalogDbContext)));
+                        dbContextOptionsBuilder.EnableSensitiveDataLogging();
+                        return dbContextOptionsBuilder.Options;
+                    });
 
+                    services.AddScoped<IOperationalDataRepository, OperationalDataRepository>();
                     services.AddScoped<IServiceMetadataManager, ServiceMetadataManager>();
                     services.AddScoped<IXRoadStorageUpdater<MemberData>, MembersStorageUpdater>();
                     services.AddScoped<IXRoadStorageUpdater<SecurityServerData>, SecurityServersStorageUpdater>();

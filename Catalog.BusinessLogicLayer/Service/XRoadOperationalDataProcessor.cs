@@ -12,7 +12,7 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class XRoadOperationalDataProcessor
     {
-        private const int ProcessLimit = 10000;
+        private const int ProcessLimit = 1000;
         private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataProcessor> _logger;
         private readonly IMapper _mapper;
@@ -28,8 +28,8 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void ProcessRecords()
         {
-            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
-            catalogDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            var nonTrackingContext = new CatalogDbContext(_dbContextOptions);
+            nonTrackingContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             var requireCleanData = PredicateBuilder.New<OperationalDataRecord>()
                 .And(it => !it.IsProcessed)
@@ -44,13 +44,17 @@ namespace Catalog.BusinessLogicLayer.Service
                 .And(it => it.ServiceMemberCode != null)
                 .And(it => it.ServiceCode != null);
 
-            var operationalDataRecords = catalogDbContext.OperationalDataRecords.Where(requireCleanData)
+            var operationalDataRecords = nonTrackingContext.OperationalDataRecords.Where(requireCleanData)
                 .OrderByDescending(it => it.Id)
                 .Take(ProcessLimit)
                 .ToList();
-
+            
+            nonTrackingContext.Dispose();
+            
             foreach (var operationalDataRecord in operationalDataRecords)
-                ProcessOperationalDataRecord(operationalDataRecord);
+            {
+                ProcessOperationalDataRecord(operationalDataRecord);                
+            }
         }
 
         private void ProcessOperationalDataRecord(OperationalDataRecord record)
