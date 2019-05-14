@@ -31,7 +31,7 @@ namespace Catalog.BusinessLogicLayer.UnitTests
             {
                 cfg.AddProfiles(typeof(SecurityServerProfile));
                 cfg.AddProfiles(typeof(OperationalDataRecordProfile));
-            });
+            });    
 
             var xRoadOperationalDataProcessor = new XRoadOperationalDataProcessor(
                 _logger,

@@ -22,26 +22,12 @@ namespace Catalog.Daemon.HostedService
             _processor = processor;
         }
 
-        public void Dispose()
-        {
-            _timer?.Dispose();
-        }
-
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation(nameof(OperationalDataProcessorService) + " is starting");
 
-            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromHours(1));
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation(nameof(OperationalDataProcessorService) + " is stopping");
-
-            _timer?.Change(Timeout.Infinite, 0);
-
+            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromSeconds(40));
+            
             return Task.CompletedTask;
         }
 
@@ -53,6 +39,20 @@ namespace Catalog.Daemon.HostedService
                 _processor.ProcessRecords();
                 _logger.LogInformation("Operational Data Processor Task Completed");
             }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation(nameof(OperationalDataProcessorService) + " is stopping");
+
+            _timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

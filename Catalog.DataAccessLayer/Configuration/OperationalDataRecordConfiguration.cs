@@ -11,6 +11,7 @@ namespace Catalog.DataAccessLayer.Configuration
         {
             builder.ConfigureBaseEntityProperties();
             builder.HasIndex(entity => entity.MessageId);
+            builder.HasIndex(entity => entity.IsProcessed);
 
             builder.Property(entity => entity.ClientXRoadInstance).IsRequired(false).HasMaxLength(50);
             builder.Property(entity => entity.ClientMemberClass).IsRequired(false).HasMaxLength(50);

@@ -11,12 +11,12 @@ namespace Catalog.BusinessLogicLayer.UnitTests.Providers
             {
                 ClientSubSystem = new SubSystemIdentifier
                 {
-                    Instance = "KG",
+                    Instance = "central-server",
                     MemberClass = "GOV",
                     MemberCode = "70000001",
-                    SubSystemCode = "MONITORING-SUBSYSTEM"
+                    SubSystemCode = "monitoring-system"
                 },
-                SecurityServerUri = new Uri("http://10.94.7.70")
+                SecurityServerUri = new Uri("http://10.55.0.4")
             };
         }
     }

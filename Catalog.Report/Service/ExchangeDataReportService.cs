@@ -31,7 +31,7 @@ namespace Catalog.Report.Service
                 {
                     using (var dataCalculator = new ExchangeDataCalculator(new CatalogDbContext(_dbContextOptions)))
                     {
-                        var memberExchangeData = dataCalculator.GetExchangeData(member, from, to);
+                        var memberExchangeData = dataCalculator.GetExchangeData(member, from.ToUniversalTime(), to.ToUniversalTime());
                         CleanMetadataExchange(ref memberExchangeData);
                         return memberExchangeData;
                     }

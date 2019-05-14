@@ -12,9 +12,7 @@ namespace Catalog.BusinessLogicLayer.Service
 {
     public class XRoadOperationalDataProcessor
     {
-        private const int RecordsLimit = 10000;
-        private static readonly int ProcessIterationLimit = 10;
-
+        private const int ProcessLimit = 1000;
         private readonly DbContextOptions<CatalogDbContext> _dbContextOptions;
         private readonly ILogger<XRoadOperationalDataProcessor> _logger;
         private readonly IMapper _mapper;
@@ -30,31 +28,32 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void ProcessRecords()
         {
-            for (int processCounter = 0; processCounter < ProcessIterationLimit; processCounter++)
+            var nonTrackingContext = new CatalogDbContext(_dbContextOptions);
+            nonTrackingContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            var requireCleanData = PredicateBuilder.New<OperationalDataRecord>()
+                .And(it => !it.IsProcessed)
+                .And(it => it.SecurityServerType != null)
+                .And(it => it.MessageId != null)
+                .And(it => it.MessageProtocolVersion != null)
+                .And(it => it.ClientXRoadInstance != null)
+                .And(it => it.ClientMemberClass != null)
+                .And(it => it.ClientMemberCode != null)
+                .And(it => it.ServiceXRoadInstance != null)
+                .And(it => it.ServiceMemberClass != null)
+                .And(it => it.ServiceMemberCode != null)
+                .And(it => it.ServiceCode != null);
+
+            var operationalDataRecords = nonTrackingContext.OperationalDataRecords.Where(requireCleanData)
+                .OrderByDescending(it => it.Id)
+                .Take(ProcessLimit)
+                .ToList();
+            
+            nonTrackingContext.Dispose();
+            
+            foreach (var operationalDataRecord in operationalDataRecords)
             {
-                var catalogDbContext = new CatalogDbContext(_dbContextOptions);
-                catalogDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-
-                var requireCleanData = PredicateBuilder.New<OperationalDataRecord>()
-                    .And(it => !it.IsProcessed)
-                    .And(it => it.SecurityServerType != null)
-                    .And(it => it.MessageId != null)
-                    .And(it => it.MessageProtocolVersion != null)
-                    .And(it => it.ClientXRoadInstance != null)
-                    .And(it => it.ClientMemberClass != null)
-                    .And(it => it.ClientMemberCode != null)
-                    .And(it => it.ServiceXRoadInstance != null)
-                    .And(it => it.ServiceMemberClass != null)
-                    .And(it => it.ServiceMemberCode != null)
-                    .And(it => it.ServiceCode != null);
-
-                var operationalDataRecords = catalogDbContext.OperationalDataRecords.Where(requireCleanData)
-                    .OrderByDescending(it => it.Id)
-                    .Take(RecordsLimit)
-                    .ToList();
-
-                foreach (var operationalDataRecord in operationalDataRecords)
-                    ProcessOperationalDataRecord(operationalDataRecord);
+                ProcessOperationalDataRecord(operationalDataRecord);                
             }
         }
 
