@@ -31,7 +31,6 @@ namespace Catalog.Daemon.HostedService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation(nameof(XRoadMetadataCollectorService) + " is starting");
             _timer = new Timer(Collect, null, TimeSpan.Zero, TimeSpan.FromHours(1));
             return Task.CompletedTask;
         }
@@ -39,10 +38,7 @@ namespace Catalog.Daemon.HostedService
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation(nameof(XRoadMetadataCollectorService) + " is stopping");
-
             _timer?.Change(Timeout.Infinite, 0);
-
             return Task.CompletedTask;
         }
 
@@ -50,11 +46,12 @@ namespace Catalog.Daemon.HostedService
         {
             lock (_lockObject)
             {
-                _logger.LogInformation("Starting XRoad Metadata Collector Task");
                 try
                 {
+                    _logger.LogInformation("Starting XRoad Metadata Collector Task");
                     var task = Task.Run(async () => { await _collector.RunBatchUpdateTask(); });
                     task.Wait();
+                    _logger.LogInformation("XRoad Metadata Collector Task Completed");
                 }
                 catch (Exception exception)
                 {
@@ -62,8 +59,6 @@ namespace Catalog.Daemon.HostedService
                         "XRoad Metadata Collector Task Completed with Error: {message}; {stackTrace}",
                         exception.Message, exception.StackTrace);
                 }
-
-                _logger.LogInformation("XRoad Metadata Collector Task Completed");
             }
         }
     }

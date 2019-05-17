@@ -1,13 +1,23 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
+using System.Linq;
 using Catalog.BusinessLogicLayer.Service;
 using Catalog.BusinessLogicLayer.UnitTests.Providers;
 using XRoad.Domain;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Catalog.BusinessLogicLayer.UnitTests
 {
     public class SecurityServersStorageUpdaterUnitTests
     {
+        private ITestOutputHelper _helper;
+
+        public SecurityServersStorageUpdaterUnitTests(ITestOutputHelper helper)
+        {
+            _helper = helper;
+        }
+
         [Fact]
         public async void UpdateLocalDatabaseAsync_When__()
         {
@@ -31,6 +41,19 @@ namespace Catalog.BusinessLogicLayer.UnitTests
                             }
                         }
                     }));
+            }
+        }
+
+
+        [Fact]
+        public void GetSecurityServers()
+        {
+            var requireDbContext = DbContextProvider.RequireDbContext();
+
+            var securityServers = requireDbContext.SecurityServers.ToList();
+            foreach (var securityServer in securityServers)
+            {
+                _helper.WriteLine(securityServer.ToString());
             }
         }
     }

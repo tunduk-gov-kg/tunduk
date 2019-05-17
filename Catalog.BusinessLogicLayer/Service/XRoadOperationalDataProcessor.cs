@@ -83,9 +83,9 @@ namespace Catalog.BusinessLogicLayer.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(LoggingEvents.OperationalDataRecordProcessing,
-                    "Error during processing operational data record with id:{id}; " +
-                    "Error message: {message}", record.Id, ex.Message);
+//                _logger.LogError(LoggingEvents.OperationalDataRecordProcessing,
+//                    "Error during processing operational data record with id:{id}; " +
+//                    "Error message: {message}", record.Id, ex.Message);
             }
             finally
             {

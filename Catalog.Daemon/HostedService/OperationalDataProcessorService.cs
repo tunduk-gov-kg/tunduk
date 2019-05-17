@@ -26,7 +26,7 @@ namespace Catalog.Daemon.HostedService
         {
             _logger.LogInformation(nameof(OperationalDataProcessorService) + " is starting");
 
-            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromSeconds(40));
+            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromSeconds(20));
             
             return Task.CompletedTask;
         }
@@ -35,9 +35,14 @@ namespace Catalog.Daemon.HostedService
         {
             lock (_lockObject)
             {
-                _logger.LogInformation("Starting Operational Data Processor Task");
-                _processor.ProcessRecords();
-                _logger.LogInformation("Operational Data Processor Task Completed");
+                try
+                {
+                    _processor.ProcessRecords();
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception,"Error occurred during operational data processing");
+                }
             }
         }
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
@@ -45,48 +47,61 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public void RunOpDataCollectorTask()
         {
-            var catalogDbContext = new CatalogDbContext(_dbContextOptions);
-
-            var securityServers = catalogDbContext.SecurityServers
-                .Include(entity => entity.Member)
-                .OrderBy(server => server.Id)
-                .ToList();
-
+            var securityServers = GetSecurityServersList();
             _logger.LogInformation(LoggingEvents.RunOpDataCollectorTask, "RunOpDataCollector Task started.");
-
-            foreach (var securityServer in securityServers)
-            {
-                try
-                {
-                    var securityServerIdentifier = _mapper.Map<SecurityServerIdentifier>(securityServer);
-                    _logger.LogInformation(LoggingEvents.RunOpDataCollectorTask,
-                        "Retrieving OpData for security server: {server}",
-                        securityServerIdentifier.ToString()
-                    );
-
-                    var nextRecordsFrom = RunOpDataCollectorTask(
-                        securityServerIdentifier,
-                        securityServer.LastRequestedDateTime ?? 0L.AsSecondsToDateTime()
-                    );
-
-                    securityServer.LastRequestedDateTime = nextRecordsFrom;
-                    catalogDbContext.SecurityServers.Update(securityServer);
-                    catalogDbContext.SaveChanges();
-
-                    _logger.LogInformation("OpData retrieved from security server: {server}", securityServer);
-                }
-                catch (Exception exception)
-                {
-                    _logger.LogError(LoggingEvents.RunOpDataCollectorTask,
-                        "Error occured during OpData collecting; Error: {error}", exception.Message);
-                }
-            }
-
-            catalogDbContext.Dispose();
-
+            foreach (var securityServer in securityServers) CollectOperationalData(securityServer.Id);
             _logger.LogInformation(LoggingEvents.RunOpDataCollectorTask, "RunOpDataCollector Task finished.");
         }
 
+        private List<SecurityServer> GetSecurityServersList()
+        {
+            using (var catalogDbContext = new CatalogDbContext(_dbContextOptions))
+            {
+                return catalogDbContext.SecurityServers
+                    .Include(entity => entity.Member)
+                    .OrderBy(server => server.Id)
+                    .ToList();
+            }
+        }
+
+
+        private void CollectOperationalData(long targetSecurityServerId)
+        {
+            using (var catalogDbContext = new CatalogDbContext(_dbContextOptions))
+            {
+                using (var transaction = catalogDbContext.Database.BeginTransaction(IsolationLevel.Snapshot))
+                {
+                    try
+                    {
+                        var targetSecurityServer = catalogDbContext.SecurityServers
+                            .Include(it => it.Member)
+                            .First(it => it.Id == targetSecurityServerId);
+
+                        var nextRecordsFrom = RunOpDataCollectorTask(new SecurityServerIdentifier
+                            {
+                                Instance = targetSecurityServer.Member.Instance,
+                                MemberClass = targetSecurityServer.Member.MemberClass,
+                                MemberCode = targetSecurityServer.Member.MemberCode,
+                                SecurityServerCode = targetSecurityServer.SecurityServerCode,
+                            },
+                            targetSecurityServer.LastRequestedDateTime ?? 0L.AsSecondsToDateTime()
+                        );
+
+                        targetSecurityServer.LastRequestedDateTime = nextRecordsFrom;
+
+                        catalogDbContext.SecurityServers.Update(targetSecurityServer);
+                        catalogDbContext.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception exception)
+                    {
+                        _logger.LogError(exception, "Error occurred during collecting operational data from: {server}",
+                            targetSecurityServerId);
+                        transaction.Rollback();
+                    }
+                }
+            }
+        }
 
         public DateTime RunOpDataCollectorTask(SecurityServerIdentifier securityServerIdentifier, DateTime from)
         {

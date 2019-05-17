@@ -25,7 +25,7 @@ namespace Catalog.Daemon.HostedService
         {
             _logger.LogInformation(nameof(OperationalDataCollectorService) + " is starting");
 
-            _timer = new Timer(Collect, null, TimeSpan.Zero, TimeSpan.FromHours(2));
+            _timer = new Timer(Collect, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(20));
 
             return Task.CompletedTask;
         }
@@ -34,9 +34,16 @@ namespace Catalog.Daemon.HostedService
         {
             lock (_lockObject)
             {
-                _logger.LogInformation("Starting Operational Data Collector Task");
-                _collector.RunOpDataCollectorTask();
-                _logger.LogInformation("Operational Data Collector Task Completed");
+                try
+                {
+                    _logger.LogInformation("Starting Operational Data Collector Task");
+                    _collector.RunOpDataCollectorTask();
+                    _logger.LogInformation("Operational Data Collector Task Completed");
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception, "Error occurred during operational data collecting");
+                }
             }
         }
 

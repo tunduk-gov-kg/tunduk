@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.BusinessLogicLayer.Service.Interfaces;
@@ -27,17 +28,21 @@ namespace Catalog.BusinessLogicLayer.Service
 
         public async Task UpdateLocalDatabaseAsync(IList<SecurityServerData> incomingServersList)
         {
-            var databaseServersList = _dbContext.SecurityServers
-                .IgnoreQueryFilters()
-                .Include(server => server.Member)
-                .ToImmutableList();
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Snapshot))
+            {
+                var databaseServersList = _dbContext.SecurityServers
+                    .IgnoreQueryFilters()
+                    .Include(server => server.Member)
+                    .ToImmutableList();
 
-            RestorePreviouslyRemovedServers(incomingServersList, databaseServersList);
-            RemoveNonExistingServers(incomingServersList, databaseServersList);
-            CreateCompletelyNewServers(incomingServersList, databaseServersList);
-            UpdateSecurityServersAddresses(incomingServersList, databaseServersList);
+                RestorePreviouslyRemovedServers(incomingServersList, databaseServersList);
+                RemoveNonExistingServers(incomingServersList, databaseServersList);
+                CreateCompletelyNewServers(incomingServersList, databaseServersList);
+                UpdateSecurityServersAddresses(incomingServersList, databaseServersList);
 
-            await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
         }
 
         private void CreateCompletelyNewServers(IList<SecurityServerData> incomingServersList,
