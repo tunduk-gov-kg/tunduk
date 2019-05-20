@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 using Monitor.Domain;
-using Monitor.Domain.Entity;
 using Monitor.Domain.Repository;
 
 namespace Monitor.OpDataProcessor
@@ -21,10 +19,10 @@ namespace Monitor.OpDataProcessor
 
             var dataRepository = new OpDataRepository(dbContextProvider);
 
-            var dataProcessor = new OpDataProcessor(dbContextProvider, new MessagePairMatcher(dbContextProvider), dataRepository);
-            
+            var dataProcessor = new OpDataProcessor(dbContextProvider, new MessagePairMatcher(dbContextProvider),
+                dataRepository);
+
             dataProcessor.ProcessRecords();
-            Console.ReadLine();
         }
     }
 }

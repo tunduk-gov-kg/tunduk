@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Monitor.Domain;
@@ -17,27 +19,25 @@ namespace Monitor.OpDataProcessor
 
         public Message FindMessage(OpDataRecord dataRecord)
         {
-            //if current record retrieved from producer security server
-            //search from consumer messages
-            //else search from producer messages
-            var searchFor = dataRecord.SecurityServerType.Equals("Producer")
-                ? MessageState.MergedConsumer
-                : MessageState.MergedProducer;
-
             if (dataRecord.XRequestId != null)
             {
-                return FindMessageByXRequestId(searchFor, dataRecord.XRequestId);
+                return FindMessageByXRequestId(dataRecord) ?? DefaultSearch(dataRecord);
             }
 
-            return DefaultSearch(searchFor, dataRecord);
+            return DefaultSearch(dataRecord);
         }
 
-        private Message DefaultSearch(MessageState targetMessageState, OpDataRecord dataRecord)
+        private Message DefaultSearch(OpDataRecord dataRecord)
         {
             using (var dbContext = _dbContextProvider.CreateDbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                
+
+                var searchInProducerRecords = dataRecord.SecurityServerType.Equals("Client");
+
+                var targetMessageState =
+                    searchInProducerRecords ? MessageState.MergedProducer : MessageState.MergedConsumer;
+
                 var expression = PredicateBuilder.New<Message>()
                     .And(it => it.MessageState.Equals(targetMessageState))
                     .And(it => it.MessageId == dataRecord.MessageId)
@@ -49,35 +49,33 @@ namespace Monitor.OpDataProcessor
                     .And(it => it.ProducerMemberCode == dataRecord.ServiceMemberCode)
                     .And(it => it.ProducerServiceCode == dataRecord.ServiceCode);
 
-                var searchInConsumers = targetMessageState == MessageState.MergedConsumer;
-                
-                if (searchInConsumers)
-                {
-                    var finalExpression = expression.And(it => it.ConsumerServerRequestOutTs < dataRecord.RequestInTs)
-                        .And(it => it.ConsumerServerResponseInTs > dataRecord.ResponseOutTs)
-                        .And(it => dataRecord.ResponseOutTs - it.ConsumerServerRequestOutTs >= 60_000);
+                const int httpTimeOutMilliSeconds = 60_000;
 
-                    return dbContext.Messages.Where(finalExpression).FirstOrDefault();
+                Expression<Func<Message, bool>> searchExpression;
+
+                if (searchInProducerRecords)
+                {
+                    searchExpression = expression.And(it =>
+                        it.ProducerServerResponseOutTs - dataRecord.RequestOutTs <= httpTimeOutMilliSeconds);
                 }
                 else
                 {
-                    var finalExpression = expression.And(it => dataRecord.RequestOutTs < it.ProducerServerRequestInTs)
-                        .And(it => dataRecord.ResponseInTs > it.ProducerServerResponseOutTs)
-                        .And(it => it.ProducerServerResponseOutTs - dataRecord.RequestOutTs >= 60_000);
-
-                    return dbContext.Messages.Where(finalExpression).FirstOrDefault();
+                    searchExpression = expression.And(it =>
+                        dataRecord.ResponseOutTs - it.ConsumerServerRequestOutTs <= httpTimeOutMilliSeconds);
                 }
+
+                return dbContext.Messages.Where(searchExpression)
+                    .OrderBy(it => it.ConsumerServerRequestOutTs)
+                    .FirstOrDefault();
             }
         }
 
-        private Message FindMessageByXRequestId(MessageState targetMessageState, string xRequestId)
+        private Message FindMessageByXRequestId(OpDataRecord dataRecord)
         {
             using (var dbContext = _dbContextProvider.CreateDbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                
-                return dbContext.Messages.FirstOrDefault(it =>
-                    it.MessageState.Equals(targetMessageState) && it.XRequestId == xRequestId);
+                return dbContext.Messages.FirstOrDefault(it => it.XRequestId == dataRecord.XRequestId);
             }
         }
     }
