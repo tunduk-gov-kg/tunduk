@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Monitor.Domain;
@@ -38,7 +36,7 @@ namespace Monitor.OpDataProcessor
                 var targetMessageState =
                     searchInProducerRecords ? MessageState.MergedProducer : MessageState.MergedConsumer;
 
-                var expression = PredicateBuilder.New<Message>()
+                var messageIdFilter = PredicateBuilder.New<Message>()
                     .And(it => it.MessageState.Equals(targetMessageState))
                     .And(it => it.MessageId == dataRecord.MessageId)
                     .And(it => it.ConsumerInstance == dataRecord.ClientXRoadInstance)
@@ -49,24 +47,7 @@ namespace Monitor.OpDataProcessor
                     .And(it => it.ProducerMemberCode == dataRecord.ServiceMemberCode)
                     .And(it => it.ProducerServiceCode == dataRecord.ServiceCode);
 
-                const int httpTimeOutMilliSeconds = 60_000;
-
-                Expression<Func<Message, bool>> searchExpression;
-
-                if (searchInProducerRecords)
-                {
-                    searchExpression = expression.And(it =>
-                        it.ProducerServerResponseOutTs - dataRecord.RequestOutTs <= httpTimeOutMilliSeconds);
-                }
-                else
-                {
-                    searchExpression = expression.And(it =>
-                        dataRecord.ResponseOutTs - it.ConsumerServerRequestOutTs <= httpTimeOutMilliSeconds);
-                }
-
-                return dbContext.Messages.Where(searchExpression)
-                    .OrderBy(it => it.ConsumerServerRequestOutTs)
-                    .FirstOrDefault();
+                return dbContext.Messages.FirstOrDefault(messageIdFilter);
             }
         }
 

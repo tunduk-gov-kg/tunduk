@@ -5,10 +5,18 @@ namespace Monitor.OpDataProcessor.Extensions
 {
     public static class OpDataRecordExtensions
     {
+        public static bool IsConsumer(this OpDataRecord record)
+        {
+            return record.SecurityServerType.Equals("Client");
+        }
+
+        public static bool IsProducer(this OpDataRecord record)
+        {
+            return record.SecurityServerType.Equals("Producer");
+        }
+
         public static Message CreateMessage(this OpDataRecord record)
         {
-            bool isConsumer = record.SecurityServerType.Equals("Client");
-
             var message = new Message
             {
                 CreatedAt = DateTime.Now,
@@ -17,7 +25,7 @@ namespace Monitor.OpDataProcessor.Extensions
                 MessageProtocolVersion = record.MessageProtocolVersion,
                 MessageIssue = record.MessageIssue,
                 MessageUserId = record.MessageUserId,
-                MessageState = isConsumer ? MessageState.MergedConsumer : MessageState.MergedProducer,
+                MessageState = record.IsConsumer() ? MessageState.MergedConsumer : MessageState.MergedProducer,
 
                 ConsumerInstance = record.ClientXRoadInstance,
                 ConsumerMemberClass = record.ClientMemberClass,
@@ -30,9 +38,9 @@ namespace Monitor.OpDataProcessor.Extensions
                 ProducerSubSystemCode = record.ServiceSubsystemCode,
                 ProducerServiceCode = record.ServiceCode,
                 ProducerServiceVersion = record.ServiceVersion,
-                ConsumerSecurityServerInternalIpAddress = isConsumer ? record.SecurityServerInternalIp : null,
+                ConsumerSecurityServerInternalIpAddress = record.IsConsumer() ? record.SecurityServerInternalIp : null,
                 ConsumerSecurityServerAddress = record.ClientSecurityServerAddress,
-                ProducerSecurityServerInternalIpAddress = !isConsumer ? record.SecurityServerInternalIp : null,
+                ProducerSecurityServerInternalIpAddress = record.IsProducer() ? record.SecurityServerInternalIp : null,
                 ProducerSecurityServerAddress = record.ServiceSecurityServerAddress,
                 RepresentedPartyClass = record.RepresentedPartyClass,
                 RepresentedPartyCode = record.RepresentedPartyCode,
@@ -48,7 +56,7 @@ namespace Monitor.OpDataProcessor.Extensions
                 FaultString = record.SoapFaultString
             };
 
-            if (isConsumer)
+            if (record.IsConsumer())
             {
                 message.ConsumerServerRequestInTs = record.RequestInTs;
                 message.ConsumerServerRequestOutTs = record.RequestOutTs;
