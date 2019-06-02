@@ -9,6 +9,11 @@ namespace Monitor.Domain.Extensions
             return (long) dateTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
+        public static long ToUnixTimestampMs(this DateTime dateTime)
+        {
+            return (long) dateTime.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
+
         public static DateTime AsSecondsToDateTime(this long unixTimestamp)
         {
             var unixTimestampBegin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
