@@ -17,10 +17,7 @@ namespace Monitor.OpDataProcessor
 
         public Message FindMessage(OpDataRecord dataRecord)
         {
-            if (dataRecord.XRequestId != null)
-            {
-                return FindMessageByXRequestId(dataRecord) ?? DefaultSearch(dataRecord);
-            }
+            if (dataRecord.XRequestId != null) return FindMessageByXRequestId(dataRecord) ?? DefaultSearch(dataRecord);
 
             return DefaultSearch(dataRecord);
         }

@@ -5,9 +5,9 @@ using Monitor.Domain.Repository;
 
 namespace Monitor.OpDataProcessor
 {
-    static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

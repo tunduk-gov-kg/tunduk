@@ -8,5 +8,5 @@ namespace Monitor.Domain.Repository
     {
         void InsertRecords(OpDataRecord[] opDataRecords);
         IList<OpDataRecord> GetOpDataRecordsBatch(int batchSize, Predicate<OpDataRecord> specification);
-    }    
+    }
 }

@@ -57,18 +57,14 @@ namespace Monitor.OpDataProcessor
                 }
                 else
                 {
-                    if (message.MessageState == MessageState.MergedAll)
-                    {
-                        return;
-                    }
-                    
-                    bool consumerAlreadyMerged = message.MessageState == MessageState.MergedConsumer && opDataRecord.IsConsumer();
-                    bool producerAlreadyMerged = message.MessageState == MessageState.MergedProducer && opDataRecord.IsProducer();
+                    if (message.MessageState == MessageState.MergedAll) return;
 
-                    if (consumerAlreadyMerged || producerAlreadyMerged)
-                    {
-                        return;
-                    }
+                    var consumerAlreadyMerged =
+                        message.MessageState == MessageState.MergedConsumer && opDataRecord.IsConsumer();
+                    var producerAlreadyMerged =
+                        message.MessageState == MessageState.MergedProducer && opDataRecord.IsProducer();
+
+                    if (consumerAlreadyMerged || producerAlreadyMerged) return;
 
                     message.Merge(opDataRecord);
                     dbContext.Messages.Update(message);

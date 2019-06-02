@@ -10,15 +10,15 @@ using XRoad.OpMonitor;
 
 namespace Monitor.OpDataCollector
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
+
             var dbContextProvider =
                 new DbContextProvider(configurationRoot.GetConnectionString("Monitor"));
 
@@ -34,8 +34,8 @@ namespace Monitor.OpDataCollector
                 }
             };
 
-            var serverRepository = new ServerRepository(dbContextProvider);
-            var opDataRepository = new OpDataRepository(dbContextProvider);
+            IServerRepository serverRepository = new ServerRepository(dbContextProvider);
+            IOpDataRepository opDataRepository = new OpDataRepository(dbContextProvider);
             var serversProvider = new ServersProvider(new ServiceMetadataManager());
 
             var servers = await serversProvider.GetSecurityServersListAsync(exchangeParameters.SecurityServerUri);

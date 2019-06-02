@@ -16,9 +16,9 @@ namespace Monitor.OpDataCollector
     public class OpDataCollector
     {
         private readonly XRoadExchangeParameters _exchangeParameters;
-        private readonly IServerRepository _repository;
         private readonly IOperationalDataService _opDataReader;
         private readonly IOpDataRepository _opDataRepository;
+        private readonly IServerRepository _repository;
 
         public OpDataCollector(IServerRepository repository
             , IOperationalDataService opDataReader
@@ -55,8 +55,7 @@ namespace Monitor.OpDataCollector
             var recordsFrom = server.NextRecordsFrom.ToUnixTimestamp();
             var recordsTo = DateTime.UtcNow.ToUnixTimestamp() - offsetSeconds;
 
-            for (int i = 0; i < maxIteration; i++)
-            {
+            for (var i = 0; i < maxIteration; i++)
                 if (TryGetOpData(out var operationalData, server.GetIdentifier(), recordsFrom, recordsTo))
                 {
                     var dataRecords = Array.ConvertAll(operationalData.Records, OpDataRecordExtensions.Convert);
@@ -67,12 +66,14 @@ namespace Monitor.OpDataCollector
                         recordsFrom = recordsTo + 1;
                         break;
                     }
-
-                    Debug.Assert(operationalData.NextRecordsFrom != null, "operationalData.NextRecordsFrom != null");
+                    
+                    // ReSharper disable once PossibleInvalidOperationException
                     recordsFrom = operationalData.NextRecordsFrom.Value;
                 }
-                else break;
-            }
+                else
+                {
+                    break;
+                }
 
             server.NextRecordsFrom = recordsFrom.AsSecondsToDateTime();
             _repository.UpdateServer(server);
@@ -95,7 +96,7 @@ namespace Monitor.OpDataCollector
             }
             catch (FaultException exception)
             {
-                Console.WriteLine($"{securityServerIdentifier}: "+exception.String);
+                Console.WriteLine($"{securityServerIdentifier}: " + exception.String);
                 operationalData = null;
                 return false;
             }

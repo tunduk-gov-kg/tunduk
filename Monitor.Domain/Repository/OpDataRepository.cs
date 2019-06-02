@@ -30,7 +30,7 @@ namespace Monitor.Domain.Repository
             using (var dbContext = _dbContextProvider.CreateDbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                
+
                 return dbContext.OpDataRecords.Where(it => specification(it))
                     .ToPagedList(1, batchSize)
                     .ToList();

@@ -47,7 +47,9 @@ namespace Monitor.Domain.Repository
         public IList<Server> GetServersList()
         {
             using (var monitorDbContext = _dbContextProvider.CreateDbContext())
+            {
                 return monitorDbContext.Servers.ToList();
+            }
         }
     }
 }

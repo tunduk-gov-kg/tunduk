@@ -7,12 +7,9 @@ namespace Monitor.OpDataProcessor.Extensions
     {
         public static void Merge(this Message message, OpDataRecord record)
         {
-            bool isConsumer = record.SecurityServerType.Equals("Client");
-            
-            if (isConsumer && message.MessageState == MessageState.MergedConsumer)
-            {
-                throw new Exception(nameof(record));
-            }
+            var isConsumer = record.SecurityServerType.Equals("Client");
+
+            if (isConsumer && message.MessageState == MessageState.MergedConsumer) throw new Exception(nameof(record));
 
             message.ModifiedAt = DateTime.Now;
             message.MessageState = MessageState.MergedAll;
