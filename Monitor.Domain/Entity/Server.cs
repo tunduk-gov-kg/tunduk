@@ -18,7 +18,7 @@ namespace Monitor.Domain.Entity
         public long NextRecordsFromTimestamp
         {
             get => NextRecordsFrom.ToSeconds();
-            set => NextRecordsFrom = value.ToDateTime(ConversionType.Seconds);
+            set => NextRecordsFrom = value.ToDateTime(TemporalType.Seconds);
         }
     }
 }

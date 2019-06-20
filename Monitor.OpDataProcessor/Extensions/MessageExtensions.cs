@@ -1,5 +1,6 @@
 using System;
 using Monitor.Domain.Entity;
+using Monitor.Domain.Extensions;
 
 namespace Monitor.OpDataProcessor.Extensions
 {
@@ -8,25 +9,23 @@ namespace Monitor.OpDataProcessor.Extensions
         public static void Merge(this Message message, OpDataRecord record)
         {
             var isConsumer = record.SecurityServerType.Equals("Client");
-
-            if (isConsumer && message.MessageState == MessageState.MergedConsumer) throw new Exception(nameof(record));
-
+            
             message.ModifiedAt = DateTime.Now;
             message.MessageState = MessageState.MergedAll;
-
+            
             if (isConsumer)
             {
-                message.ConsumerServerRequestInTs = record.RequestInTs;
-                message.ConsumerServerRequestOutTs = record.RequestOutTs;
-                message.ConsumerServerResponseInTs = record.ResponseInTs;
-                message.ConsumerServerResponseOutTs = record.ResponseOutTs;
+                message.ConsumerServerRequestIn = record.RequestInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerRequestOut = record.RequestOutTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerResponseIn = record.ResponseInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerResponseOut = record.ResponseOutTs?.ToDateTime(TemporalType.Milliseconds);
             }
             else
             {
-                message.ProducerServerRequestInTs = record.RequestInTs;
-                message.ProducerServerRequestOutTs = record.RequestOutTs;
-                message.ProducerServerResponseInTs = record.ResponseInTs;
-                message.ProducerServerResponseOutTs = record.ResponseOutTs;
+                message.ProducerServerRequestIn = record.RequestInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerRequestOut = record.RequestOutTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerResponseIn = record.ResponseInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerResponseOut = record.ResponseOutTs?.ToDateTime(TemporalType.Milliseconds);
             }
         }
     }

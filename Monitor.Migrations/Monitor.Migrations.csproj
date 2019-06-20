@@ -6,11 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Evolve" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0"/>
-        <PackageReference Include="Npgsql" Version="4.0.4"/>
+        <PackageReference Include="Evolve" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+        <PackageReference Include="Npgsql" Version="4.0.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -37,6 +37,9 @@
         </None>
         <None Update="SQL_Scripts\V8__RequireCleanDataIndex.sql">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V10__ReplaceGetMessagesCountGroupedByDateTime.sql">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
