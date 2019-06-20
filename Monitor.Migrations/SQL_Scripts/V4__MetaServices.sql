@@ -9,5 +9,4 @@ values ('listMethods'),
        ('getSecurityServerOperationalData'),
        ('getSecurityServerHealthData'),
        ('getWsdl'),
-       ('getSecurityServerMetrics'),
-       ('listMethods');
+       ('getSecurityServerMetrics');

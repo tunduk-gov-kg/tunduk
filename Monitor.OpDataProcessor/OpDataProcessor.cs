@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Monitor.Domain;
 using Monitor.Domain.Entity;
-using Monitor.Domain.Repository;
 using Monitor.OpDataProcessor.Extensions;
+using X.PagedList;
 
 namespace Monitor.OpDataProcessor
 {
@@ -11,7 +12,6 @@ namespace Monitor.OpDataProcessor
     {
         private readonly IDbContextProvider _dbContextProvider;
         private readonly IMessagePairMatcher _messagePairMatcher;
-        private readonly IOpDataRepository _opDataRepository;
 
         private readonly Predicate<OpDataRecord> _requireCleanData = record =>
             !record.IsProcessed
@@ -25,23 +25,30 @@ namespace Monitor.OpDataProcessor
             && record.ServiceMemberCode != null
             && record.ServiceCode != null;
 
-        public OpDataProcessor(IDbContextProvider dbContextProvider
-            , IMessagePairMatcher messagePairMatcher
-            , IOpDataRepository opDataRepository)
+        public OpDataProcessor(IDbContextProvider dbContextProvider, IMessagePairMatcher messagePairMatcher)
         {
             _dbContextProvider = dbContextProvider;
             _messagePairMatcher = messagePairMatcher;
-            _opDataRepository = opDataRepository;
         }
 
-        public void ProcessRecords()
+        public void ProcessRecords(int batchSize)
         {
-            var clientDataRecords = _opDataRepository.GetOpDataRecordsBatch(100_000,
-                record => _requireCleanData(record) && record.SecurityServerType == "Client");
+            var dbContext = _dbContextProvider.CreateDbContext();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            var clientDataRecords = dbContext.OpDataRecords
+                .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Client"))
+                .ToPagedList(1, pageSize: batchSize);
+
+            var producerDataRecords = dbContext.OpDataRecords
+                .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Producer"))
+                .ToPagedList(1, batchSize);
+            
+            dbContext.Dispose();
+            
             clientDataRecords.AsParallel().ForAll(ProcessRecord);
-            var producerDataRecords = _opDataRepository.GetOpDataRecordsBatch(100_000,
-                record => _requireCleanData(record) && record.SecurityServerType == "Producer");
             producerDataRecords.AsParallel().ForAll(ProcessRecord);
+            
         }
 
         private void ProcessRecord(OpDataRecord opDataRecord)
@@ -61,9 +68,11 @@ namespace Monitor.OpDataProcessor
                     {
                         return;
                     }
-                    
-                    bool consumerAlreadyMerged = message.MessageState == MessageState.MergedConsumer && opDataRecord.IsConsumer();
-                    bool producerAlreadyMerged = message.MessageState == MessageState.MergedProducer && opDataRecord.IsProducer();
+
+                    bool consumerAlreadyMerged =
+                        message.MessageState == MessageState.MergedConsumer && opDataRecord.IsConsumer();
+                    bool producerAlreadyMerged =
+                        message.MessageState == MessageState.MergedProducer && opDataRecord.IsProducer();
 
                     if (consumerAlreadyMerged || producerAlreadyMerged)
                     {

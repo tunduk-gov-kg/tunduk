@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Monitor.Domain;
-using Monitor.Domain.Repository;
+using Monitor.OpDataCollector.Extensions;
 using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 using XRoad.OpMonitor;
@@ -33,16 +33,18 @@ namespace Monitor.OpDataCollector
                     SubSystemCode = configurationRoot["SubSystemCode"]
                 }
             };
+            
+            Console.WriteLine($"OpDataCollector task starting with args: {exchangeParameters.SecurityServerUri}; {exchangeParameters.ClientSubSystem}");
 
-            var serverRepository = new ServerRepository(dbContextProvider);
-            var opDataRepository = new OpDataRepository(dbContextProvider);
             var serversProvider = new ServersProvider(new ServiceMetadataManager());
-
             var servers = await serversProvider.GetSecurityServersListAsync(exchangeParameters.SecurityServerUri);
-            serverRepository.UpdateLocalCache(servers);
-
-            var opDataCollector = new OpDataCollector(serverRepository, new OperationalDataService(),
-                exchangeParameters, opDataRepository);
+            
+            var dbContext = dbContextProvider.CreateDbContext();
+            dbContext.UpdateServersList(servers);
+            dbContext.Dispose();
+            
+            var opDataCollector = new OpDataCollector(new OperationalDataService(), exchangeParameters,dbContextProvider);
+            
             opDataCollector.Collect();
         }
     }

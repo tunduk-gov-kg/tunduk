@@ -1,9 +1,9 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
+using Monitor.Domain;
 using Monitor.Domain.Entity;
 using Monitor.Domain.Extensions;
-using Monitor.Domain.Repository;
 using Monitor.OpDataCollector.Extensions;
 using SimpleSOAPClient.Exceptions;
 using XRoad.Domain;
@@ -16,24 +16,25 @@ namespace Monitor.OpDataCollector
     public class OpDataCollector
     {
         private readonly XRoadExchangeParameters _exchangeParameters;
-        private readonly IServerRepository _repository;
         private readonly IOperationalDataService _opDataReader;
-        private readonly IOpDataRepository _opDataRepository;
+        private readonly IDbContextProvider _dbContextProvider;
 
-        public OpDataCollector(IServerRepository repository
-            , IOperationalDataService opDataReader
+        public OpDataCollector(IOperationalDataService opDataReader
             , XRoadExchangeParameters exchangeParameters
-            , IOpDataRepository opDataRepository)
+            , IDbContextProvider dbContextProvider)
         {
-            _repository = repository;
             _opDataReader = opDataReader;
             _exchangeParameters = exchangeParameters;
-            _opDataRepository = opDataRepository;
+            _dbContextProvider = dbContextProvider;
         }
 
         public void Collect()
         {
-            var servers = _repository.GetServersList();
+            List<Server> servers;
+
+            using (var dbContext = _dbContextProvider.CreateDbContext())
+                servers = dbContext.Servers.ToList();
+
             servers.AsParallel().ForAll(server =>
             {
                 try
@@ -43,42 +44,77 @@ namespace Monitor.OpDataCollector
                 catch (Exception exception)
                 {
                     Console.WriteLine(exception.Message);
+                    Console.WriteLine(exception.StackTrace);
                 }
             });
         }
 
         private void Collect(Server server)
         {
-            const int offsetSeconds = 180;
-            const int maxIteration = 5;
-
-            var recordsFrom = server.NextRecordsFrom.ToUnixTimestamp();
-            var recordsTo = DateTime.UtcNow.ToUnixTimestamp() - offsetSeconds;
-
-            for (int i = 0; i < maxIteration; i++)
+            const int offsetSeconds = 240;
+            const int maxIteration = 10;
+            
+            // security servers use utc time 
+            var recordsTo = DateTime.UtcNow.ToSeconds() - offsetSeconds;
+            
+            for (var i = 0; i < maxIteration; i++)
             {
-                if (TryGetOpData(out var operationalData, server.GetIdentifier(), recordsFrom, recordsTo))
-                {
-                    var dataRecords = Array.ConvertAll(operationalData.Records, OpDataRecordExtensions.Convert);
-                    if (dataRecords.Length > 0) _opDataRepository.InsertRecords(dataRecords);
+                Console.WriteLine(
+                    $"Requesting logs from: {server.GetIdentifier()} between {server.NextRecordsFromTimestamp} to {recordsTo}");
 
+                if (TryGetOpData(out var operationalData, server.GetIdentifier(), server.NextRecordsFromTimestamp,
+                    recordsTo))
+                {
+                    Console.WriteLine(
+                        $"Fetched logs {operationalData.Records.Length} from: {server.GetIdentifier()} between {server.NextRecordsFromTimestamp} to {recordsTo}");
+
+                    var dataRecords = Array.ConvertAll(operationalData.Records, OpDataRecordExtensions.Convert);
+                    
+                    ProcessOpDataRecords(server, dataRecords, operationalData, recordsTo);
+                    
                     if (!operationalData.NextRecordsFromSpecified)
                     {
-                        recordsFrom = recordsTo + 1;
                         break;
                     }
-
-                    Debug.Assert(operationalData.NextRecordsFrom != null, "operationalData.NextRecordsFrom != null");
-                    recordsFrom = operationalData.NextRecordsFrom.Value;
+                    
+                    Console.WriteLine($"{server.GetIdentifier()} - next records from equals: {operationalData.NextRecordsFrom}");
                 }
                 else break;
             }
+        }
 
-            server.NextRecordsFrom = recordsFrom.AsSecondsToDateTime();
-            _repository.UpdateServer(server);
+        private void ProcessOpDataRecords(Server server, OpDataRecord[] dataRecords, OperationalData operationalData,
+            long recordsTo)
+        {
+            using (var dbContext = _dbContextProvider.CreateDbContext())
+            using (var transaction = dbContext.Database.BeginTransaction())
+            {
+                if (!operationalData.NextRecordsFromSpecified)
+                {
+                    server.NextRecordsFromTimestamp = recordsTo + 1;
+                }
+                else
+                {
+                    // ReSharper disable once PossibleInvalidOperationException
+                    server.NextRecordsFromTimestamp = operationalData.NextRecordsFrom.Value;
+                }
+
+                dbContext.OpDataRecords.AddRange(dataRecords);
+                dbContext.Servers.Update(server);
+                dbContext.SaveChanges();
+                transaction.Commit();
+            }
         }
 
 
+        /// <summary>
+        /// Retrieves operational data from given security server
+        /// </summary>
+        /// <param name="operationalData">out parameter to init with op data records</param>
+        /// <param name="securityServerIdentifier">target security server identifier</param>
+        /// <param name="recordsFrom">The beginning of the time interval of requested operational data (Unix timestamp in seconds)</param>
+        /// <param name="recordsTo">The end of the time interval of requested operational data (Unix timestamp in seconds)</param>
+        /// <returns></returns>
         private bool TryGetOpData(out OperationalData operationalData,
             SecurityServerIdentifier securityServerIdentifier, long recordsFrom, long recordsTo)
         {
@@ -95,7 +131,7 @@ namespace Monitor.OpDataCollector
             }
             catch (FaultException exception)
             {
-                Console.WriteLine($"{securityServerIdentifier}: "+exception.String);
+                Console.WriteLine($"{securityServerIdentifier}: " + exception.String);
                 operationalData = null;
                 return false;
             }

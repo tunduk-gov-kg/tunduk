@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using SimpleSOAPClient;
 using SimpleSOAPClient.Handlers;
@@ -34,10 +33,10 @@ namespace XRoad.OpMonitor
                                 await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
                             var contentCursor = streamProvider.Contents.GetEnumerator();
 
-                            Debug.Assert(contentCursor.MoveNext());
+                            contentCursor.MoveNext();
                             var soapResponse = contentCursor.Current;
 
-                            Debug.Assert(contentCursor.MoveNext());
+                            contentCursor.MoveNext();
                             var attachment = contentCursor.Current;
 
                             contentCursor.Dispose();
