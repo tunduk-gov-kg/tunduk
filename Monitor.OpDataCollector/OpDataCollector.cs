@@ -15,9 +15,9 @@ namespace Monitor.OpDataCollector
 {
     public class OpDataCollector
     {
+        private readonly IDbContextProvider _dbContextProvider;
         private readonly XRoadExchangeParameters _exchangeParameters;
         private readonly IOperationalDataService _opDataReader;
-        private readonly IDbContextProvider _dbContextProvider;
 
         public OpDataCollector(IOperationalDataService opDataReader
             , XRoadExchangeParameters exchangeParameters
@@ -33,7 +33,9 @@ namespace Monitor.OpDataCollector
             List<Server> servers;
 
             using (var dbContext = _dbContextProvider.CreateDbContext())
+            {
                 servers = dbContext.Servers.ToList();
+            }
 
             servers.AsParallel().ForAll(server =>
             {
@@ -53,10 +55,10 @@ namespace Monitor.OpDataCollector
         {
             const int offsetSeconds = 240;
             const int maxIteration = 10;
-            
+
             // security servers use utc time 
             var recordsTo = DateTime.UtcNow.ToSeconds() - offsetSeconds;
-            
+
             for (var i = 0; i < maxIteration; i++)
             {
                 Console.WriteLine(
@@ -69,19 +71,21 @@ namespace Monitor.OpDataCollector
                         $"Fetched logs {operationalData.Records.Length} from: {server.GetIdentifier()} between {server.NextRecordsFromTimestamp} to {recordsTo}");
 
                     var dataRecords = Array.ConvertAll(operationalData.Records, OpDataRecordExtensions.Convert);
-                    
+
                     ProcessOpDataRecords(server, dataRecords, operationalData, recordsTo);
-                    
-                    if (!operationalData.NextRecordsFromSpecified)
-                    {
-                        break;
-                    }
-                    
-                    Console.WriteLine($"{server.GetIdentifier()} - next records from equals: {operationalData.NextRecordsFrom}");
+
+                    if (!operationalData.NextRecordsFromSpecified) break;
+
+                    Console.WriteLine(
+                        $"{server.GetIdentifier()} - next records from equals: {operationalData.NextRecordsFrom}");
                 }
-                else break;
+                else
+                {
+                    break;
+                }
             }
         }
+
 
         private void ProcessOpDataRecords(Server server, OpDataRecord[] dataRecords, OperationalData operationalData,
             long recordsTo)
@@ -90,14 +94,10 @@ namespace Monitor.OpDataCollector
             using (var transaction = dbContext.Database.BeginTransaction())
             {
                 if (!operationalData.NextRecordsFromSpecified)
-                {
                     server.NextRecordsFromTimestamp = recordsTo + 1;
-                }
                 else
-                {
                     // ReSharper disable once PossibleInvalidOperationException
                     server.NextRecordsFromTimestamp = operationalData.NextRecordsFrom.Value;
-                }
 
                 dbContext.OpDataRecords.AddRange(dataRecords);
                 dbContext.Servers.Update(server);
@@ -108,7 +108,7 @@ namespace Monitor.OpDataCollector
 
 
         /// <summary>
-        /// Retrieves operational data from given security server
+        ///     Retrieves operational data from given security server
         /// </summary>
         /// <param name="operationalData">out parameter to init with op data records</param>
         /// <param name="securityServerIdentifier">target security server identifier</param>

@@ -6,38 +6,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Evolve" Version="2.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-      <PackageReference Include="Npgsql" Version="4.0.4" />
+        <PackageReference Include="Evolve" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0"/>
+        <PackageReference Include="Npgsql" Version="4.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="SQL_Scripts\V3__Messages.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V2__Servers.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V1__InitialSchema.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V4__MetaServices.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V5__GetMemberProducedServices.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V6__GetMemberConsumedServices.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V7__GetMessagesCountGroupedByDateTime.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="SQL_Scripts\V8__RequireCleanDataIndex.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="SQL_Scripts\V3__Messages.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V2__Servers.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V1__InitialSchema.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V4__MetaServices.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V5__GetMemberProducedServices.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V6__GetMemberConsumedServices.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V7__GetMessagesCountGroupedByDateTime.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SQL_Scripts\V8__RequireCleanDataIndex.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

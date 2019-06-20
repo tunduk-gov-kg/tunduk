@@ -40,7 +40,7 @@ namespace Monitor.OpDataCollector
 
             return sharedParams.SecurityServers.ConvertAll(converter);
         }
-        
+
         private Member FindMember(SharedParams sharedParams, string id)
         {
             return sharedParams.Members.First(member => member.Id.Equals(id));

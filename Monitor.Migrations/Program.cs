@@ -5,9 +5,9 @@ using Npgsql;
 
 namespace Monitor.Migrations
 {
-    static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace Monitor.Migrations
                 var evolve = new Evolve.Evolve(cnx, Console.WriteLine)
                 {
                     Locations = new[] {"SQL_Scripts"},
-                    IsEraseDisabled = true,
+                    IsEraseDisabled = true
                 };
                 evolve.Migrate();
             }

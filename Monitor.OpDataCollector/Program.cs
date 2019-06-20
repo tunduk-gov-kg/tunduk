@@ -10,15 +10,15 @@ using XRoad.OpMonitor;
 
 namespace Monitor.OpDataCollector
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
+
             var dbContextProvider =
                 new DbContextProvider(configurationRoot.GetConnectionString("Monitor"));
 
@@ -33,18 +33,20 @@ namespace Monitor.OpDataCollector
                     SubSystemCode = configurationRoot["SubSystemCode"]
                 }
             };
-            
-            Console.WriteLine($"OpDataCollector task starting with args: {exchangeParameters.SecurityServerUri}; {exchangeParameters.ClientSubSystem}");
+
+            Console.WriteLine(
+                $"OpDataCollector task starting with args: {exchangeParameters.SecurityServerUri}; {exchangeParameters.ClientSubSystem}");
 
             var serversProvider = new ServersProvider(new ServiceMetadataManager());
             var servers = await serversProvider.GetSecurityServersListAsync(exchangeParameters.SecurityServerUri);
-            
+
             var dbContext = dbContextProvider.CreateDbContext();
             dbContext.UpdateServersList(servers);
             dbContext.Dispose();
-            
-            var opDataCollector = new OpDataCollector(new OperationalDataService(), exchangeParameters,dbContextProvider);
-            
+
+            var opDataCollector =
+                new OpDataCollector(new OperationalDataService(), exchangeParameters, dbContextProvider);
+
             opDataCollector.Collect();
         }
     }

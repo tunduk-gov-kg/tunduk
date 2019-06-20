@@ -53,10 +53,10 @@ namespace XRoad.GlobalConfiguration
                                 await httpContext.Response.Content.ReadAsMultipartAsync(cancellationToken);
                             var contentCursor = streamProvider.Contents.GetEnumerator();
 
-                            Debug.Assert(contentCursor.MoveNext());
+                            contentCursor.MoveNext();
                             var soapResponse = contentCursor.Current;
 
-                            Debug.Assert(contentCursor.MoveNext());
+                            contentCursor.MoveNext();
                             var wsdlFile = contentCursor.Current;
 
                             contentCursor.Dispose();

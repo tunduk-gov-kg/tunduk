@@ -53,7 +53,7 @@ namespace Monitor.OpDataCollector.Extensions
                 SecurityServerType = dataRecordDto.SecurityServerType,
                 Succeeded = dataRecordDto.Succeeded,
                 SoapFaultCode = dataRecordDto.SoapFaultCode,
-                SoapFaultString = dataRecordDto.SoapFaultString,
+                SoapFaultString = dataRecordDto.SoapFaultString
             };
         }
     }

@@ -38,17 +38,16 @@ namespace Monitor.OpDataProcessor
 
             var clientDataRecords = dbContext.OpDataRecords
                 .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Client"))
-                .ToPagedList(1, pageSize: batchSize);
+                .ToPagedList(1, batchSize);
 
             var producerDataRecords = dbContext.OpDataRecords
                 .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Producer"))
                 .ToPagedList(1, batchSize);
-            
+
             dbContext.Dispose();
-            
+
             clientDataRecords.AsParallel().ForAll(ProcessRecord);
             producerDataRecords.AsParallel().ForAll(ProcessRecord);
-            
         }
 
         private void ProcessRecord(OpDataRecord opDataRecord)
@@ -64,20 +63,14 @@ namespace Monitor.OpDataProcessor
                 }
                 else
                 {
-                    if (message.MessageState == MessageState.MergedAll)
-                    {
-                        return;
-                    }
+                    if (message.MessageState == MessageState.MergedAll) return;
 
-                    bool consumerAlreadyMerged =
+                    var consumerAlreadyMerged =
                         message.MessageState == MessageState.MergedConsumer && opDataRecord.IsConsumer();
-                    bool producerAlreadyMerged =
+                    var producerAlreadyMerged =
                         message.MessageState == MessageState.MergedProducer && opDataRecord.IsProducer();
 
-                    if (consumerAlreadyMerged || producerAlreadyMerged)
-                    {
-                        return;
-                    }
+                    if (consumerAlreadyMerged || producerAlreadyMerged) return;
 
                     message.Merge(opDataRecord);
                     dbContext.Messages.Update(message);

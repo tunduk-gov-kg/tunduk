@@ -49,7 +49,7 @@ namespace Monitor.Domain.Entity
         public int? RequestAttachmentsCount { get; set; }
         public int? RequestSoapSize { get; set; }
         public int? RequestMimeSize { get; set; }
-        
+
         public int? ResponseAttachmentsCount { get; set; }
         public int? ResponseSoapSize { get; set; }
         public int? ResponseMimeSize { get; set; }

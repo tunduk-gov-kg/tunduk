@@ -14,10 +14,10 @@ namespace XRoad.OpMonitor.Domain
         public long RecordsCount { get; set; }
 
         /// <summary>
-        /// Unix timestamp in seconds to use for field
-        /// recordsFrom of the next query. This element is present in case
-        /// the size of the response has been limited or the timestamp of
-        /// the field recordsTo was in the future.
+        ///     Unix timestamp in seconds to use for field
+        ///     recordsFrom of the next query. This element is present in case
+        ///     the size of the response has been limited or the timestamp of
+        ///     the field recordsTo was in the future.
         /// </summary>
         [XmlElement(ElementName = "nextRecordsFrom", Namespace = "http://x-road.eu/xsd/op-monitoring.xsd")]
         public long? NextRecordsFrom { get; set; }

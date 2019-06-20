@@ -5,7 +5,7 @@ namespace Monitor.Domain.Extensions
     public static class DateTimeUtils
     {
         /// <summary>
-        /// Converts given datetime to unix timestamp seconds
+        ///     Converts given datetime to unix timestamp seconds
         /// </summary>
         /// <param name="dateTime">target argument for conversion</param>
         /// <returns></returns>
@@ -15,7 +15,7 @@ namespace Monitor.Domain.Extensions
         }
 
         /// <summary>
-        /// Converts given unix timestamp to DateTime
+        ///     Converts given unix timestamp to DateTime
         /// </summary>
         /// <param name="value">unix timestamp for conversion</param>
         /// <param name="conversionType">type of conversion</param>
