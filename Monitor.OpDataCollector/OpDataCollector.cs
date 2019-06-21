@@ -55,7 +55,7 @@ namespace Monitor.OpDataCollector
         {
             const int offsetSeconds = 240;
             const int maxIteration = 10;
-
+            
             // security servers use utc time 
             var recordsTo = DateTime.UtcNow.ToSeconds() - offsetSeconds;
 

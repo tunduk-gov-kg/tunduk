@@ -17,16 +17,15 @@ namespace Monitor.OpDataProcessor
 
         public Message FindMessage(OpDataRecord dataRecord)
         {
-            if (dataRecord.XRequestId != null) return FindMessageByXRequestId(dataRecord) ?? DefaultSearch(dataRecord);
-
-            return DefaultSearch(dataRecord);
-        }
-
-        private Message DefaultSearch(OpDataRecord dataRecord)
-        {
             using (var dbContext = _dbContextProvider.CreateDbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+                if (dataRecord.XRequestId != null)
+                {
+                    var result = dbContext.Messages.FirstOrDefault(it => it.XRequestId == dataRecord.XRequestId);
+                    if (result != null) return result;
+                }
 
                 var searchInProducerRecords = dataRecord.SecurityServerType.Equals("Client");
 
@@ -45,15 +44,6 @@ namespace Monitor.OpDataProcessor
                     .And(it => it.ProducerServiceCode == dataRecord.ServiceCode);
 
                 return dbContext.Messages.FirstOrDefault(messageIdFilter);
-            }
-        }
-
-        private Message FindMessageByXRequestId(OpDataRecord dataRecord)
-        {
-            using (var dbContext = _dbContextProvider.CreateDbContext())
-            {
-                dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                return dbContext.Messages.FirstOrDefault(it => it.XRequestId == dataRecord.XRequestId);
             }
         }
     }

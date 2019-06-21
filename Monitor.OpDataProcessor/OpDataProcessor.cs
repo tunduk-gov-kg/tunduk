@@ -13,18 +13,6 @@ namespace Monitor.OpDataProcessor
         private readonly IDbContextProvider _dbContextProvider;
         private readonly IMessagePairMatcher _messagePairMatcher;
 
-        private readonly Predicate<OpDataRecord> _requireCleanData = record =>
-            !record.IsProcessed
-            && record.Succeeded != null
-            && record.MessageId != null
-            && record.ClientXRoadInstance != null
-            && record.ClientMemberClass != null
-            && record.ClientMemberCode != null
-            && record.ServiceXRoadInstance != null
-            && record.ServiceMemberClass != null
-            && record.ServiceMemberCode != null
-            && record.ServiceCode != null;
-
         public OpDataProcessor(IDbContextProvider dbContextProvider, IMessagePairMatcher messagePairMatcher)
         {
             _dbContextProvider = dbContextProvider;
@@ -37,11 +25,13 @@ namespace Monitor.OpDataProcessor
             dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             var clientDataRecords = dbContext.OpDataRecords
-                .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Client"))
+                .Where(it => it.SecurityServerType.Equals("Client") && !it.IsProcessed)
+                .OrderBy(it => it.Id)
                 .ToPagedList(1, batchSize);
 
             var producerDataRecords = dbContext.OpDataRecords
-                .Where(it => _requireCleanData(it) && it.SecurityServerType.Equals("Producer"))
+                .Where(it => it.SecurityServerType.Equals("Producer") && !it.IsProcessed)
+                .OrderBy(it => it.Id)
                 .ToPagedList(1, batchSize);
 
             dbContext.Dispose();
@@ -55,6 +45,8 @@ namespace Monitor.OpDataProcessor
             var dbContext = _dbContextProvider.CreateDbContext();
             try
             {
+                if (!opDataRecord.IsValid()) return;
+
                 var message = _messagePairMatcher.FindMessage(opDataRecord);
                 if (message == null)
                 {

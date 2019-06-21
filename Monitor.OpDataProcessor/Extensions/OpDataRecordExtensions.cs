@@ -16,6 +16,19 @@ namespace Monitor.OpDataProcessor.Extensions
             return record.SecurityServerType.Equals("Producer");
         }
 
+        public static bool IsValid(this OpDataRecord record)
+        {
+            return record.Succeeded != null
+                   && record.MessageId != null
+                   && record.ClientXRoadInstance != null
+                   && record.ClientMemberClass != null
+                   && record.ClientMemberCode != null
+                   && record.ServiceXRoadInstance != null
+                   && record.ServiceMemberClass != null
+                   && record.ServiceMemberCode != null
+                   && record.ServiceCode != null;
+        }
+
         public static Message CreateMessage(this OpDataRecord record)
         {
             var message = new Message
