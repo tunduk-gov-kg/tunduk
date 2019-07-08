@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using Monitor.Domain.Extensions;
 
 namespace Monitor.Domain.Entity
 {
@@ -10,5 +12,13 @@ namespace Monitor.Domain.Entity
         public string MemberCode { get; set; }
         public string Code { get; set; }
         public DateTime NextRecordsFrom { get; set; }
+
+
+        [NotMapped]
+        public long NextRecordsFromTimestamp
+        {
+            get => NextRecordsFrom.ToSeconds();
+            set => NextRecordsFrom = value.ToDateTime(TemporalType.Seconds);
+        }
     }
 }

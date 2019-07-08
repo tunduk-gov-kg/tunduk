@@ -36,15 +36,15 @@ namespace Monitor.Domain.Entity
         public string RepresentedPartyClass { get; set; }
         public string RepresentedPartyCode { get; set; }
 
-        public long? ConsumerServerRequestInTs { get; set; }
-        public long? ConsumerServerRequestOutTs { get; set; }
-        public long? ConsumerServerResponseInTs { get; set; }
-        public long? ConsumerServerResponseOutTs { get; set; }
+        public DateTime? ConsumerServerRequestIn { get; set; }
+        public DateTime? ConsumerServerRequestOut { get; set; }
+        public DateTime? ConsumerServerResponseIn { get; set; }
+        public DateTime? ConsumerServerResponseOut { get; set; }
 
-        public long? ProducerServerRequestInTs { get; set; }
-        public long? ProducerServerRequestOutTs { get; set; }
-        public long? ProducerServerResponseInTs { get; set; }
-        public long? ProducerServerResponseOutTs { get; set; }
+        public DateTime? ProducerServerRequestIn { get; set; }
+        public DateTime? ProducerServerRequestOut { get; set; }
+        public DateTime? ProducerServerResponseIn { get; set; }
+        public DateTime? ProducerServerResponseOut { get; set; }
 
         public int? RequestAttachmentsCount { get; set; }
         public int? RequestSoapSize { get; set; }

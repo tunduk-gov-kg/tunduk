@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Monitor.Domain;
-using Monitor.Domain.Repository;
 
 namespace Monitor.OpDataProcessor
 {
@@ -17,12 +17,19 @@ namespace Monitor.OpDataProcessor
             var dbContextProvider =
                 new DbContextProvider(configurationRoot.GetConnectionString("Monitor"));
 
-            var dataRepository = new OpDataRepository(dbContextProvider);
 
-            var dataProcessor = new OpDataProcessor(dbContextProvider, new MessagePairMatcher(dbContextProvider),
-                dataRepository);
+            var dataProcessor = new OpDataProcessor(dbContextProvider, new MessagePairMatcher(dbContextProvider));
 
-            dataProcessor.ProcessRecords();
+            for (var processingIndex = 0; processingIndex < 40; processingIndex++)
+            {
+                Console.WriteLine(
+                    $"{processingIndex} iteration started at {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
+
+                dataProcessor.ProcessRecords(10_000);
+
+                Console.WriteLine(
+                    $"{processingIndex} completed started at {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
+            }
         }
     }
 }

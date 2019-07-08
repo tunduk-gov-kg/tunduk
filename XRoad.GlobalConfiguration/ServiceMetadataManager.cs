@@ -141,8 +141,6 @@ namespace XRoad.GlobalConfiguration
             var zipEntryName = $"verificationconf/{instanceIdentifier}/shared-params.xml";
             var zipEntry = zipArchive.GetEntry(zipEntryName);
 
-            Debug.Assert(zipEntry != null, nameof(zipEntry) + " != null");
-
             using (var sharedParamsStream = zipEntry.Open())
             {
                 var xmlSerializer = new XmlSerializer(typeof(SharedParams));

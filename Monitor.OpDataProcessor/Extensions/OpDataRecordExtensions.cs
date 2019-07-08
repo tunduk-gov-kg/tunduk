@@ -1,5 +1,6 @@
 using System;
 using Monitor.Domain.Entity;
+using Monitor.Domain.Extensions;
 
 namespace Monitor.OpDataProcessor.Extensions
 {
@@ -13,6 +14,19 @@ namespace Monitor.OpDataProcessor.Extensions
         public static bool IsProducer(this OpDataRecord record)
         {
             return record.SecurityServerType.Equals("Producer");
+        }
+
+        public static bool IsValid(this OpDataRecord record)
+        {
+            return record.Succeeded != null
+                   && record.MessageId != null
+                   && record.ClientXRoadInstance != null
+                   && record.ClientMemberClass != null
+                   && record.ClientMemberCode != null
+                   && record.ServiceXRoadInstance != null
+                   && record.ServiceMemberClass != null
+                   && record.ServiceMemberCode != null
+                   && record.ServiceCode != null;
         }
 
         public static Message CreateMessage(this OpDataRecord record)
@@ -58,17 +72,17 @@ namespace Monitor.OpDataProcessor.Extensions
 
             if (record.IsConsumer())
             {
-                message.ConsumerServerRequestInTs = record.RequestInTs;
-                message.ConsumerServerRequestOutTs = record.RequestOutTs;
-                message.ConsumerServerResponseInTs = record.ResponseInTs;
-                message.ConsumerServerResponseOutTs = record.ResponseOutTs;
+                message.ConsumerServerRequestIn = record.RequestInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerRequestOut = record.RequestOutTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerResponseIn = record.ResponseInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ConsumerServerResponseOut = record.ResponseOutTs?.ToDateTime(TemporalType.Milliseconds);
             }
             else
             {
-                message.ProducerServerRequestInTs = record.RequestInTs;
-                message.ProducerServerRequestOutTs = record.RequestOutTs;
-                message.ProducerServerResponseInTs = record.ResponseInTs;
-                message.ProducerServerResponseOutTs = record.ResponseOutTs;
+                message.ProducerServerRequestIn = record.RequestInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerRequestOut = record.RequestOutTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerResponseIn = record.ResponseInTs?.ToDateTime(TemporalType.Milliseconds);
+                message.ProducerServerResponseOut = record.ResponseOutTs?.ToDateTime(TemporalType.Milliseconds);
             }
 
             return message;
