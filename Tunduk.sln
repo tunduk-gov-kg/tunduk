@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRoad.Domain", "XRoad.Domai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRoad.OpMonitor", "XRoad.OpMonitor\XRoad.OpMonitor.csproj", "{D2C333FF-6B71-4704-BB92-10311C7B8E71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Helpers", "XUnit.Helpers\XUnit.Helpers.csproj", "{6365DD9D-DCF4-45D1-96AF-18F662C4815B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Domain", "Monitor.Domain\Monitor.Domain.csproj", "{B2A9F013-BD9F-4A73-9A03-8EE489E0C4C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.OpDataCollector", "Monitor.OpDataCollector\Monitor.OpDataCollector.csproj", "{F39AACE4-3110-4887-8E9A-4756DC6F60F4}"
@@ -34,9 +32,6 @@ Global
 		{D2C333FF-6B71-4704-BB92-10311C7B8E71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2C333FF-6B71-4704-BB92-10311C7B8E71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C333FF-6B71-4704-BB92-10311C7B8E71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6365DD9D-DCF4-45D1-96AF-18F662C4815B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2A9F013-BD9F-4A73-9A03-8EE489E0C4C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2A9F013-BD9F-4A73-9A03-8EE489E0C4C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A9F013-BD9F-4A73-9A03-8EE489E0C4C0}.Release|Any CPU.Build.0 = Release|Any CPU
