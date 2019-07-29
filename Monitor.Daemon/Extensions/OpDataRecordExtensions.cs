@@ -1,8 +1,9 @@
 using System;
 using Monitor.Domain.Entity;
+using Monitor.Domain.Extensions;
 using XRoad.OpMonitor.Domain;
 
-namespace Monitor.OpDataCollector.Extensions
+namespace Monitor.Daemon.Extensions
 {
     public static class OpDataRecordExtensions
     {
@@ -10,6 +11,7 @@ namespace Monitor.OpDataCollector.Extensions
         {
             return new OpDataRecord
             {
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.Now,
                 IsProcessed = false,
 
@@ -33,19 +35,19 @@ namespace Monitor.OpDataCollector.Extensions
                 MessageProtocolVersion = dataRecordDto.MessageProtocolVersion,
                 MessageUserId = dataRecordDto.MessageUserId,
 
-                MonitoringDataTs = dataRecordDto.MonitoringDataTs,
+                MonitoringDataTs = dataRecordDto.MonitoringDataTs?.ToDateTime(TemporalType.Seconds),
                 RepresentedPartyCode = dataRecordDto.RepresentedPartyCode,
                 RepresentedPartyClass = dataRecordDto.RepresentedPartyClass,
 
                 RequestAttachmentCount = dataRecordDto.RequestAttachmentCount,
-                RequestInTs = dataRecordDto.RequestInTs,
-                RequestOutTs = dataRecordDto.RequestOutTs,
+                RequestInTs = dataRecordDto.RequestInTs?.ToDateTime(TemporalType.Milliseconds),
+                RequestOutTs = dataRecordDto.RequestOutTs?.ToDateTime(TemporalType.Milliseconds),
                 RequestSoapSize = dataRecordDto.RequestSoapSize,
                 RequestMimeSize = dataRecordDto.RequestMimeSize,
 
                 ResponseAttachmentCount = dataRecordDto.ResponseAttachmentCount,
-                ResponseInTs = dataRecordDto.ResponseInTs,
-                ResponseOutTs = dataRecordDto.ResponseOutTs,
+                ResponseInTs = dataRecordDto.ResponseInTs?.ToDateTime(TemporalType.Milliseconds),
+                ResponseOutTs = dataRecordDto.ResponseOutTs?.ToDateTime(TemporalType.Milliseconds),
                 ResponseSoapSize = dataRecordDto.ResponseSoapSize,
                 ResponseMimeSize = dataRecordDto.ResponseMimeSize,
 

@@ -9,9 +9,7 @@ namespace Monitor.Domain
             : base(options)
         {
         }
-
+        
         public DbSet<Server> Servers { get; set; }
-        public DbSet<Message> Messages { get; set; }
-        public DbSet<OpDataRecord> OpDataRecords { get; set; }
     }
 }

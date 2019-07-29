@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Monitor.Domain.Extensions;
+using XRoad.Domain;
 
 namespace Monitor.Domain.Entity
 {
@@ -20,5 +21,13 @@ namespace Monitor.Domain.Entity
             get => NextRecordsFrom.ToSeconds();
             set => NextRecordsFrom = value.ToDateTime(TemporalType.Seconds);
         }
+
+        public SecurityServerIdentifier Identifier => new SecurityServerIdentifier
+        {
+            Instance = Instance,
+            MemberClass = MemberClass,
+            MemberCode = MemberCode,
+            SecurityServerCode = Code
+        };
     }
 }

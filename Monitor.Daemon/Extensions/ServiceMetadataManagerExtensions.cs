@@ -6,21 +6,16 @@ using XRoad.Domain;
 using XRoad.GlobalConfiguration;
 using XRoad.GlobalConfiguration.Metadata;
 
-namespace Monitor.OpDataCollector
+namespace Monitor.Daemon.Extensions
 {
-    public class ServersProvider
+    public static class ServiceMetadataManagerExtensions
     {
-        private readonly IServiceMetadataManager _serviceMetadataManager;
-
-        public ServersProvider(IServiceMetadataManager serviceMetadataManager)
-        {
-            _serviceMetadataManager = serviceMetadataManager;
-        }
-
-        public async Task<IList<SecurityServerData>> GetSecurityServersListAsync(Uri securityServerUri)
+        public static async Task<IList<SecurityServerData>> GetSecurityServersListAsync(
+            this IServiceMetadataManager serviceMetadataManager,
+            Uri securityServerUri)
         {
             var sharedParams =
-                await _serviceMetadataManager.GetSharedParamsAsync(securityServerUri);
+                await serviceMetadataManager.GetSharedParamsAsync(securityServerUri);
 
             var converter = new Converter<SecurityServer, SecurityServerData>(input =>
             {
@@ -41,7 +36,7 @@ namespace Monitor.OpDataCollector
             return sharedParams.SecurityServers.ConvertAll(converter);
         }
 
-        private Member FindMember(SharedParams sharedParams, string id)
+        private static Member FindMember(SharedParams sharedParams, string id)
         {
             return sharedParams.Members.First(member => member.Id.Equals(id));
         }

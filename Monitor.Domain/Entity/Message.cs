@@ -4,7 +4,7 @@ namespace Monitor.Domain.Entity
 {
     public class Message
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
 
@@ -14,8 +14,7 @@ namespace Monitor.Domain.Entity
         public string MessageProtocolVersion { get; set; }
         public string MessageIssue { get; set; }
         public string MessageUserId { get; set; }
-        public MessageState MessageState { get; set; }
-
+        
         public string ConsumerInstance { get; set; }
         public string ConsumerMemberClass { get; set; }
         public string ConsumerMemberCode { get; set; }
