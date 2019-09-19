@@ -1,9 +1,7 @@
 #!groovy
 
 try {
-    String debFileName = "management-${env.BRANCH_NAME}.deb"
-    
-    node("master") {
+    node("") {
         echo "Hello"
         dotnet build
     }
