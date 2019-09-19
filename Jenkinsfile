@@ -21,6 +21,11 @@ pipeline {
                 sh 'dotnet --info'
             }
         }
+        stage('Build') {
+            steps {
+                sh 'dotnet build'
+            }
+        }
     }
 }
 
