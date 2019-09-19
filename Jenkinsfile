@@ -4,9 +4,8 @@ try {
     String debFileName = "management-${env.BRANCH_NAME}.deb"
     
     node("master") {
-        deleteDir()
         echo "Hello"
-        
+        dotnet build
     }
 } catch (e) {
         throw e
