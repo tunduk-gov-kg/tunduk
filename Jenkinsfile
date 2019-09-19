@@ -1,4 +1,4 @@
-#!groovy
+/*#!groovy
 
 try {
     node("") {
@@ -11,6 +11,16 @@ try {
         // Success or failure, always send notifications
         echo "Success"
     }
+*/
 
+pipeline {
+    stages {
+        stage('check') {
+            steps {
+                sh 'dotnet --info'
+            }
+        }
+    }
+}
 
 
