@@ -26,6 +26,11 @@ pipeline {
                 sh 'dotnet build'
             }
         }
+        stage('Package') {
+            steps {
+                sh 'dotnet deb -r ubuntu.18.04-x64 -f netcoreapp2.2'
+            }
+        }
     }
 }
 
