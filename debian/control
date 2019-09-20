@@ -1,0 +1,8 @@
+Package: xroad-monitor-migrations
+Version: 1.0-1
+Section: misc
+Architecture: all
+Depends: libcurl3
+Maintainer: Eldar Tursunbaev <etursunbaev@tunduk.gov.kg>
+Description: Xroad-monitor-migrations
+␣Just testing for now.
