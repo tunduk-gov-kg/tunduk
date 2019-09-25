@@ -10,7 +10,10 @@ pipeline {
         }
         stage('Package') {
             steps {
-                sh "dotnet deb '--runtime ${runtime}' '--framework ${framework}'"
+                sh """
+                    set -x
+                    dotnet deb --runtime ${runtime} --framework ${framework}
+                """
             }
         }
     }
