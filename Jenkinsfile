@@ -12,6 +12,7 @@ pipeline {
             steps {
                 sh """
                     set +e
+                    cd Monitor.Migrations/
                     dotnet deb --runtime ${runtime} --framework ${framework}
                 """
             }
