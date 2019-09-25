@@ -12,8 +12,8 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
         <PackageReference Include="Npgsql" Version="4.0.4" />
-        <PackageReference Include="Packaging.Targets" Version="0.1.84" />
-        <DotNetCliToolReference Include="dotnet-deb" Version="0.1.84" />
+        <PackageReference Include="Packaging.Targets" Version="0.1.80" />
+        <DotNetCliToolReference Include="dotnet-deb" Version="0.1.80" />
     </ItemGroup>
 
     <ItemGroup>
