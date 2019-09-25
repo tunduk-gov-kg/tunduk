@@ -1,3 +1,5 @@
+def runtime = "ubuntu.18.04-x64"
+def framework = "netcoreapp2.2"
 pipeline {
     agent { node { label 'master' } }
     stages {
@@ -8,7 +10,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-                sh 'dotnet deb -r "ubuntu.18.04-x64" -f "netcoreapp2.2"'
+                sh 'dotnet deb -r ${runtime} -f ${framework}'
             }
         }
     }
