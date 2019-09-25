@@ -12,7 +12,6 @@ pipeline {
             steps {
                 sh """
                     set +x
-                    set -e
                     dotnet deb --runtime ${runtime} --framework ${framework}
                 """
             }
